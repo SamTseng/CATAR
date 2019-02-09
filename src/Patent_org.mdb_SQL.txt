@@ -1,0 +1,176 @@
+-- This file is created on 2019/02/09 by Yuen-Hsien Tseng with the following steps:
+-- 1. Copy CATAR\src\Patent_org.mdb to MacOS and then run the next commands:
+-- 2. $ brew install mdbtools
+-- 3. $ ./MDB2sql.sh Patent_org.mdb > Patent_org.txt
+-- 4. Copy Patent_org.txt back to C:\CATAR\src\
+-- 5. Remove all '`' into null string so thereis no '`' around the names
+-- 6. It's a pity that the queries do not shown in this file
+-- 7. Edit some commands by hand.
+-- 8. Import this file into Patent_org.db (using DB Browser for SQLite).
+
+DROP TABLE IF EXISTS Catalog;
+DROP TABLE IF EXISTS Classify;
+DROP TABLE IF EXISTS CTree;
+DROP TABLE IF EXISTS TAutoClass;
+DROP TABLE IF EXISTS TCitePaper;
+DROP TABLE IF EXISTS TCitePatent;
+DROP TABLE IF EXISTS TCountry;
+DROP TABLE IF EXISTS TDescription;
+DROP TABLE IF EXISTS TFullText;
+DROP TABLE IF EXISTS TOwner;
+DROP TABLE IF EXISTS TPatentClass;
+DROP TABLE IF EXISTS TPatentInfo;
+DROP TABLE IF EXISTS TRelatedDescript;
+DROP TABLE IF EXISTS TSeg;
+DROP TABLE IF EXISTS TDescriptType;
+-- ----------------------------------------------------------
+-- MDB Tools - A library for reading MS Access database files
+-- Copyright (C) 2000-2011 Brian Bruns and others.
+-- Files in libmdb are licensed under LGPL and the utilities under
+-- the GPL, see COPYING.LIB and COPYING files respectively.
+-- Check out http://mdbtools.sourceforge.net
+-- ----------------------------------------------------------
+
+-- That file uses encoding UTF-8
+
+CREATE TABLE Catalog
+ (
+	CID			varchar (40) NOT NULL, 
+	CName			text (255), 
+	CDesc			varchar (256), 
+	CUID			varchar (40), 
+	CPID			varchar (40), 
+	CCTime			varchar (40)
+);
+
+CREATE TABLE Classify
+ (
+	CTID		int, --	varchar (100), 
+	CID			int, -- varchar (100), 
+	NID			int, -- varchar (100), 
+	CType			int, 
+	WgScore			float
+);
+
+CREATE TABLE CTree
+ (
+	CTID			varchar (40), 
+	CTName			varchar (256), 
+	CTDesc			varchar (256), 
+	CTUID			varchar (40), 
+	CTCTime			varchar (40)
+);
+
+CREATE TABLE TAutoClass
+ (
+	PatentNo			varchar (32), 
+	PatentClass			varchar (100), 
+	ClassScore			int
+);
+
+-- ID int PRIMARY KEY AUTOINCREMENT leads to error when importing into SQLite
+-- Must change the above into the next line
+-- ID INTEGER PRIMARY KEY AUTOINCREMENT
+CREATE TABLE TCitePaper
+ (
+	ID		INTEGER PRIMARY KEY AUTOINCREMENT, -- int, 
+	PatentNo			varchar (32), 
+	Type			int, 
+	Year			datetime, 
+	Vol			int, 
+	StartPage			int, 
+	Author			varchar (40), 
+	PubTitle			varchar (320), 
+	JouTitle			varchar (256), 
+	OrgCitation			varchar (510)
+);
+
+CREATE TABLE TCitePatent
+ (
+	PatentNo			varchar (32), 
+	CitePatentNo			varchar (32), 
+	Year			datetime, 
+	Inventor			varchar (64), 
+	USclass			varchar (32), 
+	CountryNo			int
+);
+
+CREATE TABLE TCountry
+ (
+	CountryNo			INTEGER PRIMARY KEY AUTOINCREMENT, -- int, 
+	CountryName			varchar (128)
+);
+
+CREATE TABLE TDescription
+ (
+	PatentNo			varchar (32) not null, 
+	TypeNo			int, 
+	SectionTitle			varchar (256),
+	Descript			text, -- text (255), 
+	Abstract			text -- text (255)
+);
+
+CREATE TABLE TFullText
+ (
+	PatentNo			varchar (32) PRIMARY KEY, 
+	Source			varchar (16), 
+	URL			varchar (510), 
+	UpdateDate			datetime, 
+	FullText			text -- text (255)
+);
+
+CREATE TABLE TOwner
+ (
+	PatentNo			varchar (32), 
+	Owner			varchar (256), 
+	OwnerType			varchar (64), 
+	City			varchar (256), 
+	State			varchar (64), 
+	CountryNo			int, 
+	Type			varchar (2)
+);
+
+CREATE TABLE TPatentClass
+ (
+	PatentNo			varchar (32), 
+	ClassType			varchar (510), 
+	PatentClass			text, -- varchar (510), 
+	IsMain			varchar (2)
+);
+
+CREATE TABLE TPatentInfo
+ (
+	PatentNo			varchar (32) PRIMARY KEY, 
+	GovernCountryNo			int, 
+	IssuedDate			datetime, 
+	Title			varchar (510), 
+	FamilyID			varchar (64), 
+	ApplyNo			varchar (32), 
+	ApplyDate			datetime, 
+	SearchField			varchar (256)
+);
+
+CREATE TABLE TRelatedDescript
+ (
+	PatentNo1			varchar (32), 
+	PatentNo2			varchar (32), 
+	TypeNo			int
+);
+
+CREATE TABLE TSeg
+ (
+	ID			varchar (100), 
+	SNO			varchar (60), 
+	FName			varchar (60), 
+	DName			text, -- text (255), 
+	Dscpt			text -- text (255)
+);
+
+CREATE TABLE TDescriptType
+ (
+	TypeNo			INTEGER PRIMARY KEY AUTOINCREMENT, -- int, 
+	TypeName			varchar (128), 
+	Sequence			int
+);
+
+

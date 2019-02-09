@@ -1,0 +1,1109 @@
+FN ISI Export Format
+VR 1.0
+PT J
+AU Chang, YH
+   Chang, CY
+   Tseng, YH
+AF Chang, Yueh-Hsia
+   Chang, Chun-Yen
+   Tseng, Yuen-Hsien
+TI Trends of Science Education Research: An Automatic Content Analysis
+SO JOURNAL OF SCIENCE EDUCATION AND TECHNOLOGY
+LA English
+DT Article
+DE Science education research; Journal publication; Content analysis;
+   Scientometric method
+ID STUDENTS; ACHIEVEMENT; KNOWLEDGE; JOURNALS; BELIEFS; PHYSICS; EARTH;
+   MODEL
+AB This study used scientometric methods to conduct an automatic content
+   analysis on the development trends of science education research from
+   the published articles in the four journals of International Journal of
+   Science Education, Journal of Research in Science Teaching, Research in
+   Science Education, and Science Education from 1990 to 2007. The
+   multi-stage clustering technique was employed to investigate with what
+   topics, to what development trends, and from whose contribution that
+   the journal publications constructed as a science education research
+   field. This study found that the research topic of Conceptual Change &
+   Concept Mapping was the most studied topic, although the number of
+   publications has slightly declined in the 2000's. The studies in the
+   themes of Professional Development, Nature of Science and
+   Socio-Scientific Issues, and Conceptual Chang and Analogy were found to
+   be gaining attention over the years. This study also found that,
+   embedded in the most cited references, the supporting disciplines and
+   theories of science education research are constructivist learning,
+   cognitive psychology, pedagogy, and philosophy of science.
+C1 [Chang, Yueh-Hsia; Chang, Chun-Yen] Natl Taiwan Normal Univ, Grad Inst Sci Educ, Taipei 11677, Taiwan.
+   [Chang, Yueh-Hsia; Chang, Chun-Yen] Natl Taiwan Normal Univ, Dept Earth Sci, Taipei 11677, Taiwan.
+   [Chang, Yueh-Hsia; Chang, Chun-Yen] Natl Taiwan Normal Univ, Sci Educ Ctr, Taipei 11677, Taiwan.
+   [Tseng, Yuen-Hsien] Natl Taiwan Normal Univ, Ctr Informat Technol, Taipei 106, Taiwan.
+RP Chang, CY, Natl Taiwan Normal Univ, Grad Inst Sci Educ, 88,Sect 4,Ting
+   Chou Rd, Taipei 11677, Taiwan.
+EM changcy@ntnu.edu.tw
+   samtseng@ntnu.edu.tw
+FU National Science Council of Taiwan [NSC 97-2631-S-003 -003, NSC
+   98-2631-S-003 -002]
+FX The work in this study was supported by the National Science Council of
+   Taiwan under contracts NSC 97-2631-S-003 -003 and NSC 98-2631-S-003
+   -002.
+CR *AAAS, 1993, BENCHMARKS SCI LITER
+   *NAT COMM EXC ED, 1983, NAT RISK IMP ED REF
+   *NRC, 1996, NAT SCI ED STAND
+   *NRC, 1997, SCI TEACH REC HDB
+   *NRC, 1999, TRANSF UND ED SCI MA
+   *NRC, 2000, ED TEACH SCI MATH TE
+   *NSF, 1996, NSF96139 DIR ED HUM
+   ABDELKHALICK F, 1998, SCI EDUC, V82, P417
+   AJZEN I, 1980, UNDERSTANDING ATTITU
+   BARTON AC, 2001, J RES SCI TEACH, V38, P899
+   BASSEY M, 1995, CREATING ED RES GLOB
+   BRAUN T, 2007, J SCIENTOMETRICS
+   BROWN DE, 1989, INSTR SCI, V18, P237
+   CHI MTH, 1981, COGNITIVE SCI, V5, P121
+   DEJONG O, 2007, J BALTIC SCI ED, V6, P15
+   DISESSA AA, 1993, COGNITION INSTRUCT, V10, P105
+   DRIVER R, 1983, STUDIES SCI ED, V10, P37
+   DRIVER R, 1985, CHILDRENS IDEAS SCI, P145
+   DRIVER R, 1994, EDUC RES, V23, P5
+   DRIVER R, 1996, YOUNG PEOPLES IMAGES
+   DUIT R, 2007, EURASIA J MATH SCI T, V3, P3
+   ERICKSON F, 1986, HDB RES TEACHING, P119
+   ERICKSON G, 1980, SCI EDUC, V64, P323
+   ERICKSON GL, 1979, SCI EDUC, V63, P221
+   EYBE H, 2001, INT J SCI EDUC, V23, P209
+   FENSHAM PJ, 2004, DEFINING IDENTITY EV
+   FISHBEIN M, 1975, BELIEF ATTITUDE INTE
+   GABEL DL, 1984, J RES SCI TEACH, V21, P221
+   GALLAGHER JJ, 1991, SCI EDUC, V75, P121
+   GESSNEWSOME J, 1999, EXAMINING PEDAGOGICA
+   GOKCEOGLU C, 2008, SCIENTOMETRICS, V74, P409, DOI
+   10.1007/s11192-007-1813-x
+   HABERMAN M, 1991, PHI DELTA KAPPAN, V73, P290
+   INHELDER B, 1958, GROWTH LOGICAL THINK
+   JENKINS EW, 2000, STUDIES SCI ED, V35, P1
+   JENKINS EW, 2001, RES SCI ED PRESENT F, P17
+   KAHLE JB, 1983, J RES SCI TEACH, V20, P131
+   KLEIWEG P, 2008, SOFTWARE DIALECTOMET
+   KRUSKAL JB, 1997, STAT METHODS DIGITAL, P296
+   LASSWELL HD, 1964, COMMUNICATION IDEAS, P37
+   LAVE J, 1991, SITUATED LEARNING LE
+   LAWSON AE, 1978, J RES SCI TEACH, V15, P11
+   LAWSON AE, 1985, J RES SCI TEACH, V22, P569
+   LEDERMAN NG, 1992, J RES SCI TEACH, V29, P331
+   LEE MH, 2009, INT J SCI EDUC, V31, P1999, DOI 10.1080/09500690802314876
+   LEMKE JL, 1990, TALKING SCI LANGUAGE
+   LEYDESDORFF L, 2001, CHALLENGE SCIENTOMET
+   MOED HF, 2005, CITATION ANAL RES EV
+   NOVAK JD, 1984, LEARNING LEARN
+   PAJARES MF, 1992, REV EDUC RES, V62, P307
+   PASCUALL.J, 1970, ACTA PSYCHOL, V32, P301
+   POSNER GJ, 1982, SCI EDUC, V66, P211
+   RENNIE LJ, 1998, J RES SCI TEACH, V35, P237
+   SALTON G, 1989, AUTOMATIC TEXT PROCE
+   SCHIBECI RA, 1986, J RES SCI TEACH, V23, P177
+   SEWELL WH, 1992, AM J SOCIOL, V98, P1
+   SHIH M, 2001, COMPUT EDUC, V51, P955
+   SHULMAN LS, 1986, EDUC RES, V15, P4
+   SHULMAN LS, 1987, HARVARD EDUC REV, V57, P1
+   SIMPSON RD, 1990, SCI EDUC, V74, P1
+   TOBIN K, 1990, WINDOWS SCI CLASSROO
+   TOBIN K, 1999, RES SCI EDUC, V29, P171
+   TREAGUST DF, 2006, RES TRENDS SCI TECHN, P125
+   TSAI CC, 2005, INT J SCI EDUC, V27, P3, DOI 10.1080/0950069042000243727
+   TSENG YH, 2002, J AM SOC INF SCI TEC, V53, P1130, DOI 10.1002/asi.10146
+   TSENG YH, 2006, P AS INF RETR S SING
+   TSENG YH, 2007, INFORM PROCESS MANAG, V43, P1216
+   TSENG YH, 2009, SCIENTOMETRICS, V81, P73, DOI 10.1007/s11192-009-1885-x
+   VOSNIADOU S, 1992, COGNITIVE PSYCHOL, V24, P535
+   WALL L, 2000, PROGRAMMING PERL
+   WATTS DM, 1983, PHYSICS ED, V18, P213
+   WHITE R, 1997, RES SCI EDUC, V27, P215
+   YOUNG FW, 1994, THEORY APPL MULTIDIM
+NR 72
+TC 0
+PU SPRINGER
+PI NEW YORK
+PA 233 SPRING ST, NEW YORK, NY 10013 USA
+SN 1059-0145
+J9 J SCI EDUC TECHNOL
+JI J. Sci. Educ. Technol.
+PD AUG
+PY 2010
+VL 19
+IS 4
+BP 315
+EP 331
+DI 10.1007/s10956-009-9202-2
+PG 17
+SC Education & Educational Research; Education, Scientific Disciplines
+UT ISI:000279714800001
+ER
+
+PT J
+AU Tseng, YH
+   Chang, CY
+   Rundgren, SNC
+   Rundgren, CJ
+AF Tseng, Yuen-Hsien
+   Chang, Chun-Yen
+   Rundgren, Shu-Nu Chang
+   Rundgren, Carl-Johan
+TI Mining concept maps from news stories for measuring civic scientific
+   literacy in media
+SO COMPUTERS & EDUCATION
+LA English
+DT Article
+DE Media in education; Evaluation methodologies; Lifelong learning
+ID SCIENCE-EDUCATION; TOOL; VALIDITY
+AB Motivated by a long-term goal in education for measuring Taiwanese
+   civic scientific literacy in media (SLIM), this work reports the
+   detailed techniques to efficiently mine a concept map from 2 years of
+   Chinese news articles (901.446 in total) for SLIM Instrument
+   development. From the Chinese news stories, key terms (important words
+   or phrases), known or new to existing lexicons, were first extracted by
+   a simple, yet effective, rule-based algorithm. They were subjected to
+   an association analysis based on their co-occurrence in sentences to
+   reveal their term-to-term relationship A given list of 3657 index terms
+   from science textbooks were then matched against the term association
+   network. The resulting term network (including 95 scientific terms) was
+   visualized in a concept map to scaffold the instrument developers. When
+   developing an item, the linked term pair not only suggests the topic
+   for the item due to the clear context being mutually reinforced by each
+   other, but also the content itself because of the rich background
+   provided by the recurrent snippets in which they co-occur. In this way,
+   the resulting instrument (comprised of 50 items) reflect the scientific
+   knowledge revealed in the daily news stones, meeting the goal for
+   measuring civic scientific literacy in media. In addition, the concept
+   map mined from the texts served as a convenient tool for item
+   classification, developer collaboration, and expert review and
+   discussion. (C) 2010 Elsevier Ltd All rights reserved
+C1 [Tseng, Yuen-Hsien] Natl Taiwan Normal Univ, Informat Technol Ctr, Taipei, Taiwan.
+   [Chang, Chun-Yen] Natl Taiwan Normal Univ, Dept Earth Sci, Taipei, Taiwan.
+   [Chang, Chun-Yen] Natl Taiwan Normal Univ, Grad Inst Sci Educ, Taipei, Taiwan.
+   [Chang, Chun-Yen] Natl Taiwan Normal Univ, Sci Educ Ctr, Taipei, Taiwan.
+   [Rundgren, Shu-Nu Chang] Linkoping Univ, Dept Social & Welfare Studies, Swedish Natl Grad Sch Sci & Technol Educ Res, Norrkoping, Sweden.
+   [Rundgren, Carl-Johan] Linkoping Univ, Dept Themat Studies, Norrkoping, Sweden.
+RP Tseng, YH, Natl Taiwan Normal Univ, Informat Technol Ctr, Taipei,
+   Taiwan.
+EM samtseng@ntnu.edutw
+FU National Science of Taiwan [NSC 98-2631-S-003-002]
+FX This work was supported in part by the National Science of Taiwan under
+   the Grant number NSC 98-2631-S-003-002.
+CR BROSSARD D, 2006, SCI COMMUN, V28, P47, DOI 10.1177/1075547006291345
+   CANAS AJ, 2004, 1 INT C CONC MAPP PA
+   CHANG CY, 2009, INT J SCI EDUC, V31, P2315, DOI
+   10.1080/09500690802314868
+   CHANG KE, 2001, J COMPUT ASSIST LEAR, V17, P21
+   CHANG SN, 2007, J BIOL EDUC, V41, P107
+   CHEN NS, 2008, COMPUT EDUC, V50, P1009
+   CHIEN LF, 1997, ACM SIGIR FORUM, V31, P50
+   CLARIANA RB, 2004, 1 INT C CONC MAPP PA
+   DEBOER GE, 2000, J RES SCI TEACH, V37, P582
+   DICHEVA D, 2006, BRIT J EDUC TECHNOL, V37, P391, DOI
+   10.1111/j.1467-8535.2006.00612.x
+   FRAENKEL JR, 1993, DESIGN EVALUATE RES
+   FRAKES B, 1992, INFORM RETRIEVAL DAT
+   HE Q, 1999, LIBR TRENDS, V48, P133
+   HERL HE, 1999, COMPUT HUM BEHAV, V15, P315
+   HOPKINS LT, 1925, SCH SCI MATH, V25, P793
+   HORTON PB, 1993, SCI EDUC, V77, P95
+   KINCHIN IM, 2000, SCH SCI REV, V82, P11
+   KOELSCHE C, 1965, SCH SCI MATH, V65, P719
+   MARKHAM KM, 1994, J RES SCI TEACH, V31, P91
+   MARTIN WE, 1945, SCH SCI MATH, V45, P543
+   NOOY WD, 2005, EXPLORATORY SOCIAL N
+   NOVAK JD, 1984, LEARNING LEARN
+   NOVAK JD, 1990, INSTR SCI, V19, P29
+   NOVAK JD, 1995, CONCEPT MAPPING STRA
+   NOVAK JD, 2006, THEORY UNDERLYING CO
+   ODONNELL AM, 2002, EDUC PSYCHOL REV, V14, P71
+   OKEBUKOLA PA, 1992, AM BIOL TEACH, V54, P218
+   OLIVEIRA A, 2001, AUTOMATIC READING LE
+   PEPPER S, 2000, XML EUR 2000 PAR FRA
+   PETERSON E, 1998, CHINESE SEGMENTER AN
+   PORTER MF, 1980, PROGRAM, V14, P130
+   SALTON G, 1989, AUTOMATIC TEXT PROCE
+   SOYIBO K, 1995, AM BIOL TEACH, V57, P344
+   STEWART J, 1979, AM BIOL TEACH, V41, P171
+   STODDART T, 2000, INT J SCI EDUC, V22, P1221
+   TSAI CC, 2001, J COMPUT ASSIST LEAR, V17, P72
+   TSENG SS, 2007, COMPUT EDUC, V49, P691, DOI
+   10.1016/j.compedu.2005.11.020
+   TSENG YH, 2002, J AM SOC INF SCI TEC, V53, P1130, DOI 10.1002/asi.10146
+   VALERIO A, 2006, 2 INT C CONC MAPP SA
+   VALERIO A, 2008, 3 INT C CONC MAPP FI
+   VANRIJSBERGEN K, 1979, INFORM RETRIEVAL
+   VILLALON JJ, 2008, IEEE WIC ACM INT C W
+NR 42
+TC 0
+PU PERGAMON-ELSEVIER SCIENCE LTD
+PI OXFORD
+PA THE BOULEVARD, LANGFORD LANE, KIDLINGTON, OXFORD OX5 1GB, ENGLAND
+SN 0360-1315
+J9 COMPUT EDUC
+JI Comput. Educ.
+PD AUG
+PY 2010
+VL 55
+IS 1
+BP 165
+EP 177
+DI 10.1016/j.compedu.2010.01.002
+PG 13
+SC Computer Science, Interdisciplinary Applications; Education &
+   Educational Research
+UT ISI:000277110400017
+ER
+
+PT J
+AU Tseng, YH
+AF Tseng, Yuen-Hsien
+TI Generic title labeling for clustered documents
+SO EXPERT SYSTEMS WITH APPLICATIONS
+LA English
+DT Article
+DE Hypernym search; Clustering labeling; WordNet; Correlation coefficient;
+   Topic identification
+ID TEXT
+AB Document clustering is a powerful technique to detect topics and their
+   relations for information browsing, analysis, and organization.
+   However, clustered documents require post-assignment of descriptive
+   titles to help users interpret the results. Existing techniques often
+   assign labels to clusters based only on the terms that the clustered
+   documents contain, which may not be sufficient for some applications.
+   To solve this problem, a cluster labeling algorithm for creating
+   generic titles, based on external resources Such as WordNet, is
+   proposed. Our method first extracts category-specific terms as cluster
+   descriptors. These descriptors are then mapped to generic terms based
+   on a hypernyrn search algorithm. The proposed method has been evaluated
+   on a patent document collection and a subset of the Reuters-21578
+   collection. Experimental results revealed that our method performs as
+   anticipated. Real-case applications of these generic terms show
+   promising in assisting humans in interpreting the clustered topics. Our
+   method is general enough such that it can be easily extended to use
+   other hierarchical resources for adaptable label generation. (C) 2009
+   Elsevier Ltd. All rights reserved.
+C1 Natl Taiwan Normal Univ, Taipei 106, Taiwan.
+RP Tseng, YH, Natl Taiwan Normal Univ, 162 Sect 1 Heping E Rd, Taipei 106,
+   Taiwan.
+EM samtseng@ntnu.edu.tw
+FU National Science Council [NSC 95-2221-E-003-016-, NSC
+   97-2631-S-003-003-]
+FX This work is supported in part by National Science Council under the
+   grants numbered: NSC 95-2221-E-003-016- and NSC 97-2631-S-003-003-.
+CR 2004, DOC UND C
+   *8 SCI TECHN FOR S, 2004, STUD RAP DEV RES AR
+   *INF MAPP PROJ, 2006, COMP SEM LAB
+   *WORDNET, 2004, LEX DAT ENGL LANG
+   BANKO M, 2000, HEADLINE GENERATION
+   BEKKERMAN R, 2001, P SIGIR 01 24 ACM IN, P146
+   CUTTING KDR, 1992, P 15 ACM SIGIR C, P318
+   DAGAN I, 1996, P S DOC AN INF RETR
+   FELDMAN R, 1998, J INTELL INF SYST, V10, P281
+   GLENISSON P, 2005, INFORM PROCESS MANAG, V41, P1548, DOI
+   10.1016/j.ipm.2005.03.021
+   HEARST MA, 1996, P 19 ANN INT ACM SIG, P76
+   KENNEDY PE, 2000, P 5 ACM C DIG LIB
+   KRUSKAL JB, 1977, STAT METHODS DIGITAL, P296
+   LAGUS K, 2004, INFORM SCIENCES, V163, P135, DOI
+   10.1016/j.ins.2003.03.017
+   LAI KK, 2005, INFORM PROCESS MANAG, V41, P313, DOI
+   10.1016/j.ipm.2003.11.004
+   NG HT, 1997, P 20 ANN INT ACM SIG, P67
+   NOYONS ECM, 1998, SCIENTOMETRICS, V41, P61
+   SAHAMI M, 1998, P 3 ACM INT C DIG LI, P200
+   SWAN R, 2000, P 23 ANN INT ACM SIG, P49
+   TREERATPITUK P, 2006, P 2006 ACM INT C DIG, P167
+   TSENG YH, 2002, J AM SOC INF SCI TEC, V53, P1130, DOI 10.1002/asi.10146
+   TSENG YH, 2007, INFORM PROCESS MANAG, V43, P1216
+   TSENG YH, 2007, J INF SCI, V33, P718, DOI 10.1177/0165551507077406
+   UCHIDA H, 2004, P 4 NTCIR QUEST ANSW
+   YANG Y, 1997, P 14 INT C MACH LEAR, P412
+   YANG Y, 1999, P 22 ANN INT ACM SIG, P42
+   YANG Y, 2000, P 23 ANN INT ACM SIG, P65
+   ZAMIR O, 1998, P 21 ANN INT ACM SIG, P46
+NR 28
+TC 0
+PU PERGAMON-ELSEVIER SCIENCE LTD
+PI OXFORD
+PA THE BOULEVARD, LANGFORD LANE, KIDLINGTON, OXFORD OX5 1GB, ENGLAND
+SN 0957-4174
+J9 EXPERT SYST APPL
+JI Expert Syst. Appl.
+PD MAR 15
+PY 2010
+VL 37
+IS 3
+BP 2247
+EP 2254
+DI 10.1016/j.eswa.2009.07.048
+PG 8
+SC Computer Science, Artificial Intelligence; Engineering, Electrical &
+   Electronic; Operations Research & Management Science
+UT ISI:000272846500049
+ER
+
+PT J
+AU Tseng, YH
+   Lin, YI
+   Lee, YY
+   Hung, WC
+   Lee, CH
+AF Tseng, Yuen-Hsien
+   Lin, Yu-I
+   Lee, Yi-Yang
+   Hung, Wen-Chi
+   Lee, Chun-Hsiang
+TI A comparison of methods for detecting hot topics
+SO SCIENTOMETRICS
+LA English
+DT Article
+ID SCIENTOMETRICS
+AB In scientometrics for trend analysis, parameter choices for observing
+   trends are often made ad hoc in past studies. For examples, different
+   year spans might be used to create the time sequence and different
+   indices were chosen for trend observation. However, the effectiveness
+   of these choices was hardly known, quantitatively and comparatively.
+   This work provides clues to better interpret the results when a certain
+   choice was made. Specifically, by sorting research topics in decreasing
+   order of interest predicted by a trend index and then by evaluating
+   this ordering based on information retrieval measures, we compare a
+   number of trend indices (percentage of increase vs. regression slope),
+   trend formulations (simple trend vs. eigen-trend), and options (various
+   year spans and durations for prediction) in different domains (safety
+   agriculture and information retrieval) with different collection scales
+   (72500 papers vs. 853 papers) to know which one leads to better trend
+   observation. Our results show that the slope of linear regression on
+   the time series performs constantly better than the others. More
+   interestingly, this index is robust under different conditions and is
+   hardly affected even when the collection was split into arbitrary
+   (e.g., only two) periods. Implications of these results are discussed.
+   Our work does not only provide a method to evaluate trend prediction
+   performance for scientometrics, but also provides insights and
+   reflections for past and future trend observation studies.
+C1 [Tseng, Yuen-Hsien] Natl Taiwan Normal Univ, Ctr Informat Technol, Taipei, Taiwan.
+   [Lin, Yu-I] Taipei Municipal Univ Educ, Taipei, Taiwan.
+   [Lee, Yi-Yang] Taiwan Inst Econ Res, Biotechnol Ind Study Ctr, Taipei, Taiwan.
+   [Hung, Wen-Chi; Lee, Chun-Hsiang] Natl Appl Res Labs, Sci & Technol Policy Res & Informat Ctr, Taipei, Taiwan.
+RP Tseng, YH, Natl Taiwan Normal Univ, Ctr Informat Technol, 162,Sec
+   1,Heping E Rd, Taipei, Taiwan.
+EM samtseng@ntnu.edu.tw
+FU [NSC 96-2221-E-003-017-]; [NSC 96-2524-S-003-001-]; [NSC
+   97-2631-S-003-003]
+FX This work is supported in part by NSC 96-2221-E-003-017-, NSC
+   96-2524-S-003-001-and NSC 97-2631-S-003-003-.
+CR *STFC, 2004, 8 SCI TECHN FOR SURV
+   BRAAM RR, 1989, COMP COMBINATION COC
+   BRUCKNER E, 1990, SCIENTOMETRICS, V18, P21
+   BUCKLEY C, TREC EVAL IR EVALUAT
+   CALLON M, 1983, SOC SCI INFORM, V22, P191
+   CHEN CM, 2006, J AM SOC INF SCI TEC, V57, P359, DOI 10.1002/asi.20317
+   CHI Y, 2006, P 15 ACM INT C INF K
+   LATHAUWER LD, 2000, SIAM J MATRIX ANAL A, V21
+   MENDENHALL W, 2003, 2 COURSE STAT REGRES
+   NOYONS ECM, 1998, J AM SOC INFORM SCI, V49, P68
+   NOYONS ECM, 1998, MAPPING SCIENTOMETRI
+   NOYONS ECM, 1999, SCIENTOMETRICS, V46, P591
+   RIP A, 1984, SCIENTOMETRICS, V6, P381
+   SMEATON AF, 2003, ACM SIGIR FORUM, V37, P49
+   TSENG YH, 2002, J AM SOC INFORM SCI, V53, P9
+   TSENG YH, 2004, 27 INT ACM SIGIR C R
+   TSENG YH, 2006, P AS INF RETR S SING
+   TSENG YH, 2007, INFORM PROCESS MANAG, V43, P1216
+NR 18
+TC 3
+PU SPRINGER
+PI DORDRECHT
+PA VAN GODEWIJCKSTRAAT 30, 3311 GZ DORDRECHT, NETHERLANDS
+SN 0138-9130
+J9 SCIENTOMETRICS
+JI Scientometrics
+PD OCT
+PY 2009
+VL 81
+IS 1
+BP 73
+EP 90
+DI 10.1007/s11192-009-1885-x
+PG 18
+SC Computer Science, Interdisciplinary Applications; Information Science &
+   Library Science
+UT ISI:000270841800006
+ER
+
+PT J
+AU Tseng, YH
+   Wang, YM
+   Lin, YI
+   Lin, CJ
+   Juang, DW
+AF Tseng, Yuen-Hsien
+   Wang, Yeong-Ming
+   Lin, Yu-I
+   Lin, Chi-Jen
+   Juang, Dai-Wei
+TI Patent surrogate extraction and evaluation in the context of patent
+   mapping
+SO JOURNAL OF INFORMATION SCIENCE
+LA English
+DT Article
+DE text mining; summarization; feature extraction; patent classification;
+   patent clustering
+AB Patent documents contain important research results. They are often
+   collectively analyzed and organized in a visual way to support decision
+   making. However, they are lengthy and rich in technical terminology,
+   and thus require a lot of human effort for analysis. Automatic tools
+   for assisting patent engineers or decision makers in patent analysis
+   are in great demand. This paper describes a summarization method for
+   patent surrogate extraction, intended to efficiently and effectively
+   support patent mapping, which is an important sub-task of patent
+   analysis. Six patent maps were used to evaluate its relative
+   usefulness. The experimental results confirm that the machine generated
+   summaries do preserve more important content words than some other
+   patent sections or even than the full patent texts when only a few
+   terms are to be considered for classification and mapping. The
+   implication is that if one were to determine a patent's category based
+   on only a few terms at a quick pace, one could begin by reading the
+   section summaries generated automatically.
+C1 [Tseng, Yuen-Hsien] Natl Taiwan Normal Univ, Taipei, Taiwan.
+   [Wang, Yeong-Ming] LungHwa Univ Sci & Technol, Guishan, Taoyuan County, Taiwan.
+   [Lin, Yu-I] Taipei Municipal Univ Educ, Taipei, Taiwan.
+   [Lin, Chi-Jen; Juang, Dai-Wei] WebGenie Informat LTD, Taipei, Taiwan.
+RP Tseng, YH, 162,Sec 1,Heping E Rd, Taipei 106, Taiwan.
+EM samtseng@ntnu.edu.tw
+CR BAY YM, 2003, P 1 AS PAC C PAT MAP, P13
+   BEKKERMAN R, 2001, P SIGIR 01 24 ACM IN, P146
+   BREITZMAN AF, 2002, J INFORM SCI, V28, P187
+   CAMPBELL GJ, 1983, SCANNING, V5, P137
+   CHEN B, 1999, UNPUB INTRO PATENT M
+   CHENG KA, 2003, PATENT MAPS ANAL QUA
+   CHIEN KM, 2003, PATENT MAPS ANAL TIT
+   CHUANG W, 2000, P 23 ANN INT ACM SIG, P152
+   EDMUNDSON HP, 1969, J ASSOC COMPUT MACH, V16, P264
+   FALL CJ, 2003, ACM SIGIR FORUM, V37, P10
+   FAYYAD U, 1996, ADV KNOWL DISC DAT M
+   HEARST MA, 1999, P 37 ANN M ASS COMP, P3
+   HIRAO T, 2004, P 4 NTCIR WORKSH EVA
+   JUNG S, 2003, IMPORTANCE USING PAT
+   KRUSKAL JB, 1977, STAT METHODS DIGITAL
+   KUO KH, 2003, PATENT MAPS ANAL BIO
+   LIU SJ, 2003, P 1 AS PAC C PAT MAP, P2
+   LOSIEWICZ P, 2000, J INTELL INF SYST, V15, P99
+   MAI FD, 2002, PATENT MAP PATENT AN
+   MANI I, 2001, AUTOMATIC SUMMARIZAT
+   NG HT, 1997, P 20 ANN INT ACM SIG, P67
+   SHEREMETYEVA S, 2003, P ACL WORKS PAT CORP, P66
+   SHINMORI A, 2003, P ACL 03 WORKSH PAT, P56
+   TSENG YH, 1999, P 22 INT ACM SIGIR C, P176
+   TSENG YH, 2002, J AM SOC INF SCI TEC, V53, P1130, DOI 10.1002/asi.10146
+   TSENG YH, 2006, P 3 AS INF RETR S SI, P145
+   TSENG YH, 2007, IN PRESS INFORM PROC
+   YANG Y, 1997, P 14 INT C MACH LEAR, P412
+NR 28
+TC 3
+PU SAGE PUBLICATIONS LTD
+PI LONDON
+PA 1 OLIVERS YARD, 55 CITY ROAD, LONDON EC1Y 1SP, ENGLAND
+SN 0165-5515
+J9 J INFORM SCI
+JI J. Inf. Sci.
+PY 2007
+VL 33
+IS 6
+BP 718
+EP 736
+DI 10.1177/0165551507077406
+PG 19
+SC Computer Science, Information Systems; Information Science & Library
+   Science
+UT ISI:000251991600006
+ER
+
+PT J
+AU Tseng, YH
+   Lin, CJ
+   Lin, YI
+AF Tseng, Yuen-Hsien
+   Lin, Chi-Jen
+   Lin, Yu-I
+TI Text mining techniques for patent analysis
+SO INFORMATION PROCESSING & MANAGEMENT
+LA English
+DT Article
+DE summarization; phrase extraction; co-word analysis; clustering; topic
+   mapping
+ID TECHNOLOGY; RETRIEVAL; SCIENCE
+AB Patent documents contain important research results. However, they are
+   lengthy and rich in technical terminology such that it takes a lot of
+   human efforts for analyses. Automatic tools for assisting patent
+   engineers or decision makers in patent analysis are in great demand.
+   This paper describes a series of text mining techniques that conforms
+   to the analytical process used by patent analysts. These techniques
+   include text segmentation, summary extraction, feature selection, term
+   association, cluster generation, topic identification, and information
+   mapping. The issues of efficiency and effectiveness are considered in
+   the design of these techniques. Some important features of the proposed
+   methodology include a rigorous approach to verify the usefulness of
+   segment extracts as the document surrogates, a corpus- and
+   dictionary-free algorithm for keyphrase extraction, an efficient
+   co-word analysis method that can be applied to large volume of patents,
+   and an automatic procedure to create generic cluster titles for ease of
+   result interpretation. Evaluation of these techniques was conducted.
+   The results confirm that the machine-generated summaries do preserve
+   more important content words than some other sections for
+   classification. To demonstrate the feasibility, the proposed
+   methodology was applied to a realworld patent set for domain analysis
+   and mapping, which shows that our approach is more effective than
+   existing classification systems. The attempt in this paper to automate
+   the whole process not only helps create final patent maps for topic
+   analyses, but also facilitates or improves other patent analysis tasks
+   such as patent classification, organization, knowledge sharing, and
+   prior art searches. (c) 2006 Elsevier Ltd. All rights reserved.
+C1 Natl Taiwan Normal Univ, Taipei 106, Taiwan.
+   WebGenie Informat Ltd, Taipei 231, Taiwan.
+   Taipei Municipal Univ Educ, Taipei 100, Taiwan.
+RP Tseng, YH, Natl Taiwan Normal Univ, 162,Sec 1,Heping E Rd, Taipei 106,
+   Taiwan.
+EM samtseng@ntnu.edu.tw
+   dan@webgenie.com.tw
+   jgl41@mail.jges.tpc.edu.tw
+CR DOC UND C
+   *ACL, 2003, ACL 2003 WORKSH PAT
+   *ACM SIGIR, 2000, ACM SIGIR 200 WORKSH
+   *COGN SCI LAB PRIC, WORLD NET LEX DAT EN
+   *INF MAPP PROJ, COMP SEM LAB
+   *SCI TECHN FOR CEN, 2004, 8 SCI TECHN FOR SURV
+   ARCHIBUGI D, 1996, TECHNOVATION, V16, P451
+   BAY YM, 2003, 1 AS PAC C PAT MAPS, V29, P3
+   BEKKERMAN R, 2001, P SIGIR 01 24 ACM IN, P146
+   BOOKER A, 1999, COMPUT SCI ENG, V1, P26
+   BROWN PF, 1992, COMPUTATIONAL LINGUI, V18, P467
+   CAMPBELL GJ, 1983, SCANNING, V5, P137
+   CHEN B, 1999, LECT NOTES TRAINING
+   CHOUEKA Y, 1988, P RIAO C US OR CONT, P609
+   DECARRAC BC, 1994, INFORM PROCESSING MA, V30, P407
+   DEERWESTER S, 1990, J AM SOC INFORM SCI, V41, P391
+   ERNST H, 1997, SMALL BUS ECON, V9, P361
+   FAGAN JL, 1989, J AM SOC INFORM SCI, V40, P115
+   FALL CJ, 2003, ACM SIGIR FORUM, V37, P10
+   FANG H, 2004, P 27 ANN INT ACM SIG, P49
+   FATTORI M, 2003, WORLD PATENT INFORM, V25, P335
+   FAYYAD U, 1996, ADV KNOWLEDGE DISCOV
+   FRAKES WB, 1992, INFORM RETRIEVAL DAT
+   FRANK E, WEKA 3 DATA MINING S
+   FUJII A, 2004, P 4 NTCIR WORKSH EVA
+   GLENISSON P, 2005, INFORM PROCESS MANAG, V41, P1548, DOI
+   10.1016/j.ipm.2005.03.021
+   HEARST MA, 1999, P 37 ANN M ASS COMP, P3
+   IWAYAMA M, 2006, INFORM PROCESS MANAG, V42, P207, DOI
+   10.1016/j.ipm.2004.08.012
+   JAIN AK, 1999, ACM COMPUT SURV, V31, P3
+   JOACHIMS T, 1998, P 10 EUR C MACH LEAR, P137
+   JUNG S, 2003, WIPO MOST INTERMEDIA
+   KARYPIS G, CLUTO SOFTWARE PACKA
+   KIM JH, 2005, P 5 NTCIR WORKSH EV, P304
+   KLEIWEG P, EXTENTED KOHONEN MAP
+   KLEIWEG P, SOFTWARE DIALECTOMET
+   KOHONEN T, 1997, SELF ORGANIZING MAPS
+   KRUSKAL JB, 1977, STAT METHODS DIGITAL, P296
+   KUPIEC J, 1995, P 18 ANN INT ACM SIG, P68
+   LAGUS K, 2004, INFORM SCIENCES, V163, P135, DOI
+   10.1016/j.ins.2003.03.017
+   LAI KK, 2005, INFORM PROCESS MANAG, V41, P313, DOI
+   10.1016/j.ipm.2003.11.004
+   LAMIREL JC, 2003, P ACL WORKSH PAT COR
+   LARKEY LS, 1999, P DL 99 4 ACM C DIG, P179
+   LENT B, 1997, P INT C KNOWL DISC D
+   LIU SJ, 2003, 1 AS PAC C PAT MAPS, V29, P2
+   LOSIEWICZ P, 2000, J INTELL INF SYST, V15, P99
+   MAI FD, 2002, PATENT MAP ANAL CARB
+   MANI I, 2001, AUTOMATIC SUMMARIZAT
+   NG HT, 1997, P 20 ANN INT ACM SIG, P67
+   NOYONS ECM, CWTS BIBLIOMETRIC MA
+   NOYONS ECM, 1998, CWTS WORKING PAPERS
+   NOYONS ECM, 1998, SCIENTOMETRICS, V41, P61
+   PORTER MF, 1980, PROGRAM, V14, P130
+   ROBERT M, 1994, INT J ANDROL, V17, P232
+   SALTON G, 1989, AUTOMATIC TEXT PROCE
+   SCHUTZE H, 1993, ADV NEURAL INFORMATI, V5, P895
+   SHEREMETYEVA S, 2003, ACL WORKSH PAT CORP
+   SHINMORI A, 2003, ACL WORKSH PAT CORP
+   SINGHAL A, 1996, P 19 ANN INT ACM SIG, P21
+   SMADJA F, 1993, COMPUTATIONAL LINGUI, V19, P143
+   TSENG YH, 1999, P 22 INT ACM SIGIR C, P176
+   TSENG YH, 2002, J AM SOC INF SCI TEC, V53, P1130, DOI 10.1002/asi.10146
+   TSENG YH, 2003, P 26 INT ACM SIGIR C, P399
+   TSENG YH, 2004, P 4 NTCIR WORKSH EV
+   TSENG YS, 2005, P IACIS PAC 2005 C M, P1109
+   UCHIDA H, 2004, P 4 NTCIR WORKSH EV
+   VANRIJSBERGEN K, INFORM RETRIEVAL
+   YANG Y, 1997, P 14 INT C MACH LEAR, P412
+   YANG Y, 1999, P 22 ANN INT ACM SIG, P42
+   YANG Y, 2000, P 23 ANN INT ACM SIG, P65
+   YE JY, 2004, THESIS FU JEN CATHOL
+   YOON B, 2004, J HIGH TECHNOLOGY MA, V15, P37
+NR 71
+TC 23
+PU PERGAMON-ELSEVIER SCIENCE LTD
+PI OXFORD
+PA THE BOULEVARD, LANGFORD LANE, KIDLINGTON, OXFORD OX5 1GB, ENGLAND
+SN 0306-4573
+J9 INFORM PROCESS MANAGE
+JI Inf. Process. Manage.
+PD SEP
+PY 2007
+VL 43
+IS 5
+BP 1216
+EP 1247
+DI 10.1016/j.ipm.2006.11.011
+PG 32
+SC Computer Science, Information Systems; Information Science & Library
+   Science
+UT ISI:000246869800006
+ER
+
+PT S
+AU Tseng, YH
+   Lin, CJ
+   Chen, HH
+   Lin, YI
+AF Tseng, Yuen-Hsien
+   Lin, Chi-Jen
+   Chen, Hsiu-Han
+   Lin, Yu-I
+ED Ng, HT; Leong, MK; Kan, MY; Ji, D
+TI Toward generic title generation for clustered documents
+SO INFORMATION RETRIEVAL TECHNOLOGY, PROCEEDINGS
+SE LECTURE NOTES IN COMPUTER SCIENCE
+LA English
+DT Proceedings Paper
+DE hypernym search; WordNet; correlation coefficient
+ID TEXT
+AB A cluster labeling algorithm for creating generic titles based on
+   external resources such as WordNet is proposed. Our method first
+   extracts category-specific terms as cluster descriptors. These
+   descriptors are then mapped to generic terms based on a hypernym search
+   algorithm. The proposed method has been evaluated on a patent document
+   collection and a subset of the Reuters-21578 collection. Experimental
+   results revealed that our method performs as anticipated. Real-case
+   applications of these generic terms show promising in assisting humans
+   in interpreting the clustered topics. Our method is general enough such
+   that it can be easily extended to use other hierarchical resources for
+   adaptable label generation.
+C1 Natl Taiwan Normal Univ, Taipei 106, Taiwan.
+   WebGenie Informat LTD, Taipei 231, Taiwan.
+   Taipei Municipal Univ Educ, Taipei 100, Taiwan.
+RP Tseng, YH, Natl Taiwan Normal Univ, 162,Sect 1,Helping E Rd, Taipei
+   106, Taiwan.
+EM samtseng@ntnu.edu.tw
+   dan@webgenie.com.tw
+   sophia@webgenie.com.tw
+   jg141@mail.jges.tpc.edu.tw
+CR *COGN SCI LAB PRIN, WORDNET LEX DAT ENGL
+   *NAT I SCI TECHN P, 2004, 8 SCI TECHN FOR SURV
+   BANKO M, ACL 2000
+   BEKKERMAN R, 2001, P SIGIR 01 24 ACM IN, P146
+   CUTTING DR, 1992, P 15 ANN INT ACM SIG, P318
+   DAGAN I, 1996, P S DOC AN INF RETR
+   FELDMAN R, 1998, J INTELL INF SYST, V10, P281
+   GLENISSON P, 2005, INFORM PROCESS MANAG, V41, P1548, DOI
+   10.1016/j.ipm.2005.03.021
+   HEARST MA, 1996, P 19 ANN INT ACM SIG, P76
+   KENNEDY PE, 2000, P 5 ACM C DIG LIB
+   KRUSKAL JB, 1977, STAT METHODS DIGITAL, P296
+   LAGUS K, 2004, INFORM SCIENCES, V163, P135, DOI
+   10.1016/j.ins.2003.03.017
+   LAI KK, 2005, INFORM PROCESS MANAG, V41, P313, DOI
+   10.1016/j.ipm.2003.11.004
+   NG HT, 1997, P 20 ANN INT ACM SIG, P67
+   NOYONS ECM, 1998, SCIENTOMETRICS, V41, P61
+   SAHAMI M, 1998, P 3 ACM INT C DIG LI, P200
+   SWAN R, 2000, P 23 ANN INT ACM SIG, P49
+   TSENG YH, 2002, J AM SOC INF SCI TEC, V53, P1130, DOI 10.1002/asi.10146
+   TSENG YS, 2005, P IACIS PAC 2005 C M, P1109
+   UCHIDA H, 2004, P 4 NTCIR WORKSH EV
+   YANG Y, 1997, P 14 INT C MACH LEAR, P412
+   YANG Y, 1999, P 22 ANN INT ACM SIG, P42
+   YANG Y, 2000, P 23 ANN INT ACM SIG, P65
+   ZAMIR O, 1998, P 21 ANN INT ACM SIG, P46
+NR 24
+TC 2
+PU SPRINGER-VERLAG BERLIN
+PI BERLIN
+PA HEIDELBERGER PLATZ 3, D-14197 BERLIN, GERMANY
+SN 0302-9743
+BN 3-540-45780-1
+J9 LECT NOTE COMPUT SCI
+PY 2006
+VL 4182
+BP 145
+EP 157
+PG 13
+SC Computer Science, Theory & Methods
+UT ISI:000241690200012
+ER
+
+PT J
+AU Tseng, YH
+TI Automatic thesaurus generation for Chinese documents
+SO JOURNAL OF THE AMERICAN SOCIETY FOR INFORMATION SCIENCE AND TECHNOLOGY
+LA English
+DT Article
+ID TEXT
+AB This article reports an approach to automatic thesaurus construction
+   for Chinese documents. An effective Chinese keyword extraction
+   algorithm is first presented. Experiments showed that for each document
+   an average of 33% keywords unknown to a lexicon of 123,226 terms could
+   be identified by this algorithm. Of these unregistered words, only 8.3%
+   of them are illegal. Keywords extracted from each document are further
+   filtered for term association analysis. Association weights larger than
+   a threshold are then accumulated over all the documents to yield the
+   final term pair similarities. Compared to previous studies, this method
+   speeds up the thesaurus generation process drastically. It also
+   achieves a similar percentage level of term relatedness.
+C1 Fu Jen Catholic Univ, Dept Lib & Informat Studies, Taipei 242, Taiwan.
+RP Tseng, YH, Fu Jen Catholic Univ, Dept Lib & Informat Studies, 510,Chung
+   Cheng Rd,HsinChuang, Taipei 242, Taiwan.
+CR AGICHTEIN E, 2000, P 5 ACM INT C DIG LI, P85
+   CHEN A, 1997, P 20 ANN INT ACM SIG, P42
+   CHEN H, 1995, J AM SOC INFORM SCI, V46, P175
+   CHEN H, 1996, IEEE T PATTERN ANAL
+   CHEN HC, 1997, J AM SOC INFORM SCI, V48, P17
+   CHEN HH, 1996, P 16 INT C COMP LING, P222
+   CHEN HH, 2000, P 5 INT WORKSH INF R, P189
+   COHEN JD, 1995, J AM SOC INFORM SCI, V46, P162
+   CROUCH CJ, 1992, P 15 ANN INT ACM SIG, P77
+   FELDMAN R, 1998, J INTELL INF SYST, V10, P281
+   FOX EA, 1980, SIGIR FORUM, V15, P6
+   GUNTZER U, 1988, P C US OR CONT BAS T, P588
+   HEARST M, 1992, P 14 INT C COMP LING
+   JONES KS, 1971, AUTOMATIC KEYWORD CL
+   MANDALA R, 1999, P 22 ANN INT ACM SIG, P191
+   PARK YC, 1995, P INT C INF KNOWL MA, P212
+   PETERSON E, 2001, CHINESE NAMED ENTITY
+   QIU Y, 1993, P 16 ANN INT ACM SIG, P160
+   SALTON G, 1972, INFORMATION PROCESSI, V71, P115
+   SALTON G, 1989, AUTOMATIC TEXT PROCE
+   SANDERSON M, 1999, P 22 ANN INT ACM SIG, P206
+   SMEATON AF, 1996, P 4 TEXT RETR C
+   SRINIVASAN P, 1992, INFORMATION RETRIEVA
+   TSENG YH, 1998, B LIB ASS CHINA, V61, P103
+   TSENG YH, 1998, P 21 ACM SIGIR C RES, P377
+   TSENG YH, 1999, P 22 INT ACM SIGIR C, P176
+   TSENG YH, 2001, J AM SOC INF SCI TEC, V52, P378
+   VOORHEES EM, 1994, P 17 ANN INT ACM SIG, P61
+NR 28
+TC 17
+PU JOHN WILEY & SONS INC
+PI HOBOKEN
+PA 111 RIVER ST, HOBOKEN, NJ 07030 USA
+SN 1532-2882
+J9 J AM SOC INF SCI TECHNOL
+JI J. Am. Soc. Inf. Sci. Technol.
+PD NOV
+PY 2002
+VL 53
+IS 13
+BP 1130
+EP 1138
+DI 10.1002/asi.10146
+PG 9
+SC Computer Science, Information Systems; Information Science & Library
+   Science
+UT ISI:000178776600007
+ER
+
+PT J
+AU Tseng, YH
+TI Automatic cataloguing and searching for retrospective data by use of
+   OCR text
+SO JOURNAL OF THE AMERICAN SOCIETY FOR INFORMATION SCIENCE AND TECHNOLOGY
+LA English
+DT Article
+ID RETRIEVAL; MODEL
+AB This article describes our efforts in supporting information retrieval
+   from OCR degraded text, In particular, we report our approach to an
+   automatic cataloging and searching contest for books in multiple
+   languages. In this contest, 500 books in English, German, French, and
+   Italian published during the 1770s to 1970s are scanned into images and
+   OCRed to digital text. The goal is to use only automatic ways to
+   extract information for sophisticated searching. We adopted the vector
+   space retrieval model, an n-gram indexing method, and a special
+   weighting scheme to tackle this problem. Although the performance by
+   this approach is slightly inferior to the best approach, which is
+   mainly based on regular expression match, one advantage of our approach
+   is that it is less language dependent and less layout sensitive, thus
+   is readily applicable to other languages and document collections.
+   Problems of OCR text retrieval for some Asian languages are also
+   discussed in this article, and solutions are suggested.
+C1 Fu Jen Catholic Univ, Dept Lib & Informat Sci, Taipei 242, Taiwan.
+RP Tseng, YH, Fu Jen Catholic Univ, Dept Lib & Informat Sci, Taipei 242,
+   Taiwan.
+EM tseng@blue.lins.fju.edu.tw
+CR XDOC DATA FORMAT TEC
+   CALLAN JP, 1992, P 3 INT C DAT EXP SY, P78
+   CROFT WB, 1994, 3RD P ANN S DOC AN I, P115
+   FRAKES WB, 1992, INFOMATION RETRIEVAL
+   HARDING SM, 1997, LECT NOTES COMPUT SC, V1324, P345
+   HARMAN D, 1994, P 2 TEXT RETR C TREC, P1
+   KNUTH DE, 1973, ART COMPUTER PROGRAM, V3
+   LEWIS DD, 1995, P 18 ANN INT ACM SIG, P246
+   LOPRESTI D, 1996, P 5 ANN S DOC AN INF, P255
+   MITTENDORF E, 1995, P 18 ANN INT ACM SIG, P328
+   MYKA A, 1996, LECT NOTES COMPUT SC, V1082, P131
+   MYKA A, 1999, UNPUB QDOC 99 QUERYI
+   PEARCE C, 1996, J AM SOC INFORM SCI, V47, P263
+   SALTON G, 1971, SMART RETRIEVAL SYST
+   SINGHAL A, 1996, P 5 ANN S DOC AN INF, P149
+   TAGHVA K, 1994, J AM SOC INFORM SCI, V45, P50
+   TAGHVA K, 1996, ACM T INFORM SYST, V14, P64
+   TAGHVA K, 1996, INFORM PROCESS MANAG, V32, P317
+   TAHGVA K, 1994, P 17 ANN INT ACM SIG, P202
+   TSENG YH, 1998, B LIB ASS CHINA, V61, P103
+   TSENG YH, 1998, J LIB SCI NATL TAIWA, V13, P153
+   TSENG YH, 1998, J LIBR INF SCI, V24, P1
+   TSENG YH, 1998, P 21 ACM SIGIR C RES, P377
+   TSENG YH, 1999, P 22 INT ACM SIGIR C, P176
+   TSENG YH, 1999, UNPUB REPORT AUTOMAT
+   TSENG YH, 2000, 892815C030010H NSC
+NR 26
+TC 3
+PU JOHN WILEY & SONS INC
+PI NEW YORK
+PA 605 THIRD AVE, NEW YORK, NY 10158-0012 USA
+SN 1532-2882
+J9 J AM SOC INF SCI TECHNOL
+JI J. Am. Soc. Inf. Sci. Technol.
+PD MAR
+PY 2001
+VL 52
+IS 5
+BP 378
+EP 390
+PG 13
+SC Computer Science, Information Systems; Information Science & Library
+   Science
+UT ISI:000167255500002
+ER
+
+PT J
+AU TSENG, YH
+   WU, JL
+TI ON A CONSTANT-TIME, LOW-COMPLEXITY WINNER-TAKE-ALL NEURAL-NETWORK
+SO IEEE TRANSACTIONS ON COMPUTERS
+LA English
+DT Note
+DE QUADRATIC PERCEPTRON; SORTING; WINNER TAKE ALL; NONBINARY MAJORITY;
+   COMPLEXITY
+AB A nearly cost-optimal winner-take-all (WTA) neural network derived from
+   a constant-time sorting network is presented. The resultant WTA network
+   has connection complexity O(n(2s)/((2s-1))) where s is the depth of
+   cascaded sorting networks. Application of the WTA network to other
+   problems such as nonbinary majority is also included.
+C1 NATL TAIWAN UNIV,DEPT COMP SCI & INFORMAT ENGN,TAIPEI 10764,TAIWAN.
+RP TSENG, YH, REPUBL CHINA ARMY GEN HEADQUARTERS,TAYUAN,TAIWAN.
+CR BLAHUT RE, 1983, THEORY PRACTICE ERRO
+   CHANDRA AK, 1984, SIAM J COMPUT, V13, P423
+   GINDI GR, 1987, P INT C NEURAL NETWO, V3, P607
+   GROSSBERG S, 1988, NEURAL NETWORKS, V1, P17
+   KOHENEN T, 1982, BIOL CYBERN, V43, P59
+   LAZZARO J, 1989, ADV NEURAL INFORMATI, V1, P703
+   LIPPMANN RP, 1987, IEEE ASSP MAGAZI APR, P4
+   MAJANI E, 1989, ADV NEURAL INFORMATI, V1, P634
+   NILSSON NJ, 1965, LEARNING MACHINES
+   RUMELHART DE, 1986, PARALLEL DISTRIBUTED
+   SELIM G, 1989, DESIGN ANAL PARALLEL
+   SIU KY, 1990, IEEE P, V8, P1661
+   SIU KY, 1991, SIAM J DISCRETE MATH, V4, P425
+   SUTER BW, 1992, INT J NEURAL NETWORK, V3, P85
+   SUTER BW, 1992, NEURAL COMPUT, P224
+   TAKEFUJI Y, 1990, IEEE T CIRCUITS SYST, V37, P1425
+   TSENG YH, 1992, ELECTRON LETT, V28, P906
+   TSENG YH, 1992, IEEE INT WORKSHOP IN, P11
+   WIDROW B, 1988, COMPUTER         MAR, P25
+   WILLIAMS RJ, 1986, PARALLEL DISTRIBUTED
+   WOLFE WJ, 1992, IEEE T NEURAL NETWOR, V2, P310
+NR 21
+TC 7
+PU IEEE COMPUTER SOC
+PI LOS ALAMITOS
+PA 10662 LOS VAQUEROS CIRCLE, PO BOX 3014, LOS ALAMITOS, CA 90720-1264
+SN 0018-9340
+J9 IEEE TRANS COMPUT
+JI IEEE Trans. Comput.
+PD APR
+PY 1995
+VL 44
+IS 4
+BP 601
+EP 604
+PG 4
+SC Computer Science, Hardware & Architecture; Engineering, Electrical &
+   Electronic
+UT ISI:A1995QT09700011
+ER
+
+PT J
+AU TSENG, YH
+   WU, JL
+TI DECODING REED-MULLER CODES BY MULTILAYER PERCEPTRONS
+SO INTERNATIONAL JOURNAL OF ELECTRONICS
+LA English
+DT Article
+AB The decoding of rth-order Reed Muller codes of blocklength 2m, capable
+   of correcting up to (1/2)2m-r-1 errors, by use of multi-layer
+   perceptrons is illustrated The multi-layer perceptrons used have all
+   their weights either +1 or -1 and all thresholds integers, thus making
+   them very suitable for hardware implementation.
+RP TSENG, YH, NATL TAIWAN UNIV,DEPT COMP SCI & INFORMAT ENGN,TAIPEI,TAIWAN.
+CR BLAHUT RE, 1983, THEORY PRACTICE ERRO
+   PETERSON WW, 1972, ERROR CORRECTING COD
+   RUMELHART DE, 1986, PARALLEL DISTRIBUTED
+   WIDROW B, 1988, COMPUTER, V21, P25
+NR 4
+TC 2
+PU TAYLOR & FRANCIS LTD
+PI LONDON
+PA ONE GUNDPOWDER SQUARE, LONDON, ENGLAND EC4A 3DE
+SN 0020-7217
+J9 INT J ELECTRON
+JI Int. J. Electron.
+PD OCT
+PY 1993
+VL 75
+IS 4
+BP 589
+EP 594
+PG 6
+SC Engineering, Electrical & Electronic
+UT ISI:A1993MA58300001
+ER
+
+PT J
+AU TSENG, YH
+   WU, JL
+TI FAST NEURAL DECODERS FOR SOME CYCLIC CODES
+SO INTERNATIONAL JOURNAL OF ELECTRONICS
+LA English
+DT Article
+AB A number of cyclic and BCH code decoders that have 0(1) time complexity
+   and less hardware complexity than conventional digital decoders are
+   presented. The neural decoder is formulated as a set of parity networks
+   in the first layer followed by a linear perceptron in the second layer,
+   and thus has simple implementation in VLSI technology.
+RP TSENG, YH, NATL TAIWAN UNIV,DEPT COMP SCI & INFORMAT ENGN,TAIPEI,TAIWAN.
+CR BLAHUT RE, 1983, THEORY PRACTICE ERRO
+   GILES CL, 1987, APPL OPTICS, V26, P4972
+   GOLDBERG DE, 1989, GENETIC ALGORITHMS S
+NR 3
+TC 2
+PU TAYLOR & FRANCIS LTD
+PI LONDON
+PA ONE GUNDPOWDER SQUARE, LONDON, ENGLAND EC4A 3DE
+SN 0020-7217
+J9 INT J ELECTRON
+JI Int. J. Electron.
+PD OCT
+PY 1993
+VL 75
+IS 4
+BP 595
+EP 600
+PG 6
+SC Engineering, Electrical & Electronic
+UT ISI:A1993MA58300002
+ER
+
+PT J
+AU TSENG, YH
+   WU, JL
+TI CONSTRUCTING ASSOCIATIVE MEMORIES USING HIGH-ORDER NEURAL NETWORKS
+SO ELECTRONICS LETTERS
+LA English
+DT Article
+DE NEURAL NETWORKS; MEMORIES
+AB A class of neural network for constructing associative memories that
+   learn the memory patterns as well as their neighbouring patterns is
+   presented. The network is basically a layer of perceptrons with
+   high-order polynomials as their discriminant functions. A learning
+   algorithm is proposed for the network to learn arbitrary bipolar
+   patterns. The simulation results show that the associative memories
+   implemented in this way achieve a set of desirable characteristics,
+   namely high storage capacity, nearest convergence, and existence of a
+   'no decision' state which attracts indistinguishable inputs.
+   Furthermore, it is also possible to shape the attraction basin of a
+   memory pattern under any metrics definition of distance.
+RP TSENG, YH, NATL TAIWAN UNIV,DEPT COMP SCI & INFORMAT ENGN,TAIPEI,TAIWAN.
+CR CHIUEH TD, 1991, IEEE T NN, V2
+   HASSOUN MH, 1991, IEEE T NEURAL NETWOR, V2, P437
+   HOPFIELD JJ, 1984, P NATL ACAD SCI USA, V81, P3088
+   LEVIN E, 1990, NEURAL NETWORKS, V3, P641
+   LIPPMANN RP, 1987, IEEE ASSP MAGAZI APR, P4
+   MEKKAOUI A, 1990, IJCNN WASHINGTON, P1672
+   MICHEL AN, 1991, IEEE T NEURAL NETWOR, V2, P32
+   NILSSON NJ, 1965, LEARNING MACHINES
+   PRADOS DL, 1989, ELECTRON LETT, V25, P197
+   RUMELHART DE, 1986, PARALLEL DISTRIBUTED
+   VENKATESH SS, 1990, NEURAL NETWORKS, V3, P613
+   WU JL, 1991, INT J ELECTRON, V71, P899
+NR 12
+TC 0
+PU IEE-INST ELEC ENG
+PI HERTFORD
+PA MICHAEL FARADAY HOUSE SIX HILLS WAY STEVENAGE, HERTFORD, ENGLAND SG1 2AY
+SN 0013-5194
+J9 ELECTRON LETT
+JI Electron. Lett.
+PD JUN 4
+PY 1992
+VL 28
+IS 12
+BP 1122
+EP 1124
+PG 3
+SC Engineering, Electrical & Electronic
+UT ISI:A1992HY58100028
+ER
+
+PT J
+AU TSENG, YH
+   WU, JL
+TI SOLVING SORTING AND RELATED PROBLEMS BY QUADRATIC PERCEPTRONS
+SO ELECTRONICS LETTERS
+LA English
+DT Article
+DE NEURAL NETWORKS
+AB A quadratic perceptron has a polynomial of order 2 as its discriminant
+   function. The Letter shows that it can be used to solve sorting, MIN,
+   MAX (ie. winner-take-all) and non-binary majority problems all in
+   constant time.
+RP TSENG, YH, NATL TAIWAN UNIV,DEPT COMP SCI & INFORMAT ENGN,TAIPEI,TAIWAN.
+CR BLAHUT RE, 1983, THEORY PRACTICE ERRO
+   CHEN WT, 1990, INT JOINT C NEURAL N, P187
+   CHIUEH TD, 1989, THESIS CALTECH
+   LIPPMANN RP, 1987, IEEE ASSP MAGAZI APR, P4
+   SELIM G, 1989, DESIGN ANAL PARALLEL
+   SIU KY, 1990, P IEEE, V8, P1661
+   TAKEFUJI Y, 1990, J NEURAL NETWORK COM, P30
+   WIDROW B, 1988, COMPUTER         MAR, P25
+   WILLIAMS RJ, 1986, PARALLEL DISTRIBUTED
+NR 9
+TC 6
+PU IEE-INST ELEC ENG
+PI HERTFORD
+PA MICHAEL FARADAY HOUSE SIX HILLS WAY STEVENAGE, HERTFORD, ENGLAND SG1 2AY
+SN 0013-5194
+J9 ELECTRON LETT
+JI Electron. Lett.
+PD MAY 7
+PY 1992
+VL 28
+IS 10
+BP 906
+EP 908
+PG 3
+SC Engineering, Electrical & Electronic
+UT ISI:A1992HU15600007
+ER
+
+EF

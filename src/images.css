@@ -1,0 +1,131 @@
+td {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;
+	line-height: 24px;
+	color: #003366;
+	clip:   rect(auto auto auto auto);
+
+
+
+
+
+
+
+
+}
+h3 {
+	font-family: "Georgia", "Times New Roman", "Times", "serif";
+	font-size: 18px;
+	line-height: 21px;
+	color: #FFFF00;
+}
+A:link {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;text-decoration: none; COLOR: #993300
+}
+A:visited {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;text-decoration: none; COLOR: #993300
+}
+a:hover {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;
+	text-decoration: none;
+	color: #006666;
+	font-weight: normal;
+
+}
+a:active {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;text-decoration: none; color: #006666;
+}
+.param {    
+    filter: glow(color=#ffffff,strength=3);}
+span	{
+	font-family: "Georgia", "Times New Roman", "Times", "serif";
+	font-size: 18px;
+	line-height: 23px;
+	color: #FF3300;
+	width:50px;
+	height: 20px;
+
+}
+h4 {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.wb {
+	font-family: "Arial", "新細明體";
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.bbw {
+	font-family: "Arial", "新細明體";
+	font-size: 13px;
+	line-height: 14px;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-left: 30px;
+
+
+
+
+}
+body {
+	font-size: 12px;
+	font-family: "Arial", "新細明體";
+
+
+}
+.Darkbg {
+	text-align: center;
+	vertical-align: middle;
+	background-image: url(images/bar_3.gif);
+
+}
+
+.27 {
+	FONT-SIZE: 15px;
+	COLOR: #FFFFFF;
+	font-family: "Arial", "新細明體";
+	TEXT-DECORATION: none;
+	font-weight: bold;
+	background-position: center center;
+	line-height: 27px;
+	background-image: url(images/bar_1.gif);
+
+
+
+
+
+}
+.DarkRed {
+	vertical-align: middle;
+	background-image: url(images/bar_4.gif);
+	font-family: "Arial", "新細明體";
+	font-size: 13px;
+	font-weight: bold;
+	color: #333366;
+	height: 28px;
+	text-align: left;
+
+
+
+
+
+
+
+}
+.lift2 {
+	font-family: "Arial", "新細明體";
+	font-size: 14px;
+	line-height: 14px;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-left: 10px;
+
+}

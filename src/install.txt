@@ -1,0 +1,219 @@
+		Instatllation of Sam's Patent tools
+					By Yuen-Hsien Tseng, 2007/01/19
+
+* Note: This is a source code version. DO NOT distribute these files.
+
+1. Unzip STPIWG.zip to a directory.
+2. Install Perl (ActivePerl 5.8.8.817) and some of its modules:
+  2.1 Download Perl v5.8 from http://www.ActiveState.com/
+	then install Perl by clicking on the *.msi file.
+  2.2 Install Perl's modules: DB_File, DBI, DBD::ODBC by running the commands:
+  	ppm install DB_File
+    	ppm install DBI
+    	ppm install DBD-ODBC
+    	ppm install Statistics-Regression
+    	ppm install Math-MatrixReal
+      under MS-DOS (while you are connecting to the Internet)
+3. Install SAMtool by copying the directory SAMtool 
+   or by unzipping SAMtool.zip to C:\Perl\lib.
+   (Assume your Perl is installed on C:\Perl)
+4. To use ISI.pl, copy Perl_Module\SVD.pm to C:\Perl\lib.
+5. To use MDS.pm, you need the file mds.exe (already in the directory)
+   and you need to install GD.pm.   To install GD, under DOS, run:
+   D:\demo\STPIWG\src>ppm install Perl_Module/GD/GD.ppd
+   or run:
+   D:\demo\STPIWG\src>ppm install http://theoryx5.uwinnipeg.ca/ppms/GD.ppd 
+   # Successfully installed GD version 2.35 in ActivePerl 5.8.8.817.
+6. To use wntool.pm, you need to install Lingua/Wordnet.pm
+ Method 1: (recommended)
+   After installing WordNet 1.6 (Double clicking on wn16pc.exe 
+     to create WNPCINST directory. In that directory, run setup.exe.)
+   then copy d:\demo\STPIWG\src\Perl_Module\Lingua to c:\Perl\lib. That's it.
+ or use Method 2: (only if you like to kill your time)
+   1.1 double click wn16pc.exe to extract all the files and then
+       double click on the extracted setup.exe to install WordNet 1.6.
+       (You cannot run WordNet-2.1.exe or WordNet-1.7.1.exe,
+        because they lack some files that are needed by Lingua-Wordnet-0.74.tar.gz)
+   1.2 under DOS, run: 
+        D:\demo\STPIWG\src>perl -s D:\Download\PerlWin\Lingua_WordNet\Lingua-Wordnet-0.74\scripts\convertdb_win.pl
+        This program will convert your Wordnet databases into files usable by
+        Lingua::Wordnet. This will not affect your existing Wordnet files, but
+        will require up to 40MB disk space. Continue? [y]
+        Data directory: [C:/WN16/DICT]
+        Lingua::Wordnet needs to write the new files to a data directory.
+        Where do you want these files saved?
+        [C:/WN16/DICT/lingua-wordnet/] D:\demo\STPIWG\src\Lingua\WN1.6_dict
+    1.3 Modify D:\Download\PerlWin\Lingua_WordNet\Lingua-Wordnet-0.74\Wordnet.pm
+        $DICTDIR = 'C:\Perl\site\lib\WordNet\dic';
+        into
+        $DICTDIR = 'C:\Perl\lib\Lingua\WN1.6_dict';
+    1.4 Copy Lingua-Wordnet-0.74\Wordnet.pm and Lingua-Wordnet-0.74\Wordnet\* to
+        c:\Perl\lib\Lingua
+
+The software installation steps have finished. 
+You may ignore the following steps at this moment. (2006/11/06)
+
+
+
+
+Next steps are for downloading US patents into Access.
+
+4. Copy PatentDB2_org.mdb to a new file (such as NSC_PatentDB.mdb).
+   Note: You'd better copy PatentDB2_org.mdb to a new file each time
+   	 you download a set of patents for a new project.
+   	 So do not modify PatentDB2_org.mdb.
+5. Set the DSN (Data Source Name) via Windows' control pannel 
+  北=>╰参恨瞶ㄣ=>戈ㄓ方(ODBC)=>╰参戈ㄓ方嘿
+   to let Windows know where to find the new Access file.
+   For example, set a DSN=NSC_PatentDB for the file NSC_PatentDB.mdb.
+6. Edit Patent.ini. You may copy and paste the attributes 
+   in the [Nano] group and modify its 
+   'PatentDir' (where you store the full patents) and 
+   'DNS' attributes to let it become [NSC], for example.
+   If you are going to download US patents via a proxy server, set the
+   'ProxyServerURL' attribute's value. (Remember to delete the
+   remark sign '#' before 'ProxyServerURL=...'.)
+   Do not change the other parts if you do not know their functions.
+7. Prepare a list of patent numbers in a file for the patents 
+   you want to download. You may use IPAM to create the list of 
+   patent numbers. Assume the list of patent number is saved in 
+   NSC_PatentNo.txt (each number per line) and the group name 
+   in Patent.ini is [NSC], then run this command under DOS:
+	perl -s Patent.pl -Ogroup=NSC -Odb -OPat2DB NSC_PatentNo.txt
+   The patents will be downloaded, parsed, and saved in the Access file.
+8. To index the parsed segments by WebGenie, edit indexSave.ini
+   by changing the dsn in the line: (assume dsn=NSC_PatentDB)
+	DBSourceName=dsn=NSC_PatentDB;uid=;pwd=;
+   Then import indexSave.ini into WebGenie, make index in WebGenie.
+
+That's it. If you have any questions, ask for help at: tseng@lins.fju.edu.tw
+   or 0915208787.
+
+
+A check list of the required files and directoies:
+   Patent.pm : This Perl module implements a class to download, parse, and 
+        analyze (extract abstracts and keywords) patent documents 
+        (currently it only apply to USPTO website).
+	This module saves the downloaded patents in the file system.
+   PatentDB.pm : This is a DBMS version of Patent.pm. Furthermore, this module
+	parse the patents into more detailed information for DBMS analysis.
+   Patent.ini : All the settings are kept in this file. You can edit it for
+	different parameters of the application.
+   PatentDB.mdb : an ACCESS DB that has data loaded after running PatentDB.pm.
+        This file may not be included in this application.
+   PatentDB2_org.mdb : an empty ACCESS DB that can be copied for different 
+        patent set. You may copy this file to PatentDB.mdb to have a new 
+        and empty database.
+   Patent.pl : Example codes of using the above modules.
+	You can run this file in DOS or in CGI enviroment (see below).
+   ParseSciRef.pm : A Perl module to parse the scientific paper citations.
+   ParseSciRef.pl : A example of how to use ParseSciRef.pm. You don't need
+   	this file. The functions in ParseSciRef.pm are automatically called
+   	in Patent.pm.
+   PatentDir/ : contain some Patents from USPTO for testing the &Parse_Patent()
+   	You may run: 
+   	perl -s patent.pl -Ofile -Odebug OutDir PatentDir\4810662.htm
+   	to see if patent 4810662 is parsed correctly or not by viewing 
+   	OutDir\4810662.htm with a browser.
+   SAMtool/* : a set of Perl modules and data for analyzing unstructured text
+	(including segmenting, key-phrase extraction, related term extraction,
+	abstracting) 
+	You should unzip SAMtool.zip to c:\Perl\lib if your perl is 
+	installed at c:\Perl.
+   SegWordPat.pm : the special version of the above for the patent application.
+   (StemTerms.txt : If you like, add stemmed phrases (or words) here and run:
+   	"perl -s SegWord.pm -DicDBM StemTerms.txt" to create next 2 files)
+   StopPatWord-eng.txt : list of stop word used by SegWordPat.pm.
+   	You need this file in the execution directory.
+   SubFields.txt : Those sections that are not recognized when calling 
+    	&ParsePatent() in Patent.pm. This file is automatically created
+    	by &ParsePatent() in Patent.pm for debugging purpose.
+
+
+============================================================================
+		Installation for Patent Applicatoin
+
+					By Yuen-Hsien Tseng, 2003/04/29
+Files needed to run the DLL:
+   ExtractPatent.dll : created from ExtractPatent.pm by running:
+	perlctrl ExtractPatent.pm
+	regsvr32 ExtractPatent.dll
+   StopPatWord-eng.txt : list of stop word used by SegWordPat.pm.
+   	You need this file in the execution directory.
+
+Examples to use this DLL:
+   See example\*.vbp and run example\*.exe for examples and results.
+
+RoadMap: Files needed for maintaining the Perl's source code
+   Patent.pm : This Perl module implements a class to download, parse, and 
+        analyze (extract abstracts and keywords) patent documents 
+        (currently it only apply to USPTO website).
+	This module saves the downloaded patents in the file system.
+   PatentDB.pm : This is a DBMS version of Patent.pm. Furthermore, this module
+	parse the patents into more detailed information for DBMS analysis.
+   Patent.ini : All the settings are kept in this file. You can edit it for
+	different parameters of the system.
+   PatentDB.mdb : an ACCESS DB that has data loaded after running PatentDB.pm.
+        This file may not be included in this application.
+   PatentDB_org.mdb : an empty ACCESS DB that can be copied for different data.
+   	You may copy this file to PatentDB.mdb to have a new and empty database.
+   Patent.pl : Example codes of using the above modules.
+	You can run this file in DOS or in CGI enviroment (see below).
+	Note: Modify the codes in Patent.pl to use Patent.pm or PatentDB.pm
+   PatentDir/ : contain some Patents from USPTO for testing the &Parse_Patent()
+   	You may run: 
+   	perl -s patent.pl -Ofile -Odebug OutDir PatentDir\6507862.htm
+   	to see if patent 6507862 is parsed correctly or not by viewing 
+   	OutDir\6507862.htm with a browser.
+   SAMtool/* : a set of Perl modules and data for analyzing unstructured text
+	(including segmenting, key-phrase extraction, related term extraction,
+	abstracting) 
+	You should unzip SAMtool.zip to c:\Perl\site\lib if your perl is 
+	installed at c:\Perl.
+   SegWordPat.pm : the special version of the above for the patent application.
+   (StemTerms.txt : If you like, add stemmed phrases (or words) here and run:
+   	"perl -s SegWord.pm -DicDBM StemTerms.txt" to create next 2 files
+   StopPatWord-eng.txt : list of stop word used by SegWordPat.pm.
+   	You need this file in the execution directory.
+   SubFields.txt : Those sections that are not recognized when calling 
+    	&ParsePatent() in Patent.pm. This file is automatically created
+    	by &ParsePatent().
+
+# Note: See d:\demo\lwp\MXIC\install.txt for other information
+   
+To run Patent.pl in CGI environment:
+    index.html : the browser's interface. 
+        You should modify the "action" part of the form in this file
+        and the Web Server's setting to suit your own need.
+    sam.lib/*.* : some files needed for CGI parsing
+
+
+To run the application in Perl
+    1. Install Perl 
+    2. Under DOS command line, install DB_File by running
+       ppm install DB_File
+       Note: the *.ppd files installed by 'ppm intall' is located at
+       http://ppm.activestate.com/PPMPackages/5.005/
+    3. Under DOS command line, instal DBI/ODBC, Win32::ODBC by running
+       ppm install DBI
+       ppm install DBD-ODBC
+       ppm install Win32::ODBC
+    4. Setup ODBC : DSN:Patent, DatabaseName:Patent
+    5. Copy all the files in the RoadMap to the installed directory:
+
+
+Other information:
+
+    To install Perl's modules on Windows:
+    http://ppm.activestate.com/PPMPackages/ (for suitable Perl versions)
+    http://ppm.activestate.com/PPMPackages/5.005/*.ppd
+    http://theoryx5.uwinnipeg.ca/ppms/*.ppd
+    
+    To install Perl's DBI, DBD modules on Unix,
+    http://ftp.tku.edu.tw/pub/CPAN/modules/by-module/DBD/
+    
+    SQL Tutorial:
+    http://www.baycongroup.com/tocsql.htm
+    
+    A Short Guide to DBI
+    http://www.perl.com/pub/a/1999/10/DBI.html

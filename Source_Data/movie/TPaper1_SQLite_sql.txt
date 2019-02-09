@@ -1,0 +1,4 @@
+drop table TPaper;
+CREATE TABLE TPaper ( AU varchar (510), AF varchar (510), TI varchar (510), subTitle varchar(510), theme varchar(510), headline varchar(510), SO varchar (510), DE varchar (510), ID varchar (510), AB text, C1 varchar (510), CR text, NR int, TC int, J9 varchar (254), PY int, VL int, BP int, SC varchar (510), UT varchar (100) PRIMARY KEY, IU varchar (510), DP varchar (510) ) -- Cannot use IN as a column name in SQLite
+
+insert into TPaper ( AU, AF, TI, subTitle, theme, headline, SO, DE, ID, AB, C1, CR, NR, TC, J9, PY, VL, BP, SC, UT, IU, DP) select AU, AF, TI, subTitle, theme, headline, SO, DE, ID, AB, C1, CR, NR, TC, J9, PY, VL, BP, SC, UT, [IN], DP from TPaper1;

@@ -1,0 +1,9 @@
+# This file lists the words that should not appear as the topic words.
+# Just separate each word with a white blank. 
+# These words will be stemmed and lower case converted. 
+# So you don't have to care about the different forms of the same words.
+optional example preferably preferable year
+alternative	let given
+presented	preferred	prior	sub	present	invention
+method	thereof	contain	process	obtain	use	used	relate	related
+describe	written	provide	using	two	thereon	include

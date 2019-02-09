@@ -1,0 +1,1 @@
+pp -B -p -N LegalCopyright="Authored by Yuen-Hsien Tseng (c) 2011" -o CATAR.par auto.pl automc.pl CiteAna.pl Cluster.pl ClusterDB.pl filelist4.pl filterRT.pl ISI.pl ISI_CR.pl ParseSciRef.pl Patent.pl ShowDoc.pl StopWords.pl term_cluster.pl Term_Trend.pl tool.pl 

@@ -1,0 +1,149 @@
+-- This file is created by an online converter from access databases to MySQL 
+--	 at: http://www.mdb2mysql.com/ on 2010/10/30
+--
+-- On 2017/08/28 Sam Tseng modified this file to convert it into 
+--   the format of sqlite with the name: Paper_org.db
+-- Note: text string is UTF-8, UTF-16BE or UTF-16LE in the database encoding.
+--   So this file in converted from Big5 to UTF-8.
+--
+-- The Create commands need to be modified for accurate data types (auto-increment),
+--	 length limit, and index specification 
+
+DROP TABLE IF EXISTS Catalog;
+CREATE TABLE Catalog
+(
+	CID			varchar (40), 
+	CName		text, 
+	CDesc		varchar (256), 
+	CUID		varchar (40), 
+	CPID		varchar (40), 
+	CCTime		varchar (40)
+);
+
+DROP TABLE IF EXISTS Cite;
+CREATE TABLE Cite
+(
+	Citing		varchar (100), 
+	Cited		varchar (100)
+);
+
+DROP TABLE IF EXISTS Classify;
+CREATE TABLE Classify
+(
+	CTID		int, 
+	CID			int, 
+	NID			int, 
+	CType		int, 
+	WgScore		float
+);
+
+DROP TABLE IF EXISTS CR_UT;
+CREATE TABLE CR_UT
+(
+	UT			varchar (100), 
+	CR			varchar (510), 
+	TC			int
+);
+
+DROP TABLE IF EXISTS CTree;
+CREATE TABLE CTree
+(
+	CTID		varchar (40), 
+	CTName		varchar (256), 
+	CTDesc		varchar (256), 
+	CTUID		varchar (40), 
+	CTCTime		varchar (40)
+);
+
+DROP TABLE IF EXISTS TPaper;
+CREATE TABLE TPaper
+(
+	AU			varchar (510), 
+	AF			varchar (510), 
+	TI			varchar (510), 
+	SO			varchar (510), 
+	DE			varchar (510), 
+	ID			varchar (510), 
+	AB			text, 
+	C1			varchar (510), 
+	CR			text, 
+	NR			int, 
+	TC			int, 
+	J9			varchar (254), 
+	PY			int, 
+	VL			int, 
+	BP			int, 
+	SC			varchar (510),
+	UT			varchar (100) PRIMARY KEY,
+	IU			varchar (510),
+	DP			varchar (510)
+);
+-- Cannot use IN as a column name in SQLite
+
+DROP TABLE IF EXISTS TSeg;
+CREATE TABLE TSeg
+(
+	ID			INTEGER PRIMARY KEY  AUTOINCREMENT,  
+	SNO			varchar (60), 
+	FName		varchar (60), 
+	DName		text, 
+	Dscpt		text
+);
+-- Cannot use Desc as a column name in SQLite
+
+DROP TABLE IF EXISTS TSeg_example;
+CREATE TABLE TSeg_example
+(
+	ID			INTEGER PRIMARY KEY  AUTOINCREMENT,
+	SNO			varchar (60), 
+	FName		varchar (60), 
+	DName		text, 
+	Dscpt		text  -- Cannot use Desc as a column name in SQLite
+);
+
+-- INSERT INTO TSeg_example (ID, SNO, FName, DName, Dscpt) VALUES (1,"93新2356   ","新聞局       ","最新消息","檢送足河鎮富州里富州堤防地基");
+-- INSERT INTO TSeg_example (ID, SNO, FName, DName, Dscpt) VALUES (2,"0088065854","內政部       ","九二一地震案","檢陳「因應九二一震災勞工保險配合措施」草案乙份");
+-- INSERT INTO TSeg_example (ID, SNO, FName, DName, Dscpt) VALUES (3,"8889576   ","經濟部       ","九二一檔案","有關九二一地震暫住帳棚儘速安置案");
+INSERT INTO TSeg_example (SNO, FName, DName, Dscpt) VALUES ("93新2356   ","新聞局       ","最新消息","檢送足河鎮富州里富州堤防地基");
+INSERT INTO TSeg_example (SNO, FName, DName, Dscpt) VALUES ("0088065854","內政部       ","九二一地震案","檢陳「因應九二一震災勞工保險配合措施」草案乙份");
+INSERT INTO TSeg_example (SNO, FName, DName, Dscpt) VALUES ("8889576   ","經濟部       ","九二一檔案","有關九二一地震暫住帳棚儘速安置案");
+
+-- INSERT INTO CTree (CTID, CTName, CTDesc, CTUID, CTCTime) VALUES ("20","門檻=0,有58類,共455筆",NULL,"20",NULL);
+
+-- -- The following sectiton contains the View (Query) commonly used for the above tables.
+-- -- View (Query): Delete_TSeg
+-- -- DELETE * FROM TSeg;
+-- --
+Drop View if exists Insert_Into_TSeg;
+-- Create View Insert_into_TSeg as
+----  INSERT INTO TSeg    -- this line cause an error when importing into SQLite
+--			SELECT UT AS SNO, PY & ':' & TI AS Dname, AB AS Dscpt FROM TPaper;
+
+-- -- View (Query): Delete_89_08
+-- -- DELETE * FROM TPaper WHERE py=1989 or py=2008;
+
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+
+-- dumping data for table Cite
+
+-- dumping data for table CR_UT
+
+-- dumping data for table CTree
+
+-- dumping data for table TPaper
+
+-- dumping data for table TSeg
+
+-- dumping data for table TSeg_example
+
+-- dumping data for table Catalog
+
+-- dumping data for table Classify

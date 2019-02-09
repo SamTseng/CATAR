@@ -1,0 +1,11 @@
+*Vertices 3
+1 "Doc1" 0.0 0.0 0.0 x_fact 5.0 y_fact 5.0 ic Red bc Brown
+2 "Doc2" 0.0 0.0 0.0 x_fact 2.0 y_fact 2.0 ic Yellow bc Brown
+3 "Doc3" 0.0 0.0 0.0 x_fact 10.0 y_fact 10.0 ic Green bc Brown 
+*Arcs
+1 2 3 c Green
+2 3 5 c Black
+*Edges
+1 3 4 c Green
+1 2 10 c Black
+2 3 1 c Red

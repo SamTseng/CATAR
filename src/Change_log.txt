@@ -1,0 +1,692 @@
+On 2019/02/09
+1. Delete all tables and queries in C:\CATAR\src\Patent_org.mdb.
+2. Delete and modify the queries in C:\CATAR\Source_Data\DL_DNN\DL_DNN_1636_NEW.mdb, then
+   export Tables (and Queries) of DL_DNN_1636_NEW.mdb to C:\CATAR\src\Patent_org.mdb
+3. Create Patent_org.mdb_SQL.txt (see the comments in that file).
+4. Create Patent_org.db (SQLite) for future use.
+
+On 2019/01/24
+1. Following the instructions on 2017/08/28, which switches MS Access to SQLite:
+   Change all [Desc] into Dscpt in Table 'TSeg' and Query 'Insert_into_TSeg' in 
+   C:\CATAR\Source_Data\DL_DNN\DL_DNN_1636_NEW.mdb.
+
+On 2019/01/23-24
+1. Encounter the problem:
+   perl -s  CiteAna.pl -Oclu  -ODB=..\Source_Data\Sam\Sam.db Sam TPaper Sam_BC ../Result/Sam_BC
+		Undefined subroutine &main::InitDBH called at CiteAna.pl line 290.
+   But this is not a problem in ISI.pl!!!
+2. To fix the problem, re-install Perl and CATAR from scratch:
+  2.1 C:\CATAR\src>perl -v
+		This is perl 5, version 24, subversion 1 (v5.24.1) built for MSWin32-x86-multi-thread-64int
+  2.2 After removing Perl v5.24.1 and installing Perl v5.28.1, 
+    follow http://web.ntnu.edu.tw/~samtseng/CATAR/ to install required packages:
+   cpan install Encode::Detect::Detector
+   cpan install Statistics::Regression
+   cpan install Math::MatrixReal
+    Install SAMtool by uncompressing C:\CATAR\src\Perl_Module\SAMtool.rar 
+      to C:\Strawberry\perl\site\lib (The stop words have been reset to )
+  2.3 Copy and change InitDBH.pl into InitDBH.pm.
+  2.4 Change these 7 files: Cluster.pl, Cluster.pm, ClusterDB.pm,  
+      CiteAna.pl, ISI.pl, ISI_CR.pl, tool.pl to "use InitDBH qw(InitDBH);"
+  2.5 Check all the files after 2015/12/13 to see if they are still in Big5 code.
+      Note: tool.pl has been saved as a UTF-8 code for unknown reason, so we need to restore the old ones.
+        From a backup disk, I find a 2012/01/19 version. Then I compare this file
+        with the lastest one and change all the difference to restore all the updates
+        in tool.pl but still retain it as encoded in Big5 code.
+      Note: Cluster.pl still have &InitDBH() which is undefined and will cause errors.
+  2.6 Check all files if "use SamOpt qw(SamOpt);  &SamOpt();" and 
+  	  "use DBI ':sql_types'; use InitDBH qw(InitDBH);"
+  2.7 When encountering any error message like: Can't locate *.pm in @INC ...
+   copy c:\CATAR\src\*.pm C:\strawberry\perl\site\lib\
+
+
+
+On 2019/01/14
+1. Change ISI.pl to correct the AF and C1 fields for patent data.
+   See Patent_run_log.txt for more information.
+2. Add stop words: 
+   deep	learning	neural network	machine	system	apparatus	device	method	model
+   to C:\Strawberry\perl\site\lib\SAMtool\Stopword.pm
+   Then run:
+  perl -s automc.pl -OOA DL_DNN ..\Source_Data\DL_DNN\data
+	perl -s automc.pl -OCW DL_DNN ..\Source_Data\DL_DNN\DL_DNN.db
+3. Remember to remove the above stop words!!!
+  It seems that we encounter the problem described on 2017/08/28:
+  10. There are bugs for co-word clustering. !!!
+  But I cannot confirm this, so far.
+
+
+
+On 2018/04/03
+1. Change Patent.ini, Patent.pm, PatentDB.pm to parse USA patents correctly
+   and to add a few new fields and remove one field in Patent_org.mdb.
+2. C:\CATAR\src>perl -s patent.pl -Odebug -Ofile ..\Source_Data\USP ..\Source_Data\4889099.htm
+3. Change Patent_org.txt and Patent_org.db accordingly.
+4. Execute the following steps:
+Step 0: (This step only needs to be executed for the first time)
+Unzip SAMTool.zip to C:\strawberry\perl\site\lib\SAMtool
+and install Win32::ODBC under cmd.exe, by running:
+C:\>cpan install Win32::ODBC
+
+Step 1:
+D:\CATAR\src>mkdir ..\Source_Data\Landy
+D:\CATAR\src>copy Patent_org.mdb ..\Source_Data\Landy\Landy.mdb
+
+Step 2:
+Edit D:\CATAR\src\patent.ini:
+# Next group is added on 2018/04/03
+[Landy]
+PatentDir=..\Source_Data\Landy
+DSN=Landy
+
+Step 3:
+Set the DSN of Landy to link to CATAR\Source_Data\Landy\Landy.mdb 
+in 「資料來源（ODBC）」in 「系統管理工具」in 「控制台」(Windows 95);
+or by Odbcad32.exe 「ODBC資料來源管理員（32位元）」(Windows 7 or higher),
+Odbcad32.exe 檔案的 32 位元版本位於 %systemdrive%\Windows\SysWoW64 資料夾中。
+
+Step 4:
+D:\CATAR\src>perl -s patent.pl -Odb -Ogroup=Landy -OPat2DB ..\Source_Data\Landy\Landy_list.txt
+
+
+
+On 2017/08/31-2017/09/01
+1. Change &InsertIntoTSeg() in ISI.pl such that:
+	$sql = "INSERT INTO $TSeg (SNO, Dname, Dscpt) "
+# The next line is for MS Access
+#	. "SELECT UT AS SNO, PY & ':' & TI AS Dname, AB AS Dscpt FROM $Table";
+# The next line is for SQLite
+	. "SELECT UT AS SNO, PY || ':' || TI AS Dname, AB AS Dscpt FROM $Table";
+2. When testing with:
+   C:\CATAR\src>perl -s automc.pl -OCW Sam ..\Source_Data\Sam\Sam.db
+   remember to use very low (0) frequency threshold to get results.
+3. Export TPaper of movie.mdb into TPaper1.csv and then convert
+   TPaper1.csv into a real CSV file by removing unnecessary newline
+   and then convert it into utf-8 code.
+   Copy Paper_org.db to movie.db. Then import TPaper1.csv into 
+   movie.db and then run:
+   Drop Table TPaper;
+   CREATE TABLE TPaper ( AU varchar (510), AF varchar (510), TI varchar (510), subTitle varchar(510), theme varchar(510), headline varchar(510), SO varchar (510), DE varchar (510), ID varchar (510), AB text, C1 varchar (510), CR text, NR int, TC int, J9 varchar (254), PY int, VL int, BP int, SC varchar (510), UT varchar (100) PRIMARY KEY, IU varchar (510), DP varchar (510) ); -- Cannot use IN as a column name in SQLite
+   Insert into TPaper ( AU, AF, TI, subTitle, theme, headline, SO, DE, ID, AB, C1, CR, NR, TC, J9, PY, VL, BP, SC, UT, IU, DP) select AU, AF, TI, subTitle, theme, headline, SO, DE, ID, AB, C1, CR, NR, TC, J9, PY, VL, BP, SC, UT, [IN], DP from TPaper1;
+   Using SQLite_Test.pl reveal that the big5 code strings were converted
+   automatically into utf8 in SQLite when importing a big5 CSV file.
+4. C:\CATAR\src>cpan install Encode
+   Change the following codes in the 4 files:
+     tool.pl, CiteAna.pl, Cluster.pm, ISI.pl 
+	use Encode qw/encode decode from_to/;
+	if ($encoding_name =~ /UTF-8/i) { # if utf8-encoded
+#		$CName = encode("big5", $CName);
+#	if ($encoding_name !~ /big5/i) { # if utf8-encoded
+		from_to($CName, $encoding_name, 'big5'); 
+   After doing the above work, CATAR is able to handle Chinese
+   in SQLite (which stores Chinese in utf-8, even the imported file
+   is in Big5.)
+5. After the above experience in Step 3 and 4, go on to convert eport.mdb.
+   Export TPaper.csv from the tabel TPaper in eport.mdb.
+   Change the field name IN into IU in TPaper.txt which is in Big5.
+   Import TPaper.csv as "Table from CSV file" into eport.db.
+   Then run: eportfolio.bat. The result is OK.
+   So we have successfully convert from MS Access to SQLite!
+
+On 2017/08/28
+1. C:\CATAR\src>cpan install DBD::SQLite
+   It seems that Strawberry Perl has pre-installed DBI & DBD::SQLite!
+2. Download and install "DB Browser for SQLite" from: http://sqlitebrowser.org/ .
+3. Edit Paper_DB_SQL.txt to import it into Paper_org.db in SQLite format.
+4. Note: column names: IN in Tpaper, Desc in TSeg have been changed  
+   into IU and Dscpt, respectively.
+5. Change all [IN] into IU in ISI.pl, tool.pl.
+6. Change all [Desc] into Dscpt in ClusterDB.pl, Cluster.pm, Cluster.pl,
+     automc.pl, ISI.pl, tool.pl.
+7. Edit InitDBH.pl to use SQLite instead of MS Access,
+   because in Windows 10 CATAR cannot connect to the MDB database.
+   This flag "AutoCommit => 0" costs me 3 hours to debug, because
+   the change in the sqlite db by Perl codes do not affect the final
+   sqlite db in the file. After change it into "AutoCommit => 1", the
+   bug has gone.
+8. Change these 7 files: Cluster.pl, Cluster.pm, ClusterDB.pm,  
+   CiteAna.pl, ISI.pl, ISI_CR.pl, tool.pl to 
+   "use DBI ':sql_types';  require "InitDBH.pl;" and their calls
+   to $DBH = &InitDBH($DSN, $DB_Path);
+9. So far Cluster.pm, ClusterDB.pm have their own 
+   $DBH = $me->InitDBH($DSN, $DB_Path);
+   because I cannot find a way to use: require "InitDBH.pl;"
+   in this two modules.
+   Note: This have been changed on 2019/01/23.
+10. There are bugs for co-word clustering. !!!
+
+
+On 2015/12/13
+1. copy TPaper to TPaper_NTNU in C:\CATAR_src\Source_Data\Edu1014\Edu1014.mdb
+2. Remove those records that are not NTNU:
+   DELETE * FROM TPaper_NTNU
+   WHERE not ((TPaper_NTNU.[IN]) Like '*Taiwan Norm*');
+   DELETE * FROM TPaper_NTNU
+   WHERE ((TPaper_NTNU.[IN]) is Null);
+3. Add AF to &InsertSC_to_Cluster_Results() in tool.pl
+   @Field=split ' ',qq{PY AU AF C1 [IN] CR SO SC TC DP}; # 2009/01/30,2010/11/06,2015/12/13
+4. Run:
+#  $cmd = "$prog tool.pl -OSC=all -Omin=$main::Omin $option -ODB=$DB_Path -Otxt=100 "
+#   . "$DSN TPaper ${out}.html > ${out}_all_${main::Omin}.txt";
+   perl -s tool.pl -OSC=all -Omin=0 -ODB=..\Source_Data\Edu1014\Edu1014.mdb -Otxt=500 Edu1014 TPaper_NTNU ..\Result\Edu1014_JBC_S2\0_0.015.html > ..\Result\Edu1014_JBC_S2\0_0.015_all_0_NTNU.txt
+#	$cmd = "$prog ISI.pl -O2xls=2 -Of=${out}_all_${main::Omin}.txt "
+#		 . "${DSN}_$BC$nn $OutDir $OutDir/${DSN}_$BC${nn}_by_field\.xls";
+   perl -s ISI.pl -O2xls=2 -Of=..\Result\Edu1014_JBC_S2\0_0.015_all_0_NTNU.txt Edu1014_JBC_S2 ..\Result\Edu1014_JBC_S2 ..\Result\Edu1014_JBC_S2\Edu1014_JBC_S2_NTNU_by_Field.xls
+#	$cmd = "$prog tool.pl -OSC=all -Omin=$main::Omin $option -ODB=$DB_Path "
+#		 . "$DSN TPaper ${out}.html > ${out}_all_${main::Omin}.html";
+   perl -s tool.pl -OSC="PY AF DP [IN] C1 SO SC TC" -Omin=0 -ODB=..\Source_Data\Edu1014\Edu1014.mdb Edu1014 TPaper_NTNU ..\Result\Edu1014_JBC_S2\0_0.015.html > ..\Result\Edu1014_JBC_S2\0_0.015_all_0_NTNU.html
+
+   perl -s tool.pl -OSC=all -Omin=0 -ODB=..\Source_Data\Edu1014\Edu1014.mdb -Otxt=500 Edu1014 TPaper ..\Result\Edu1014_JBC_S2\0_0.015.html > ..\Result\Edu1014_JBC_S2\0_0.015_all_0_500.txt
+   perl -s ISI.pl -O2xls=2 -Of=..\Result\Edu1014_JBC_S2\0_0.015_all_0_500.txt Edu1014_JBC_S2 ..\Result\Edu1014_JBC_S2 ..\Result\Edu1014_JBC_S2\Edu1014_JBC_S2_by_Field_500.xls
+
+
+On 2015/12/08
+1. In &StandardizeFields(), add the code to distinguish author 
+   by adding their institute (IN):
+  my @AFs = (); my @AF = (); my($IN);
+	while ($rD->[$C1_idx] =~ /\[([^\]]+)\]\s*([^,]+),/g) {
+		@AF = split /;\s*/, $1; $IN = $2;
+		@AF = map {"$_: $IN"} @AF;
+		push @AFs, @AF;
+	}
+	$rD->[$AF_idx] = join "; ", @AFs;
+2. Run perl -s automc.pl -OOA NTNU1014 ..\Source_Data\NTNU1014\data
+   The result we want is at:C:\CATAR_src\Result\NTNU1014\_NTNU1014_by_field.xls
+
+
+On 2015/11/06
+1. In ISI.pl, add the following:
+# Next 2 lines are remarked on 2015/11/06 for not-only-articles publications
+#			} elsif ($field eq 'DT' and $Lines[$i] !~ /Article/) { # 2013/07/28
+#				goto SkipTheRecord;  # 2013/07/28
+
+
+On 2015/01/14
+1. perl -s automc.pl -OBC movie ..\Source_Data\sam\sam.mdb
+  Note: in the above command, if Cluster.ini has already a [movie] group, the sam.mdb 
+  in the above command would not take any effect. CATAR will use the source data 
+  already in the [movie] group.
+2. In new Windows system, the type of UT field in the table TPaper of movie.mdb should be
+   changed into text, instead of number. Otherwise, CATAR will stop due to the data type
+   error when fetching data from the UT field using the ODBC driver in new Windows systems.
+
+On 2014/10/27
+1. Change ClusterDB.pm to remark (disable) the line at 220:
+#    $STH->bind_param(2, $STH, DBI::SQL_LONGVARCHAR); #2014/10/27
+
+
+On 2014/09/18
+1. Change ISI.pl to isolate Hong Kong from China by adding the following:
+# For analysis of Asian countries in Science Education, last 2nd field is Hong Kong area
+		if ($A[$#A-1] =~ /Hong Kong/i) { $addr = 'Hong Kong';} # added on 2014/09/18
+2. Change ISI.pl to normalized Cited Author (CA) in the Cited Reference (CR) by adding:
+		$au = &Normalize_Author($au); # added on 2014/09/18
+
+
+On 2014/06/15
+Change $DSN = "driver=Microsoft Access Driver (*.mdb);dbq=$DB_Path";
+into $DSN = "driver=Microsoft Access Driver (*.mdb, *.accdb);dbq=$DB_Path";
+in these 7 files: Cluster.pl, Cluster.pm, ClusterDB.pm, CiteAna.pl, ISI.pl, ISI_CR.pl, tool.pl
+to allow CATAR to run under 64ibts Windows 7 and Windows 8 and under Office 2013.
+The above line is in the sub InitDBMS() or sub InitDB() in the above files, except Cluster.pl.
+
+
+On 2012/01/10 to do list ...
+1. Change &GetDoc_Date_PK_Title() in term_cluster.pl.
+   Need further testing ...
+4. Create topic map in dendrogram.html using Python's Pattern javascript module
+
+
+On 2012/01/15
+1. Add codes to MDS.pm and Term_Trend.pl to :
+	- create dendrogram_*.html using javascript as an alternative to the topic tree 
+	  in pure HTML;
+	- create VOS_*.txt file for MDS map browsing via VOSviewer which supports 
+	  zoom-in, zoom-out, mouse hovering over to show description, etc.
+	- create pajek_*.net for MDP map viewed by Pajek.
+
+On 2012/01/04
+1. 修改 ISI.pl 的 &ParseMultiLineRecord()：
+	local($/); $/="ER\n\n";
+	while (<$Fh>) { # read a multiline record one at a time
+		@Lines = split /\n/, $_;
+	使成為:
+	local($/); undef $/; my $all = <$Fh>;  # get all content in one read
+	foreach $rec (split /[\n\r]+ER[\n\r]+/, $all) { # 2012/01/04
+		@Lines = split /[\n\r]+/, $_;
+
+
+On 2011/11/10
+1. 改變 Paper_org.mdb 的 BP 與 VL 兩個欄位的資料型態從 int 變成 char(10)
+2. 修改 ISI.pl 的 &InsertIntoDBMS()，使得 IN 與 DP 為空的紀錄也能存入資料庫 
+
+On 2011/06/29
+1. 修改CiteAna.pl，以排除非期刊論文的參考書目，而後執行：
+   perl -s automc.pl -OBC=JBC -OmaxDF=50 SC_Edy ..\Source_Data\SC_Edy\SC_Edy.mdb
+   將CiteAna.pl改回來。
+
+On 2011/06/15
+1. 修改CiteAna.pl與automc.pl，加入OmaxDF選項，以排除太常被引用的參考書目。
+   perl -s automc.pl -OBC=JBC -OmaxDF=50 SC_Edx ..\Source_Data\SC_Edx\SC_Edx.mdb
+
+On 2011/04/04-14
+1. 將 Journal Clustering (JBC, JCW) 與 Author Clustering (ABC, ACW) 放入 automc.pl
+2. 對 SC、DE、ID做詞彙正規化的動作
+3. 增加 Slope 函數，方便計算年代篇數序列的斜率
+4. 將國家 England, Wales, Scotland 都改成 UK （2011/03/31, 因應TIER之需求）
+5. 修改 CATAR/ReadMe.html的內容
+6. 找出某個期刊是跨領域的情形（J9與SC的交叉分析），評估期刊的跨領域指標,利用「HHI」為指標
+   計算 J9_C1，看期刊的跨國性（期刊國際化指標，地區性指標）
+		J9_SC，看期刊的跨領域特性（期刊專門性指標）
+		Cluster 與 C1, CJ, SC, SO, IN之獨佔指標
+7. 重新執行下列命令，以測試第6點：
+	perl -s ISI.pl -O2xls -OmaxR=500 SC_Edu ../Result/SC_Edu ../Result/SC_Edu/SC_Edu_by_field.xls
+	perl -s ISI.pl -Ochktm SC_Edu TPaper ..\Source_Data\SC_Edu\SC_Edu.mdb > ../Result/SC_Edu/SC_Edu_stat.txt
+	perl -s ISI.pl -OavgCnt  SC_Edu TPaper ..\Source_Data\SC_Edu\SC_Edu.mdb >> ../Result/SC_Edu/Sc_Edu_stat.txt
+	perl -s tool.pl -OSC=all -Omin=2 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ../Result/SC_Edu_JBC_S2/0_0.01.html > ..\Result\SC_Edu_JBC_S2\0_0.01_all_2.html
+	perl -s tool.pl -OSC=all -Omin=2 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb -Otxt=100 SC_Edu TPaper ../Result/SC_Edu_JBC_S2/0_0.01.html > ..\Result\SC_Edu_JBC_S2\0_0.01_all_2.txt
+	perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_Edu_JBC_S2\0_0.01_all_2.txt SC_Edu_JBC_S2 ../Result/SC_Edu_JBC_S2 ../Result/SC_Edu_JBC_S2/SC_Edu_JBC_S2_by_field.xls
+
+處理 perl -s ISI_CR.pl -Omatch=..\Result\sam\CJ_J9.txt sam ..\Source_Data\sam\sam.mdb TPaper ..\Result\sam\CR.txt ..\Result\sam\CR_UT.txt > ..\Result\sam\CR_UT_stderr.txt
+處理 Change_log.txt On 2011/02/22 （這四項步驟需整合到automc.pl裡, J9與CJ的對應）
+增加SC、DE、ID的年代篇數序列
+增加TI、AB自由詞彙的年代篇數序列（片語掃瞄所有全文兩次，以找出該片語的所有文件）
+建立 Inv.txt 時，輸出 Related Terms
+插入資料庫時的錯誤訊息，不要顯示出來。
+只剩10類左右時，建議不用再繼續。
+
+
+On 2011/03/8 對JCR圖書資訊領域中61個期刊（下載其2005-2009年的論文），進行期刊歸類分析
+1. 將下載的資料轉入資料庫中，並作概觀分析
+   perl -s automc.pl -OISI2DB SC_LIS ..\Source_Data\SC_LIS\data
+   將資料庫C:\CATAR_src\Source_Data\SC_LIS\SC_LIS.mdb中的2004年記錄刪除後，執行：
+   perl -s automc.pl -OISI2DB -Odb SC_LIS
+2. 依照期刊名稱將論文分類，使每一類包含一個期刊的論文
+   perl -s ISI.pl -OBigDoc SC_LIS_JBC ..\Source_Data\SC_LIS\SC_LIS.mdb Journal ..\doc\SC_LIS_JBC_S2
+   # # It takes 304 seconds
+3. 剖析CR欄位，讀取期刊中每篇論文的參考書目，計算兩個期刊之間的書目對相似度 
+  #perl -s CiteAna.pl -OMulClu -ODB=$DB_Path $DSN TPaper ${DSN}_BibCpl$nn $OutDir ../doc/${DSN}_BibCpl$nn
+   perl -s CiteAna.pl -OMulClu -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS TPaper SC_LIS_JBC_S2 ..\Result\SC_LIS_JBC_S2 ..\doc\SC_LIS_JBC_S2
+	Total number of documents to be processed: 139
+	Number of documents that cite (or are cited by) others:139
+	Number of all citations: 774084
+	Number of different cited (or citing) papers: 562365
+	Number of papers having mismatch citation numbers: 0
+	Now find the coupling (or co-citing) pairs ...
+	There are 91261 cited papers that have two or more citing papers.
+	There are 9470 couplings.
+4. 根據上面的書目對相似度，進行期刊的歸類
+   #perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug ${DSN}_BibCpl$nn $OutDir > $OutDir/0_0.0.html
+    perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug SC_LIS_JBC_S2 ..\Result\SC_LIS_JBC_S2 > ..\Result\SC_LIS_JBC_S2\0_0.0.html
+5. 利用相似度門檻將歸類結果分割成較合理類別
+   #perl -s Cluster.pl -Ocut=$cut -Oct_low_tf=0 ${DSN}_BibCpl$nn $OutDir > $OutDir/0_${cut}.html
+    perl -s Cluster.pl -Ocut=0.01 -Oct_low_tf=0 SC_LIS_JBC_S2 ..\Result\SC_LIS_JBC_S2 > ..\Result\SC_LIS_JBC_S2\0_0.01.html
+6. 繪出主題地圖
+   #$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap $OutDir
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.01 -Omap -Oscale=2 ..\Result\SC_LIS_JBC_S2
+7. 進行類別之間的交叉分析
+   #$prog tool.pl -OSC=all -Omin=$main::Omin $option -ODB=$DB_Path $DSN TPaper ${out}.html > ${out}_all_${main::Omin}.html
+    perl -s tool.pl -OSC=all -Omin=5 -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS TPaper ..\Result\SC_LIS_JBC_S2\0_0.01.html > ..\Result\SC_LIS_JBC_S2\0_0.01_all_5.html
+    perl -s tool.pl -OSC=all -Omin=2 -Otxt=100 -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS TPaper ..\Result\SC_LIS_JBC_S2\0_0.01.html > ..\Result\SC_LIS_JBC_S2\0_0.01_all_2.txt
+   #$prog ISI.pl -O2xls=2 -Of=${out}_all_${main::Omin}.txt ${DSN}_BibCpl$nn $OutDir $OutDir/${DSN}_BibCpl${nn}_by_field\.xls
+    perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_LIS_JBC_S2\0_0.01_all_2.txt SC_LIS_JBC_S2 ..\Result\SC_LIS_JBC_S2 ..\Result\SC_LIS_JBC_S2\SC_LIS_JBC_by_Field.xls
+8. 將中類歸成更大類
+   perl -s Cluster.pl -Odebug -ObigDoc -Ocut=0.01 -Oct_low_tf=0 SC_LIS_JBC_S2 ../Result/SC_LIS_JBC_S2 ../doc/SC_LIS_JBC_S3
+9. 剖析CR欄位，讀取類別中每篇論文的參考書目，計算兩個類別之間的書目對相似度 
+   perl -s CiteAna.pl -OMulClu -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS TPaper SC_LIS_JBC_S3 ..\Result\SC_LIS_JBC_S3 ..\doc\SC_LIS_JBC_S3
+	Total number of documents to be processed: 23
+	Number of documents that cite (or are cited by) others:23
+	Number of all citations: 638122
+	Number of different cited (or citing) papers: 534669
+	Number of papers having mismatch citation numbers: 0
+	Now find the coupling (or co-citing) pairs ...
+	There are 62967 cited papers that have two or more citing papers.
+	There are 253 couplings.
+10. 根據上面的書目對相似度，進行期刊的歸類
+    perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug SC_LIS_JBC_S3 ..\Result\SC_LIS_JBC_S3 > ..\Result\SC_LIS_JBC_S3\0_0.0.html
+11. 繪出主題地圖
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=2 ..\Result\SC_LIS_JBC_S3
+底下進行期刊共現字分析，接續步驟2之後：
+3. 讀取每個期刊（每一類）的標題（與摘要），計算相似度，進而歸類：
+    perl -s filelist4.pl ../doc/SC_LIS_Jcw_S2.lst ../doc/SC_LIS_JBC_S2
+	mkdir ..\Result\SC_LIS_Jcw_S2
+	#$prog Cluster.pl -Oall $option -Odebug -Osrc=Dir $NewIdxName ../Result/$NewIdxName ../doc/$NewIdxName.lst > ../Result/$NewIdxName/$result
+	perl -s Cluster.pl -Oall -Odebug -Osrc=Dir SC_LIS_Jcw_S2 ../Result/SC_LIS_Jcw_S2 ../doc/SC_LIS_Jcw_S2.lst > ../Result/SC_LIS_Jcw_S2/2_2_2_0.html
+4. 利用相似度門檻將歸類結果分割成較合理類別
+    perl -s Cluster.pl -Ocut=0.1 SC_LIS_Jcw_S2 ..\Result\SC_LIS_Jcw_S2 > ..\Result\SC_LIS_Jcw_S2\0_0.1.html
+5. 繪出主題地圖
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.1 -Omap -Oscale=2 ..\Result\SC_LIS_Jcw_S2
+6. 進行類別之間的交叉分析
+    perl -s tool.pl -OSC=all -Omin=5 -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS TPaper ..\Result\SC_LIS_Jcw_S2\0_0.1.html > ..\Result\SC_LIS_Jcw_S2\0_0.1_all_5.html
+    perl -s tool.pl -OSC=all -Omin=2 -Otxt=100 -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS TPaper ..\Result\SC_LIS_Jcw_S2\0_0.1.html > ..\Result\SC_LIS_Jcw_S2\0_0.1_all_2.txt
+    perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_LIS_Jcw_S2\0_0.1_all_2.txt SC_LIS_Jcw_S2 ..\Result\SC_LIS_Jcw_S2 ..\Result\SC_LIS_Jcw_S2\SC_LIS_Jcw_by_Field.xls
+7. 將中類歸成更大類，並產生主題地圖
+   #$prog auto.pl -Ocut=0.0 -Oold_cut=$cut -Otfc=ChixTFC -Oold_ct_low_tf=$old_ct_low_tf -Olow_tf=$low_tf -Oct_low_tf=$ct_low_tf -ODB=$DB_Path ${DSN}_dc_S$n1 ${DSN}_dc_S$n
+   perl -s auto.pl -Ocut=0.0 -Oold_cut=0.1 -Otfc=ChixTFC -ODB=..\Source_Data\SC_LIS\SC_LIS.mdb SC_LIS_Jcw_S2 SC_LIS_Jcw_S3
+
+
+On 2011/02/22 （這四項步驟需整合到automc.pl裡）
+1. 將文件集中的所有 CR (Cited References) 擷取出來並累計其在文件集中被引用的次數：
+   perl -s ISI.pl -OISIt sam TPaper CR > ..\Result\sam\CR.txt
+2. 檢查..\Source_data\sam\sam.mdb中TPaper資料表的J9欄位內的期刊名稱 與
+   CR欄位內的期刊名稱（已經擷取到..\Result\sam\CJ.txt裡），將相同的期刊但名稱不同者列出：
+   perl -s DbXls.pl -Ojm=2 \CATAR_src\Source_data\sam\sam.mdb TPaper \CATAR_src\Result\sam\CJ.txt > \CATAR_src\Result\sam\CJ_J9.txt
+3. 利用上述結果（J9_CJ.txt），比對每個 CR (Cited Reference) 所對應的 UT：
+   perl -s ISI_CR.pl -Omatch=..\Result\sam\CJ_J9.txt sam ..\Source_Data\sam\sam.mdb TPaper ..\Result\sam\CR.txt ..\Result\sam\CR_UT.txt > ..\Result\sam\CR_UT_stderr.txt
+   結果在CR_UT.txt裡，可將其匯入到sam.mdb的CR_UT資料表裡。
+   從CR_UT_stderr.txt以及..\Result\sam\CJ.txt中可以看到，相同的期刊，可能有不同的命名，
+   或相同期刊、相同卷期、相同起始頁，但作者名不同者等資料不一致的狀況。
+4. 利用上述結果，將每個文件的與其Cited References轉成資料庫關聯詞表的格式
+   perl -s ISI_CR.pl -Ocite -Opair sam TPaper CR_UT Cite > ..\Result\sam\Cite.txt
+   將上述結果 Cite.txt 匯入到資料庫的Cite資料表
+
+
+On 2011/02/18 對JCR教育領域中139個期刊（下載其2005-2009年的論文），進行作者歸類分析
+1. 將下載的資料轉入資料庫中，並作概觀分析
+   perl -s automc.pl -OISI2DB SC_Edu ..\Source_Data\SC_Edu\data
+2. 依照作者名稱將論文分類，使每一類包含一個作者的論文
+   注意：同名不同人的作者會被視為同一個作者，因此需人工將同名不同人的情況事先排除掉！！！
+   perl -s ISI.pl -OBigDoc=5 SC_Edu_Au ..\Source_Data\SC_Edu\SC_Edu.mdb Author ..\doc\SC_Edu_Au_S2
+	There are 972 Author(s)...
+    It takes 438 seconds
+3. 剖析CR欄位，讀取作者中每篇論文的參考書目，計算兩個作者之間的書目對相似度 
+  #perl -s CiteAna.pl -OMulClu -ODB=$DB_Path $DSN TPaper ${DSN}_BibCpl$nn $OutDir ../doc/${DSN}_BibCpl$nn
+   perl -s CiteAna.pl -OMulClu -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper SC_Edu_AuBC_S2 ..\Result\SC_Edu_AuBC_S2 ..\doc\SC_Edu_Au_S2
+	Total number of documents to be processed: 972
+	Number of documents that cite (or are cited by) others:972
+	Number of all citations: 784103
+	Number of different cited (or citing) papers: 534304
+	Number of papers having mismatch citation numbers: 0
+	Now find the coupling (or co-citing) pairs ...
+	There are 147103 cited papers that have two or more citing papers.
+	There are 121181 couplings.
+4. 根據上面的書目對相似度，進行作者的歸類
+   #perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug ${DSN}_BibCpl$nn $OutDir > $OutDir/0_0.0.html
+    perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug SC_Edu_AuBC_S2 ..\Result\SC_Edu_AuBC_S2 > ..\Result\SC_Edu_AuBC_S2\0_0.0.html
+5. 利用相似度門檻將歸類結果分割成較合理類別
+   #perl -s Cluster.pl -Ocut=$cut -Oct_low_tf=0 ${DSN}_BibCpl$nn $OutDir > $OutDir/0_${cut}.html
+    perl -s Cluster.pl -Ocut=0.01 -Oct_low_tf=0 SC_Edu_AuBC_S2 ..\Result\SC_Edu_AuBC_S2 > ..\Result\SC_Edu_AuBC_S2\0_0.01.html
+6. 繪出主題地圖
+   #$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap $OutDir
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.01 -Omap -Oscale=2 ..\Result\SC_Edu_AuBC_S2
+7. 進行類別之間的交叉分析
+   #$prog tool.pl -OSC=all -Omin=$main::Omin $option -ODB=$DB_Path $DSN TPaper ${out}.html > ${out}_all_${main::Omin}.html
+    perl -s tool.pl -OSC=all -Omin=2 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_AuBC_S2\0_0.01.html > ..\Result\SC_Edu_AuBC_S2\0_0.01_all_2.html
+    perl -s tool.pl -OSC=all -Omin=2 -Otxt=100 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_AuBC_S2\0_0.01.html > ..\Result\SC_Edu_AuBC_S2\0_0.01_all_2.txt
+   #$prog ISI.pl -O2xls=2 -Of=${out}_all_${main::Omin}.txt ${DSN}_BibCpl$nn $OutDir $OutDir/${DSN}_BibCpl${nn}_by_field\.xls
+    perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_Edu_AuBC_S2\0_0.01_all_2.txt SC_Edu_AuBC_S2 ..\Result\SC_Edu_AuBC_S2 ..\Result\SC_Edu_AuBC_S2\SC_Edu_AuBC_by_Field.xls
+8. 將中類歸成更大類
+   perl -s Cluster.pl -Odebug -ObigDoc -Ocut=0.01 -Oct_low_tf=0 SC_Edu_AuBC_S2 ../Result/SC_Edu_AuBC_S2 ../doc/SC_Edu_AuBC_S3
+9. 剖析CR欄位，讀取類別中每篇論文的參考書目，計算兩個類別之間的書目對相似度 
+   perl -s CiteAna.pl -OMulClu -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper SC_Edu_AuBC_S3 ..\Result\SC_Edu_AuBC_S3 ..\doc\SC_Edu_AuBC_S3
+	Total number of documents to be processed: 253
+	Number of documents that cite (or are cited by) others:253
+	Number of all citations: 195491
+	Number of different cited (or citing) papers: 144401
+	Number of papers having mismatch citation numbers: 0
+	Now find the coupling (or co-citing) pairs ...
+	There are 27425 cited papers that have two or more citing papers.
+	There are 19765 couplings.
+10. 根據上面的書目對相似度，進行期刊的歸類
+    perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug SC_Edu_AuBC_S3 ..\Result\SC_Edu_AuBC_S3 > ..\Result\SC_Edu_AuBC_S3\0_0.0.html
+11. 繪出主題地圖
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=2 ..\Result\SC_Edu_AuBC_S3
+底下進行作者共現字分析，接續步驟2之後：
+3. 讀取每個作者（每一類）的標題（與摘要），計算相似度，進而歸類：
+    perl -s filelist4.pl ../doc/SC_Edu_AuCW_S2.lst ..\doc\SC_Edu_Au_S2
+	mkdir ..\Result\SC_Edu_AuCW_S2
+	perl -s Cluster.pl -Oall -Odebug -Osrc=Dir SC_Edu_AuCW_S2 ../Result/SC_Edu_AuCW_S2 ../doc/SC_Edu_AuCW_S2.lst > ../Result/SC_Edu_AuCW_S2/2_2_2_0.html
+4. 利用相似度門檻將歸類結果分割成較合理類別
+    perl -s Cluster.pl -Ocut=0.1 SC_Edu_AuCW_S2 ..\Result\SC_Edu_AuCW_S2 > ..\Result\SC_Edu_AuCW_S2\0_0.1.html
+5. 繪出主題地圖
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.1 -Omap -Oscale=2 ..\Result\SC_Edu_AuCW_S2
+6. 進行類別之間的交叉分析
+    perl -s tool.pl -OSC=all -Omin=5 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_AuCW_S2\0_0.1.html > ..\Result\SC_Edu_AuCW_S2\0_0.1_all_5.html
+    perl -s tool.pl -OSC=all -Omin=2 -Otxt=100 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_AuCW_S2\0_0.1.html > ..\Result\SC_Edu_AuCW_S2\0_0.1_all_2.txt
+    perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_Edu_AuCW_S2\0_0.1_all_2.txt SC_Edu_AuCW_S2 ..\Result\SC_Edu_AuCW_S2 ..\Result\SC_Edu_AuCW_S2\SC_Edu_AuCW_by_Field.xls
+7. 將中類歸成更大類，並產生主題地圖
+   #$prog auto.pl -Ocut=0.0 -Oold_cut=$cut -Otfc=ChixTFC -Oold_ct_low_tf=$old_ct_low_tf -Olow_tf=$low_tf -Oct_low_tf=$ct_low_tf -ODB=$DB_Path ${DSN}_dc_S$n1 ${DSN}_dc_S$n
+   perl -s auto.pl -Ocut=0.0 -Oold_cut=0.1 -Otfc=ChixTFC -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu_AuCW_S2 SC_Edu_AuCW_S3
+
+
+On 2011/02/15 對JCR教育領域中139個期刊（下載其2005-2009年的論文），進行期刊歸類分析
+1. 將下載的資料轉入資料庫中，並作概觀分析
+   perl -s automc.pl -OISI2DB SC_Edu ..\Source_Data\SC_Edu\data
+2. 依照期刊名稱將論文分類，使每一類包含一個期刊的論文
+   perl -s ISI.pl -OBigDoc SC_Edu_JBC ..\Source_Data\SC_Edu\SC_Edu.mdb Journal ..\doc\SC_Edu_JBC_S2
+   # # It takes 304 seconds
+3. 剖析CR欄位，讀取期刊中每篇論文的參考書目，計算兩個期刊之間的書目對相似度 
+  #perl -s CiteAna.pl -OMulClu -ODB=$DB_Path $DSN TPaper ${DSN}_BibCpl$nn $OutDir ../doc/${DSN}_BibCpl$nn
+   perl -s CiteAna.pl -OMulClu -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper SC_Edu_JBC_S2 ..\Result\SC_Edu_JBC_S2 ..\doc\SC_Edu_JBC_S2
+	Total number of documents to be processed: 139
+	Number of documents that cite (or are cited by) others:139
+	Number of all citations: 774084
+	Number of different cited (or citing) papers: 562365
+	Number of papers having mismatch citation numbers: 0
+	Now find the coupling (or co-citing) pairs ...
+	There are 91261 cited papers that have two or more citing papers.
+	There are 9470 couplings.
+4. 根據上面的書目對相似度，進行期刊的歸類
+   #perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug ${DSN}_BibCpl$nn $OutDir > $OutDir/0_0.0.html
+    perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug SC_Edu_JBC_S2 ..\Result\SC_Edu_JBC_S2 > ..\Result\SC_Edu_JBC_S2\0_0.0.html
+5. 利用相似度門檻將歸類結果分割成較合理類別
+   #perl -s Cluster.pl -Ocut=$cut -Oct_low_tf=0 ${DSN}_BibCpl$nn $OutDir > $OutDir/0_${cut}.html
+    perl -s Cluster.pl -Ocut=0.01 -Oct_low_tf=0 SC_Edu_JBC_S2 ..\Result\SC_Edu_JBC_S2 > ..\Result\SC_Edu_JBC_S2\0_0.01.html
+6. 繪出主題地圖
+   #$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap $OutDir
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.01 -Omap -Oscale=2 ..\Result\SC_Edu_JBC_S2
+7. 進行類別之間的交叉分析
+   #$prog tool.pl -OSC=all -Omin=$main::Omin $option -ODB=$DB_Path $DSN TPaper ${out}.html > ${out}_all_${main::Omin}.html
+    perl -s tool.pl -OSC=all -Omin=5 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_JBC_S2\0_0.01.html > ..\Result\SC_Edu_JBC_S2\0_0.01_all_5.html
+    perl -s tool.pl -OSC=all -Omin=2 -Otxt=100 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_JBC_S2\0_0.01.html > ..\Result\SC_Edu_JBC_S2\0_0.01_all_2.txt
+   #$prog ISI.pl -O2xls=2 -Of=${out}_all_${main::Omin}.txt ${DSN}_BibCpl$nn $OutDir $OutDir/${DSN}_BibCpl${nn}_by_field\.xls
+    perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_Edu_JBC_S2\0_0.01_all_2.txt SC_Edu_JBC_S2 ..\Result\SC_Edu_JBC_S2 ..\Result\SC_Edu_JBC_S2\SC_Edu_JBC_by_Field.xls
+8. 將中類歸成更大類
+   perl -s Cluster.pl -Odebug -ObigDoc -Ocut=0.01 -Oct_low_tf=0 SC_Edu_JBC_S2 ../Result/SC_Edu_JBC_S2 ../doc/SC_Edu_JBC_S3
+9. 剖析CR欄位，讀取類別中每篇論文的參考書目，計算兩個類別之間的書目對相似度 
+   perl -s CiteAna.pl -OMulClu -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper SC_Edu_JBC_S3 ..\Result\SC_Edu_JBC_S3 ..\doc\SC_Edu_JBC_S3
+	Total number of documents to be processed: 23
+	Number of documents that cite (or are cited by) others:23
+	Number of all citations: 638122
+	Number of different cited (or citing) papers: 534669
+	Number of papers having mismatch citation numbers: 0
+	Now find the coupling (or co-citing) pairs ...
+	There are 62967 cited papers that have two or more citing papers.
+	There are 253 couplings.
+10. 根據上面的書目對相似度，進行期刊的歸類
+    perl -s Cluster.pl -Osim -Ocut=0.0 -Oct_low_tf=0 -Odebug SC_Edu_JBC_S3 ..\Result\SC_Edu_JBC_S3 > ..\Result\SC_Edu_JBC_S3\0_0.0.html
+11. 繪出主題地圖
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=2 ..\Result\SC_Edu_JBC_S3
+底下進行期刊共現字分析，接續步驟2之後：
+3. 讀取每個期刊（每一類）的標題（與摘要），計算相似度，進而歸類：
+    perl -s filelist4.pl ../doc/SC_Edu_Jcw_S2.lst ../doc/SC_Edu_JBC_S2
+	mkdir ..\Result\SC_Edu_Jcw_S2
+	#$prog Cluster.pl -Oall $option -Odebug -Osrc=Dir $NewIdxName ../Result/$NewIdxName ../doc/$NewIdxName.lst > ../Result/$NewIdxName/$result
+	perl -s Cluster.pl -Oall -Odebug -Osrc=Dir SC_Edu_Jcw_S2 ../Result/SC_Edu_Jcw_S2 ../doc/SC_Edu_Jcw_S2.lst > ../Result/SC_Edu_Jcw_S2/2_2_2_0.html
+4. 利用相似度門檻將歸類結果分割成較合理類別
+    perl -s Cluster.pl -Ocut=0.1 SC_Edu_Jcw_S2 ..\Result\SC_Edu_Jcw_S2 > ..\Result\SC_Edu_Jcw_S2\0_0.1.html
+5. 繪出主題地圖
+   perl -s Term_Trend.pl -Ocolor -Ocut=0.1 -Omap -Oscale=2 ..\Result\SC_Edu_Jcw_S2
+6. 進行類別之間的交叉分析
+    perl -s tool.pl -OSC=all -Omin=5 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_Jcw_S2\0_0.1.html > ..\Result\SC_Edu_Jcw_S2\0_0.1_all_5.html
+    perl -s tool.pl -OSC=all -Omin=2 -Otxt=100 -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu TPaper ..\Result\SC_Edu_Jcw_S2\0_0.1.html > ..\Result\SC_Edu_Jcw_S2\0_0.1_all_2.txt
+    perl -s ISI.pl -O2xls=2 -Of=..\Result\SC_Edu_Jcw_S2\0_0.1_all_2.txt SC_Edu_Jcw_S2 ..\Result\SC_Edu_Jcw_S2 ..\Result\SC_Edu_Jcw_S2\SC_Edu_Jcw_by_Field.xls
+7. 將中類歸成更大類，並產生主題地圖
+   #$prog auto.pl -Ocut=0.0 -Oold_cut=$cut -Otfc=ChixTFC -Oold_ct_low_tf=$old_ct_low_tf -Olow_tf=$low_tf -Oct_low_tf=$ct_low_tf -ODB=$DB_Path ${DSN}_dc_S$n1 ${DSN}_dc_S$n
+   perl -s auto.pl -Ocut=0.0 -Oold_cut=0.1 -Otfc=ChixTFC -ODB=..\Source_Data\SC_Edu\SC_Edu.mdb SC_Edu_Jcw_S2 SC_Edu_Jcw_S3
+
+
+
+
+On 2011/02/14 to do list:
+1. 可以進行JBC(Journal BibCpl analysis)以及JCW(Journal Clustering based on co-word)的資料，
+   不見得能夠進行BibCpl與co-word analysis因為Journal的個數不會超過200.
+2. 在進行 ABC(Author BibCpl analysis)以及ACW時，
+   只篩選出高生產力的作者進行，如前20%（80-20原則）或 Lotka's law 法則
+3. Change the format in files under doc/ from:
+	"$title : $id : $content. \n" (i.e., ' : ')
+	into
+	"$title\t:\t$id\t:\t$content. \n" (into "\t:\t")
+	The files to be changes include:
+	cluster.pl (line 265, for write)
+	cluster.pm (line 1356, for write)
+	CiteAna.pl (line 671 for read)
+	tool.pl (line 258, 1801 for write; 1008, 1084, 1142, 1143, 1259, 1339 for read)
+	not include: automc.pl, auto.pl, ISI.pl, ClusterDB.pl, ClusterDB.pm, 
+				term_cluster.pl, term_Trend.pl, patent.pl, patent.pm
+4. perl -s ISI.pl -OBigDoc Sam_JBC c:\CATAR\Source_Data\Sam\Sam.mdb Journal ..\doc\Sam_JBC
+5. perl -s ISI.pl -OBigDoc Sam_ABC c:\CATAR\Source_Data\Sam\Sam.mdb Author ..\doc\Sam_ABC
+
+
+
+On 2009/07/21
+1. I didn't do anything, but the patent.pl works as two years ago.
+   Amazing!
+
+On 2008/05/09
+1. Change the order of document pairs to be stored in SortedPairs.txt 
+   in Cluster.pm (line 636, 769, 874, 1583, 1651, 1682)
+   and in CiteAna.pl (line 222, 396, 571).
+   The changes are tempararily made to Cluster_new.pm. 
+   Once this has been tested, the Cluster_new.pm will become Cluster.pm.
+   Yes. The changes do lead to correct result, although small changes
+   are observed in the cluster ordering.
+   
+
+On 2005/08/16, 2005/08/18
+Step 1. Insert Gov patents into Gov\Gov_PatentDB.mdb :
+  1.1 Edit Patent.ini to add a group [Gov]
+  1.2 Copy PatentDB2_org.mdb to Gov\Gov_PatentDB.mdb
+  1.3 Set ODBC name:Gov_PatentDB, linked to d:\demo\lwp\Gov\Gov_PatentDB.mdb
+  1.4 Insert Gov patents from Gov\PatentDir to Gov\Gov_PatentDB.mdb
+    D:\demo\lwp>perl -s Patent.pl -Ogroup=Gov -Odb -ODir2DB Gov\PatentDir
+   If you only had the patent id list saved in file Gov\Gov_PatentNoList.txt
+    you should run:
+    d:\demo\lwp>perl -s Patent.pl -Ogroup=Gov -Odb -ODir2DB Gov\PatentDir
+   1163 patents in total. 只有下列錯誤訊息：
+    1). 準則運算式的資料類型不符合。
+      SQL=INSERT INTO TCitePatent (Year, Inventor, USclass, CountryNo, PatentNo, CiteP
+      atentNo) VALUES ('., 1884', null, '280/263', '4', '5678835', '8101')
+    2). 數值超出範圍 (null) 
+      SQL=INSERT INTO TCitePaper (PatentNo, Type, Year, Vol, StartPage, Author, 
+      PubTitle, JouTitle, OrgCitation) VALUES ('5712112','3','9999/01/01','144920',
+      '732','Garfinkel','Agrobacterium tumefaciens Mutants Affected in Crown Gall 
+      tumorigenesis and Octopine Catabolism','Journal of Bacter.',
+      'Garfinkel et al., "Agrobacterium tumefaciens Mutants Affected in Crown 
+      Gall tumorigenesis and Octopine Catabolism", 
+      Journal of Bacter., 144920:732-743 (Nov. 1980).')
+    3). 數值超出範圍 (null) 
+      SQL=INSERT INTO TCitePaper (PatentNo, Type, Year, Vol, StartPage, Author, PubTit
+      le, JouTitle, OrgCitation) VALUES ('5877013','10','1995/01/01','80324',null,null
+      ,null,null,'AC-P80324 (1995).')
+    4). 準則運算式的資料類型不符合。 
+      SQL=INSERT INTO TCitePatent (Year, Inventor, USclass, CountryNo, PatentNo, CiteP
+      atentNo) VALUES ('., 1885', null, '403/337', '4', '6155742', '9046')
+    5). 準則運算式的資料類型不符合
+      SQL=INSERT INTO TCitePatent (Year, Inventor, USclass, CountryNo, PatentNo, CiteP
+      atentNo) VALUES ('., 1906', null, null, '4', '6164208', '0026434')
+Step 2. get statistics from Gov\Gov_PatentDB.mdb
+    1)There are patents that do not belong to Gov, such as those with:Ltd., Inc.
+     => this problem was solved. So nubmer of patents is from 1230 to 1163.
+    2) Some owners need authority control.
+    3) The cited papers' journal titles seem to reveal the subjects of the patents.
+Step 3. 底下產生的專利，除了分段，每個分段做6個句子的摘要：
+   D:\demo\lwp>perl -s nanotube.pl -OPatSeg -Oabs Gov\PatentDir Gov\Gov_Seg_Abs6
+   Now change dir to d:\demo\File and see the d:\demo\File\run-log.txt
+
+
+On 2005/08/06
+1. Create wntool.pl to use WordNet to find the topic of a set of terms.
+
+On 2005/06/16
+1. Modify Patent.pm and Patent.ini to include ProxyServerURL setting
+2. Rewrite ClassifyCite.pl into a Perl module:ParseSciRef.pm so as to 
+   integrate the module into patent.pm.
+3. Modify PatentDB.pm to include the new updated Table TCitePaper to store the
+   parsed scientific references.
+4. Change Patent.pl to use PatentDB.pm and to inherit group from default group
+5. Download nanotube patents into Nano\Nano_PatentDB.mdb
+  D:\demo\lwp>perl -s Patent.pl -Ogroup=Nano -Odb -OPat2DB D:\Sam\papers\2005\IACIS\data\doccatlist1.txt
+   This patent:6287765 seems too large to be save in the database.
+6. Download NSC patents into NSC\NSC_PatentDB.mdb
+  perl -s Patent.pl -Ogroup=NSC -Odb -OPat2DB NSC\NSC_PatentNo.txt
+7. 對 SAM\Stem, SAMtool\SAM，只做淺的stem，不做深度stem。
+8. 修改或繼承 d:\demo\sam\wgtool\wgtool.pm ，使得dump keywords可以事先做，
+   然後都用這個分析，以節省時間。
+9. 修改wgtool，使其可以計算：
+      1、用「相關係數」計算：以顯示詞彙與該類別的「（正、負）相關性」
+         （含義：文件中出現某一詞彙時，聯想到某一類別的程度，或者
+             某一詞彙對某一類別的預測性，或者就是「類別特徵詞」、
+             「類別代表性詞彙」、「類別標題詞」）
+      2、MacroImportance(t, c) = TDFC x log(C/CF)/log(C)：
+      以顯示詞彙在該類別內的「重要性」
+        （含義：同一類別中，不同詞彙的個別重要性）
+         MicroImportance(t, c) = TFC x ICF
+      3、MacroProminence(t, c)=TDFC/Sum_over_C(TDFC)=recall
+         以顯示詞彙在該類別的「突出性」
+        （含義：同一詞彙在不同類別上的分佈狀況 或是 個別突出程度）
+      4. Precision
+      5. F-measure
+      6. average Correlation and F-measure
+10. CatSim.txt 似乎可以透露出不同年代，使用詞彙的重疊程度。
+還要把 "Primary Examiner"、"Attorney, Agent or Firm"解剖進到資料庫
+
+
+On 2005/06/15
+1. delete all the files in PatentDir
+2. Start to run the next command at around 2005/06/15 01:48:00
+   Patent.pl -Oref_pats NSC\NSC_PatentNo.txt > NSC\NSC_SciRefs.txt
+3. D:\demo\lwp>perl -s ClassifyCite.pl NSC_SciRefs.txt >NSC_SciRefs_2.txt
+   0 =>40  3 =>646 6 =>68 9 =>356 
+   1 =>157 4 =>28  7 =>43 10 =>105
+   2 =>70  5 =>144 8 =>14
+4. 底下產生的專利，除了分段，每個分段做6個句子的摘要：
+   D:\demo\lwp>perl -s nanotube.pl -OPatSeg -Oabs NSC\PatentDir	NSC\NSC_seg_abs6
+5. 底下產生專利的摘要部分
+   D:\demo\lwp>perl -s nanotube.pl -OPatSeg -Oseg=1 NSC\PatentDir NSC\NSC_abs
+6. 底下產生專利的的 Application:"Field of the Invention"
+   D:\demo\lwp>perl -s nanotube.pl -OPatSeg -Oseg=2 NSC\PatentDir NSC\NSC_app
+7. 底下產生專利的的 Task:"Background of the Invention"
+   D:\demo\lwp>perl -s nanotube.pl -OPatSeg -Oseg=3 NSC\PatentDir NSC\NSC_task
+
+
+On 2005/06/12
+1. Modify Patent.pm and Patent.pl to extract all the Scientific citations 
+   from the patents listed in a file into an output file:
+  Patent.pl -Oref_pats D:\Sam\papers\2005\IACIS\data\doccatlist1.txt > nanoSciRefs.txt
+2. Parse the Scientific citations from the above step.
+  D:\demo\lwp>perl -s ClassifyCite.pl nanoSciRefs.txt >nanoSciRefs_3.txt
+   0 =>9   3 =>330 6 =>34 9 =>50 
+   1 =>105 4 =>33  7 =>3  10 =>33
+   2 =>64  5 =>55  8 =>8 
+
+
+On 2005/01/12
+1. copy nanotube.pl from D:\Sam\papers\2005\u-IACIS_Patent\data to
+   d:\demo\lwp and run many commands. See
+   D:\Sam\papers\2005\IACIS\data\run_log.txt for details.
+
+On 2004/08/21
+1. Change Patent.pm to download and parse U.S. Patent Applicatoin.
+   Modified methods are:
+   - Parse_Patent()
+   - GetBackground_SubField() : for dealing with the leading paragraph number
+   - FilterSentence() : for dealing with the leading paragraph number
+2. Change Patent.pl to download U.S. Patent Application
+   modified functions are :
+   - &GetInput()
+   - &GetByPatNumber()
+   - &PatAbs()
+3. Add a new attribute in Patent.ini for downloading Patent Application
+   PatentAppNo_URL=
+4. Change index.html for downloading Patent Application by adding a new
+   attribute name: OPatApp
+5. Change SegWord.pm to allow long sentences
+   - change $this->{'SenMaxLength'} = 100; to $this->{'SenMaxLength'} = 300;
+6. Change SegWordPat.pm for better tokenization and sentence parsing
+   - &PrepareLists()
+   - &Tokenize()
+   - &FilterTerms()
+7. Change Stopword.pm and StopPatWord-eng.txt for deleting more stop words
+
+   

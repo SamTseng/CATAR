@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOFTPKG NAME="GD" VERSION="2,35,0,0">
+  <TITLE>GD</TITLE>
+  <ABSTRACT>Interface to Gd Graphics Library</ABSTRACT>
+  <AUTHOR>Lincoln Stein (lstein@cshl.org)</AUTHOR>
+  <IMPLEMENTATION>
+    <OS NAME="MSWin32" />
+    <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.8" />
+    <CODEBASE HREF="http://theoryx5.uwinnipeg.ca/ppms/x86/GD.tar.gz" />
+    <PROVIDE NAME="GD::" VERSION="2.35" />
+    <PROVIDE NAME="GD::Polyline" VERSION="0.2" />
+    <PROVIDE NAME="GD::Simple" />
+  </IMPLEMENTATION>
+</SOFTPKG>

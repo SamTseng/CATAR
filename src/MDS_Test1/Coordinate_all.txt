@@ -1,0 +1,23 @@
+# Created by: mds.exe, Version 1.16
+# Input file: MDS_Test1\SimPairs.txt
+# Method: Classical Multidimensional Scaling
+# Dimensions: 2
+# r = 1
+# Date: Sun Mar 08 08:53:29 2009
+
+2
+10 : 10µ§ :
+ 1.0693098e-017
+-1.9261767e-016
+20 : 7µ§ :
+-0.027714172
+ 0.49923133
+30 : 6µ§ :
+-0.49923133
+-0.027714172
+40 : 5µ§ :
+ 0.027714172
+-0.49923133
+50 : 4µ§ :
+ 0.49923133
+ 0.027714172

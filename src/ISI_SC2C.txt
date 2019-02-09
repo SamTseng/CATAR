@@ -1,0 +1,178 @@
+# You should change the Chinese into English for correct display in Excel
+Source Category	Field
+Automation & Control Systems	ENGINEERING
+Construction & Building Technology	ENGINEERING
+Electrochemistry	ENGINEERING
+Engineering, Biomedical	ENGINEERING
+Engineering, Chemical	ENGINEERING
+Engineering, Civil	ENGINEERING
+Engineering, Electrical & Electronic	ENGINEERING
+Engineering, Environmental	ENGINEERING
+Engineering, Geological	ENGINEERING
+Engineering, Industrial	ENGINEERING
+Engineering, Manufacturing	ENGINEERING
+Engineering, Marine	ENGINEERING
+Engineering, Mechanical	ENGINEERING
+Engineering, Ocean	ENGINEERING
+Engineering, Petroleum	ENGINEERING
+Instruments & Instrumentation	ENGINEERING
+Mechanics	ENGINEERING
+Metallurgy & Metallurgical Engineering	ENGINEERING
+Mining & Mineral Processing	ENGINEERING
+Spectroscopy	ENGINEERING
+Transportation Science & Technology	ENGINEERING
+Astronomy & Astrophysics	COSMETICS
+Engineering, Aerospace	COSMETICS
+Meteorology & Atmospheric Sciences	COSMETICS
+Chemistry, Analytical	CHEMISTRY
+Chemistry, Applied	CHEMISTRY
+Chemistry, Inorganic & Nuclear	CHEMISTRY
+Chemistry, Medicinal	CHEMISTRY
+Chemistry, Organic	CHEMISTRY
+Chemistry, Physical	CHEMISTRY
+Polymer Science	CHEMISTRY
+Biochemical Research Methods	LIFE SCIENCE
+Biochemistry & Molecular Biology	LIFE SCIENCE
+Biology	LIFE SCIENCE
+Biophysics	LIFE SCIENCE
+Biotechnology & Applied Microbiology	LIFE SCIENCE
+Cell Biology	LIFE SCIENCE
+Developmental Biology	LIFE SCIENCE
+Evolutionary Biology	LIFE SCIENCE
+Genetics & Heredity	LIFE SCIENCE
+Microbiology	LIFE SCIENCE
+Mycology	LIFE SCIENCE
+Paleontology	LIFE SCIENCE
+Parasitology	LIFE SCIENCE
+Reproductive Biology	LIFE SCIENCE
+Virology	LIFE SCIENCE
+Zoology	LIFE SCIENCE
+Biodiversity Conservation	ECOLOGY
+Ecology	ECOLOGY
+Environmental Sciences	ECOLOGY
+Geochemistry & Geophysics	ECOLOGY
+Geography, Physical	ECOLOGY
+Geology	ECOLOGY
+Limnology	ECOLOGY
+Marine & Freshwater Biology	ECOLOGY
+Mineralogy	ECOLOGY
+Oceanography	ECOLOGY
+Ornithology	ECOLOGY
+Water Resources	ECOLOGY
+Materials Science, Biomaterials	MATERIAL
+Materials Science, Ceramics	MATERIAL
+Materials Science, Characterization & Testing	MATERIAL
+Materials Science, Coatings & Films	MATERIAL
+Materials Science, Composites	MATERIAL
+Materials Science, Paper & Wood	MATERIAL
+Materials Science, Textiles	MATERIAL
+Nanoscience & Nanotechnology	MATERIAL
+Acoustics	PHYSICS
+Crystallography	PHYSICS
+Optics	PHYSICS
+Physics, Applied	PHYSICS
+Physics, Atomic, Molecular & Chemical	PHYSICS
+Physics, Condensed Matter	PHYSICS
+Physics, Fluids & Plasmas	PHYSICS
+Physics, Particles & Fields	PHYSICS
+Thermodynamics	PHYSICS
+Behavioral Sciences	SOCIAL SCIENCE
+Education, Scientific Disciplines	SOCIAL SCIENCE
+Health Care Sciences & Services	SOCIAL SCIENCE
+History & Philosophy Of Science	SOCIAL SCIENCE
+Psychology	SOCIAL SCIENCE
+Psychology, Experimental	SOCIAL SCIENCE
+Sport Sciences	SOCIAL SCIENCE
+Operations Research & Management Science	SOCIAL SCIENCE
+Critical Care Medicine	HEALTH
+Integrative & Complementary Medicine	HEALTH
+Public, Environmental & Occupational Health	HEALTH
+Energy & Fuels	ENERGY
+Nuclear Science & Technology	ENERGY
+Physics, Nuclear	ENERGY
+Imaging Science & Photographic Technology	INFO_COMM
+Remote Sensing	INFO_COMM
+Telecommunications	INFO_COMM
+Computer Science, Artificial Intelligence	INFO_COMM
+Computer Science, Cybernetics	INFO_COMM
+Computer Science, Hardware & Architecture	INFO_COMM
+Computer Science, Information Systems	INFO_COMM
+Computer Science, Interdisciplinary Applications	INFO_COMM
+Computer Science, Software Engineering	INFO_COMM
+Computer Science, Theory & Methods	INFO_COMM
+Mathematical & Computational Biology	INFO_COMM
+Engineering, Multidisciplinary	CROSS_DISCIPLINE
+Chemistry, Multidisciplinary	CROSS_DISCIPLINE
+Geosciences, Multidisciplinary	CROSS_DISCIPLINE
+Materials Science, Multidisciplinary	CROSS_DISCIPLINE
+Physics, Multidisciplinary	CROSS_DISCIPLINE
+Medical Informatics	CROSS_DISCIPLINE
+Microscopy	CROSS_DISCIPLINE
+Multidisciplinary Sciences	CROSS_DISCIPLINE
+Rehabilitation	CROSS_DISCIPLINE
+Robotics	CROSS_DISCIPLINE
+Agriculture, Multidisciplinary	CROSS_DISCIPLINE
+Mathematics, Interdisciplinary Applications	CROSS_DISCIPLINE
+Agricultural Economics & Policy	AGRICULTURE
+Agricultural Engineering	AGRICULTURE
+Agriculture, Dairy & Animal Science	AGRICULTURE
+Agronomy	AGRICULTURE
+Entomology	AGRICULTURE
+Fisheries	AGRICULTURE
+Food Science & Technology	AGRICULTURE
+Forestry	AGRICULTURE
+Horticulture	AGRICULTURE
+Nutrition & Dietetics	AGRICULTURE
+Plant Sciences	AGRICULTURE
+Soil Science	AGRICULTURE
+Veterinary Sciences	AGRICULTURE
+Mathematics	MATHEMATICS
+Mathematics, Applied	MATHEMATICS
+Physics, Mathematical	MATHEMATICS
+Statistics & Probability	MATHEMATICS
+Allergy	MEDICINE
+Anatomy & Morphology	MEDICINE
+Andrology	MEDICINE
+Anesthesiology	MEDICINE
+Cardiac & Cardiovascular Systems	MEDICINE
+Clinical Neurology	MEDICINE
+Dentistry, Oral Surgery & Medicine	MEDICINE
+Dermatology	MEDICINE
+Emergency Medicine	MEDICINE
+Endocrinology & Metabolism	MEDICINE
+Gastroenterology & Hepatology	MEDICINE
+Geriatrics & Gerontology	MEDICINE
+Hematology	MEDICINE
+Immunology	MEDICINE
+Infectious Diseases	MEDICINE
+Medical Ethics	MEDICINE
+Medical Laboratory Technology	MEDICINE
+Medicine, General & Internal	MEDICINE
+Medicine, Legal	MEDICINE
+Medicine, Research & Experimental	MEDICINE
+Neuroimaging	MEDICINE
+Neurosciences	MEDICINE
+Nursing	MEDICINE
+Obstetrics & Gynecology	MEDICINE
+Oncology	MEDICINE
+Ophthalmology	MEDICINE
+Orthopedics	MEDICINE
+Otorhinolaryngology	MEDICINE
+Pathology	MEDICINE
+Pediatrics	MEDICINE
+Peripheral Vascular Disease	MEDICINE
+Pharmacology & Pharmacy	MEDICINE
+Physiology	MEDICINE
+Psychiatry	MEDICINE
+Radiology, Nuclear Medicine & Medical Imaging	MEDICINE
+Respiratory System	MEDICINE
+Rheumatology	MEDICINE
+Substance Abuse	MEDICINE
+Surgery	MEDICINE
+Toxicology	MEDICINE
+Transplantation	MEDICINE
+Tropical Medicine	MEDICINE
+Urology & Nephrology	MEDICINE
+Education & Educational Research	EDUCATION
+Psychology, Educational	EDUCATION
+Information Science & Library Science	INFO_COMM

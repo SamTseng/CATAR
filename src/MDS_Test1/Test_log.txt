@@ -1,0 +1,14 @@
+D:\demo\STPIWG\src>perl -s Term_Trend.pl -Omap  MDS_Test1
+  It takes 0 seconds to cut tree having 0 records and 0 internal nodes
+mds.exe 2 MDS_Test1\SimPairs.txt > MDS_Test1\Coordinate.txt
+r = 1
+Number of title: 5, extra title: 0, coordinates: (5, 5)
+  It takes 0 seconds for MDS mapping
+  
+  
+D:\demo\STPIWG\src>perl -s Term_Trend.pl -Omap -Ounwant=10 MDS_Test1
+  It takes 0 seconds to cut tree having 0 records and 0 internal nodes
+mds.exe 2 MDS_Test1\SimPairs.txt > MDS_Test1\Coordinate.txt
+r = 1
+Number of title: 4, extra title: 0, coordinates: (4, 4)
+  It takes 0 seconds for MDS mapping

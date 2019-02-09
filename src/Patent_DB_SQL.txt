@@ -1,0 +1,239 @@
+-- This file is created by an online converter from access databases to MySQL 
+--	 at: http://www.mdb2mysql.com/
+-- The Views (Queries) are added by Sam Tseng on 2010/10/30
+--
+-- The Create commands need to be modified for accurate data types (auto-increment),
+--	 length limit, and index specification.
+--
+
+DROP TABLE Catalog;
+CREATE TABLE Catalog
+(
+	CID				varchar (40), 
+	CName			text (255), 
+	CDesc			varchar (256), 
+	CUID			varchar (40), 
+	CPID			varchar (40), 
+	CCTime			varchar (40)
+);
+
+DROP TABLE TAutoClass;
+CREATE TABLE TAutoClass
+(
+	PatentNo		varchar (32), 
+	PatentClass		varchar (100), 
+	ClassScore		int
+);
+
+DROP TABLE TCitePaper;
+CREATE TABLE TCitePaper
+(
+	ID				int, 
+	PatentNo		varchar (32), 
+	Type			int, 
+	Year			date, 
+	Vol				int, 
+	StartPage		int, 
+	Author			varchar (40), 
+	PubTitle		varchar (320), 
+	JouTitle		varchar (256), 
+	OrgCitation		varchar (510)
+);
+
+DROP TABLE TCitePatent;
+CREATE TABLE TCitePatent
+(
+	PatentNo		varchar (32), 
+	CitePatentNo	varchar (32), 
+	Year			date, 
+	Inventor		varchar (64), 
+	USclass			varchar (32), 
+	CountryNo		int
+);
+
+DROP TABLE TCountry;
+CREATE TABLE TCountry
+(
+	CountryNo		int, 
+	CountryName		varchar (128)
+);
+
+DROP TABLE TDescription;
+CREATE TABLE TDescription
+(
+	PatentNo		varchar (32), 
+	TypeNo			int, 
+	SectionTitle	varchar (256), 
+	Descript		text (255), 
+	Abstract		text (255)
+);
+
+DROP TABLE TFullText;
+CREATE TABLE TFullText
+(
+	PatentNo		varchar (32), 
+	Source			varchar (16), 
+	URL				varchar (510), 
+	UpdateDate		date, 
+	FullText		text (255)
+);
+
+DROP TABLE TOwner;
+CREATE TABLE TOwner
+(
+	PatentNo		varchar (32), 
+	Owner			varchar (128), 
+	OwnerType		varchar (2), 
+	City			varchar (32), 
+	State			varchar (32), 
+	CountryNo		int, 
+	Type			varchar (2)
+);
+
+DROP TABLE TPatentClass;
+CREATE TABLE TPatentClass
+(
+	PatentNo		varchar (32), 
+	PatentClass		varchar (32), 
+	CountryNo		int, 
+	IsMain			varchar (2)
+);
+
+DROP TABLE TPatentInfo;
+CREATE TABLE TPatentInfo
+(
+	PatentNo		varchar (32), 
+	GovernCountryNo	int, 
+	IssuedDate		date, 
+	Title			varchar (510), 
+	ApplyNo			varchar (32), 
+	ApplyDate		date, 
+	SearchField		varchar (256)
+);
+
+DROP TABLE TRelatedDescript;
+CREATE TABLE TRelatedDescript
+(
+	PatentNo1		varchar (32), 
+	PatentNo2		varchar (32), 
+	TypeNo			int
+);
+
+DROP TABLE TSeg;
+CREATE TABLE TSeg
+(
+	ID				varchar (100), 
+	SNO				varchar (60), 
+	FName			varchar (60), 
+	DName			text (255), 
+	Desc			text (255)
+);
+
+DROP TABLE Classify;
+CREATE TABLE Classify
+(
+	CTID			varchar (100), 
+	CID				varchar (100), 
+	NID				varchar (100), 
+	CType			int, 
+	WgScore			float
+);
+
+DROP TABLE CTree;
+CREATE TABLE CTree
+(
+	CTID			varchar (40), 
+	CTName			varchar (256), 
+	CTDesc			varchar (256), 
+	CTUID			varchar (40), 
+	CTCTime			varchar (40)
+);
+
+DROP TABLE TDescriptType;
+CREATE TABLE TDescriptType
+(
+	TypeNo			int, 
+	TypeName		varchar (128), 
+	Sequence		int
+);
+
+-- -- The following sectiton contains the View (Query) commonly used for the above tables.
+-- -- View (Query): Delete_TSeg
+-- DELETE * FROM TSeg;
+-- 
+-- -- View (Query): Insert_Into_TSeg
+-- INSERT INTO TSeg
+-- SELECT TPatentInfo.PatentNo AS ID, Descript AS [Desc], IssuedDate AS FName, Title AS DName, TPatentInfo.PatentNo AS SNo
+-- FROM TPatentInfo, TDescription
+-- WHERE TPatentInfo.PatentNo=TDescription.PatentNo And TypeNo=3;
+
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+-- View (Query):
+
+-- dumping data for table Catalog
+
+
+
+-- dumping data for table TAutoClass
+
+
+
+-- dumping data for table TCitePaper
+
+
+
+-- dumping data for table TCitePatent
+
+
+
+-- dumping data for table TCountry
+
+
+
+-- dumping data for table TDescription
+
+
+
+-- dumping data for table TFullText
+
+
+
+-- dumping data for table TOwner
+
+
+
+-- dumping data for table TPatentClass
+
+
+
+-- dumping data for table TPatentInfo
+
+
+
+-- dumping data for table TRelatedDescript
+
+
+
+-- dumping data for table TSeg
+
+
+
+-- dumping data for table Classify
+
+
+
+-- dumping data for table CTree
+
+
+
+-- dumping data for table TDescriptType
+
+
+

@@ -1,0 +1,12 @@
+The files using DBI->connect('dbi:ODBC:driver=Microsoft Access Driver ...
+are:
+
+Cluster.pl
+Cluster.pm
+ClusterDB.pm
+CiteAna.pl
+ISI.pl
+ISI_CR.pl
+tool.pl
+
+All are in sub InitDBMS() or sub InitDB(), except Cluster.pl.
