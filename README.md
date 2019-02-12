@@ -43,7 +43,9 @@ The steps described below are for analyzing patent documents (in HTML file forma
 3. **Duplicate an empty MS Access file**
 
     Under the CATAR\src folder in the DOS command line, run the copy file command, e.g.:
+    ```
     C:\CATAR\src> copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
+    ```
 
 
 4. **Set the DSN (Data Source Name)**
@@ -58,7 +60,7 @@ The steps described below are for analyzing patent documents (in HTML file forma
 
     If you still have difficulty in this step, google the usage of "ODBC Data Source Administrator". You should use the 32 bits version, not the 64 bits version.
 
-5. **Stat to run CATAR**:
+5. **Start to run CATAR**:
 
     Now you can run CATAR to download and parse the patent set, by running a command like this:
     ```
@@ -69,7 +71,7 @@ The steps described below are for analyzing patent documents (in HTML file forma
 
     Ignore the abnormal messages and **watch out for the failure messages which tell that some patents can not be downloaded**, due to network traffic or the USPTO server's latency. 
 
-    Do not worry for these failures. 
+    Do not worry about these failures. 
 
     **Just re-run the above command**. Those that have been downloaded will not be fetched again. Only those failed will be downloaded. You could run the same command as many times as you want, until no failure is reported.
 
