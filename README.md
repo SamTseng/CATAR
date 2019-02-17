@@ -52,7 +52,7 @@ The steps described below are for analyzing patent documents (in HTML file forma
 
     Double click the file: C:/Windows/SysWOW64/odbcad32.exe to open the 32 bits "ODBC Data Source Administrator" (ODSA).
 
-    Click on the "User DSN" Tab on the top of the ODSA window and then click "Add" on the right. 
+    Click on the "System DSN" Tab on the top of the ODSA window and then click "Add" on the right. 
 
     Then choose "Microsoft Access Driver (*.mdb)" and click on "Finish".
 
