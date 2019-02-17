@@ -1,0 +1,45 @@
+   中、英文斷詞、關鍵詞擷取、關聯詞擷取、重點摘要程式安裝說明
+			曾 元 顯 
+			2003/11/07
+
+註：此版本 SAMtool 與 SAM 不同之處：
+    1. 將原來 Stopword.pm 必須讀取 word/ 目錄裡的停用字、詞，改成在 
+       Stopword.pm 裡直接設定停用字、詞。
+    2. 將原來 Segword.pm 裡用到的 SAM/word/WL.db 與 SAM/word/WLWL.db 改成
+       直接讀 SegWord.pm 裡面的 __DATA__ 部份。
+    因此， SAMtool 不再依賴 word/ 目錄的存在。
+    
+
+一、安裝 Perl
+    Windows 平台，可從 http://www.activestate.com/
+    或 http://www.activestate.com/Products/Download/Register.plex?id=ActivePerl
+    下載。
+    Unix 平台，可從 http://www.cpan.org/ 下載。
+二、安裝 Perl 的 DB_FILE 模組
+    Windows 平台，在電腦連線的情況下，在 DOS 下輸入
+    ppm install DB_File
+    即可。註：從 http://www.activestate.com/ 得來的新版 Perl 也許已經有
+     DBM 模組了。可以先執行程式，如果有問題，再安裝此模組。
+    Unix 平台，請上 
+    http://www.cpan.org/modules/by-category/07_Database_Interfaces/DB_File/
+    下載最新。
+三、安裝斷詞程式
+    Windows 平台，將 SAMtool 目錄下的所有檔案 copy 到 Perl 安裝目錄下
+    的 site/lib。
+四、在 DOS 下執行
+    perl -s SegWord.pl Text_File.txt > result.html
+    即可看到結果。
+
+檔案說明：
+1. Stem.pm : 英文詞幹模組
+2. Stopword.pm : 中、英文停用詞模組
+3. Stopword_gen.pl : 將 word/ 裡面的
+	stophead.txt,     stoptail.txt,    stopmark.txt, 
+	stopword-chi.txt, stopword-eng.txt
+	轉成 &SetStopHash()，以便利取代原 Stopword.pm 讀取檔案的作法。
+4. SegWord.pm : 斷詞程式模組，用到 上面兩個模組，以及
+        WL.db : 詞庫檔，DB_FILE 格式
+        WLWL.db : 詞長（worl length）檔案，用來加快斷詞時詞彙比對的速度
+5. SegWord.html : SegWord.pm 的使用說明。
+6. SegWord.pl : SegWord.pm 的使用介面程式。
+7. SegWord_CGI.html : SegWord.pl 的瀏覽器介面。

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Stem -- A package for making stems of English words.</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#methods">Methods</a></li>
+	<ul>
+
+		<li><a href="#stem_lc()_:_convert_to_lowcase_and_make_stem_for_an_english_word"><code>stem_lc()</code> : convert to low-case and make stem for an English word</a></li>
+		<li><a href="#stem()_:_the_main_method_to_stem_an_english_word"><code>stem()</code> : the main method to stem an English word</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Stem -- A package (and/or a class) for making stems of English words.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    use Stem;
+    print stem('computers'), ', ', stem('computing'), &quot;\n&quot;;
+    print stem_lc('CompuTERs'), ', ', stem('cOMpUTING'), &quot;\n&quot;;
+    foreach (@ARGV) { push @A, stem($_); } print (join ', ', @A), &quot;\n&quot;;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<pre>
+    Stemmed words are often used as indexed terms in a search system.</pre>
+<pre>
+    The stem code here is a conversion from a C program described in  
+    &quot;Information Retrieval : Algorithm and Data Structures, 1992&quot;, 
+    which is actually Porter's stem algorithm.
+  
+Author:
+    Yuen-Hsien Tseng. 
+Date:
+    1998/04/28, last update: 2003/06/02</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods">Methods</a></h1>
+<p>
+</p>
+<h2><a name="stem_lc()_:_convert_to_lowcase_and_make_stem_for_an_english_word"><code>stem_lc()</code> : convert to low-case and make stem for an English word</a></h2>
+<pre>
+  $english_word_stem = stem_lc( $English_Word );</pre>
+<pre>
+  Convert an English word into a lower-case word and then convert the 
+  lower-case word into a word stem.</pre>
+<p>
+</p>
+<h2><a name="stem()_:_the_main_method_to_stem_an_english_word"><code>stem()</code> : the main method to stem an English word</a></h2>
+<pre>
+   $english_word_stem = stem( $english_word );</pre>
+<pre>
+   Convert an English word into a word stem. The input word should be 
+   in lower case for correct stemming.</pre>
+
+</body>
+
+</html>

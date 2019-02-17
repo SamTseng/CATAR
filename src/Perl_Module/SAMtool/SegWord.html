@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SegWord - Segment a given text, produce some good terms.</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#methods">Methods</a></li>
+	<ul>
+
+		<li><a href="#new()_:_the_construtor"><code>new()</code> : the construtor</a></li>
+		<li><a href="#init()_:_initialization_function"><code>Init()</code> : initialization function</a></li>
+		<li><a href="#value()_:_a_generic_set_and_get_method_for_all_scalar_attributes."><code>Value()</code> : A generic Set and Get method for all scalar attributes.</a></li>
+		<li><a href="#extractkeyphrase()_:_the_main_method_for_keywords/terms/abstaction"><code>ExtractKeyPhrase()</code> : the main method for keywords/terms/abstaction</a></li>
+		<li><a href="#keyphrase()_:_extract_keyword/keyphrase_from_a_given_text"><code>keyphrase()</code> : extract keyword/keyphrase from a given text</a></li>
+		<li><a href="#preparelists()_:_prepare_for_keyword/term/abstraction_extraction"><code>PrepareLists()</code> : prepare for keyword/term/abstraction extraction</a></li>
+		<li><a href="#concateterm()_:_merge_longer_terms_back_with_the_patented_algorithm"><code>ConcateTerm()</code> : merge longer terms back with the patented algorithm</a></li>
+		<li><a href="#clearphrase()_:_clear_extracted_phrases"><code>ClearPhrase()</code> : clear extracted phrases</a></li>
+		<li><a href="#clearword()_:_clear_extracted_index_terms"><code>ClearWord()</code> : clear extracted index terms</a></li>
+	</ul>
+
+	<li><a href="#methods_for_extracting_related_terms">methods for extracting related terms</a></li>
+	<ul>
+
+		<li><a href="#setsn()_:_created_inverted_structure_for_terms_and_sentence_numbers"><code>SetSN()</code> : created inverted structure for terms and sentence numbers</a></li>
+		<li><a href="#settermlink()_:_set_mutual_information_of_two_terms"><code>SetTermLink()</code> : Set mutual information of two terms</a></li>
+		<li><a href="#trimlink()_:_delete_excessive_term_links_for_graphical_display"><code>TrimLink()</code> : delete excessive term links for graphical display</a></li>
+	</ul>
+
+	<li><a href="#methods_for_extracting_abstracts">methods for extracting abstracts</a></li>
+	<ul>
+
+		<li><a href="#ranksenlist()_:_rank_sentences_in_terms_of_keyword_frequency"><code>RankSenList()</code> : rank sentences in terms of keyword frequency</a></li>
+	</ul>
+
+	<li><a href="#segmenting_methods">segmenting methods</a></li>
+	<ul>
+
+		<li><a href="#tokenize()_:_tokenize_the_given_text_for_processing"><code>Tokenize()</code> : tokenize the given text for processing</a></li>
+		<li><a href="#segment()_:_segment_the_give_text_by_longest_match_with_a_dictionary"><code>segment()</code> : segment the give text by longest match with a dictionary</a></li>
+		<li><a href="#processunknown()_:_process_terms_unknown_to_a_lexicon"><code>ProcessUnKnown()</code> : process terms unknown to a lexicon</a></li>
+		<li><a href="#sethashes()_:_set_hashes_for_chinese_text_segmentation"><code>SetHashes()</code> : Set hashes for Chinese text segmentation</a></li>
+	</ul>
+
+	<li><a href="#_tools_">- Tools -</a></li>
+	<ul>
+
+		<li><a href="#createdicdbm()_:_create_dbm_files_from_a_lexicon_in_text"><code>CreateDicDBM()</code> : Create DBM files from a lexicon in text</a></li>
+		<li><a href="#createtps()_:_create_a_termpartofspeech_file"><code>CreateTPS()</code> : create a term-part-of-speech file</a></li>
+		<li><a href="#insertspace()_:_insert_a_space_between_each_character_in_a_text"><code>InsertSpace()</code> : insert a space between each character in a text</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<pre>
+  SegWord - Segment a given text, produce some good terms.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    use SAMtool::SegWord;
+    $seg = SegWord-&gt;new( {'WantRT'=&gt;1, 'UseDic'=&gt;0} );</pre>
+<pre>
+    $seg-&gt;Value('WantRT', 0); # set WantRT to 0
+    $True_or_False = $seg-&gt;Value('WantRT'); # get WantRT</pre>
+<pre>
+    $rSegText = $seg-&gt;segment( $text ); # return a list of segment words</pre>
+<pre>
+    $ref_to_tokenized_text = $seg-&gt;Tokenize( $text ); # return a ref to a list
+    $rSegText = $seg-&gt;segment( $ref_to_tokenized_text );</pre>
+<pre>
+    ($rIWL, $rIFL, $rWL, $rFL, $rName, $rSWL, $rSFL, $rSN, 
+     $rLinkValue, $rSenList) = $seg-&gt;ExtractKeyPhrase( $text_or_ref_to_text );</pre>
+<pre>
+    $rSentenceRank = $seg-&gt;RankSenList($rWL, $rFL, $rSN, $rSenList);
+    print &quot;The first rank sentence is $rSenList-&gt;[ $rSentenceRank-&gt;[0] ]\n&quot;;</pre>
+<pre>
+    $rNewLinkValue = $seg-&gt;TrimLink($rLinkValue, $rFL);</pre>
+<pre>
+    Next are for creaing some auxiliary files for segmenting Chinese words.
+    
+    use SAMtool::SegWord;
+    &amp;SegWord::InsertSpace('stopword-chi.txt', 'new-stopword-chi.txt');
+    &amp;SegWord::CreateTPS($TermPosFile, $TPSDBfile);
+    &amp;SegWord::CreateDicDBM('word/wordlist.txt', 'WL.db', 'WLWL.db');</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<pre>
+    This module is to segment a string a text and return key terms, 
+    indexed terms, identified names, analyzed related terms, 
+    segmented sentences, and ranked sentences. 
+    
+Author:
+    Yuen-Hsien Tseng.  All rights reserved.
+    
+Date:
+    1998/06/13</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods">Methods</a></h1>
+<p>
+</p>
+<h2><a name="new()_:_the_construtor"><code>new()</code> : the construtor</a></h2>
+<pre>
+  $obj = segWord-&gt;new( {'Attribute_Name'=&gt;'Attribute_Value',...} );</pre>
+<pre>
+  Attributes in an object in Perl is often saved in a referece to a hash.
+  A reference to a no-name hash is donated as '{ }', as shown in 
+    SegWord-&gt;new( { 'Attribute_Name'=&gt;'Attribute_Value' }  );</pre>
+<pre>
+  The attributes in the object can be directly given in the constructor's 
+  argumnets in a key=&gt;value format. 
+  The attribute names and values are:
+    WordDir(path in a file system),
+    UseDic(1 or 0), WantRT(1 or 0), MaxRT(positive int), MaxKeyWordLen(int),
+    MinKWlevel(positive int), MinKW(postive int), SenMaxLength(positive int),
+    MIthreshold(float), NorMIthreshold(float).</pre>
+<pre>
+  Omitted attribute pairs will be given default values.
+  
+  Two files are required before this class can be used: 
+    1. WL.db
+    2. WLWL.db
+  The 2 files are created from 'wordlist.txt' using the tools provided
+  in this class. 
+  In the earlier version (in SAM), all these data files should be saved 
+  in a directory specified in the attribute: 'WordDir'. (Normally set 'WordDir' 
+  to 'SAM/word' and  put these data files in 'SAM/word' under the current 
+  directory or under one of the directories in @INC.)
+  But in this version (SAMtool), the 'WordDir' attribute is no longer necessary
+  since the only 2 data file WL.db and WLWL.db are placed under the same 
+  directory where SAMtool is installed.</pre>
+<p>
+</p>
+<h2><a name="init()_:_initialization_function"><code>Init()</code> : initialization function</a></h2>
+<pre>
+  $seg-&gt;Init(); or $seg-&gt;Init( { 'WordDir'=&gt;'word', 'WantRT'=&gt;1 } );</pre>
+<pre>
+  Initialize some variables in this package by reading some files 
+  given in new().</pre>
+<pre>
+  If the variables are set in &amp;new(), you don't need to call this method.</pre>
+<pre>
+  If in &amp;new(), you set no variables, you should call this method
+  to set the variables.</pre>
+<pre>
+  Or even if in &amp;new() you have already set some variables, you can still 
+  redefine these variables by calling this method with arguments, like this:
+    $seg-&gt;Init( {
+                'DicDBfile'  =&gt; 'WL.db'
+                'DicWLfile'  =&gt; 'WLWL.db'
+    } );</pre>
+<pre>
+    &amp;SetWLHash(\%DIC, \%WLen) if $this-&gt;{'UseDic'};
+# Next is reserved for future segmentation by POS
+#    $this-&gt;{'TPSDBfile'} = 'TPS.db' if not defined $this-&gt;{'TPSDBfile'};
+#    tie(%TermPos,'DB_File',&quot;$TPSDBfile&quot;, O_RDONLY, 0, $DB_BTREE)
+#       ||(print &quot;Err:$!&quot; and die $!);
+    $this-&gt;SetHashes();
+}</pre>
+<p>
+</p>
+<h2><a name="value()_:_a_generic_set_and_get_method_for_all_scalar_attributes."><code>Value()</code> : A generic Set and Get method for all scalar attributes.</a></h2>
+<pre>
+  This method is a generic Set and Get. 
+  Examples: 
+      $seg-&gt;Value('WantRT', 0);
+      $True_or_False = $seg-&gt;Value('WantRT'); # get WantRT
+  All scalar attributes should work. Consult new() for all possible attributes.</pre>
+<p>
+</p>
+<h2><a name="extractkeyphrase()_:_the_main_method_for_keywords/terms/abstaction"><code>ExtractKeyPhrase()</code> : the main method for keywords/terms/abstaction</a></h2>
+<pre>
+  ($rIWL, $rIFL, $rWL, $rFL, $rName, $rSWL, $rSFL, $rSN, $rLinkValue, 
+  $rSenList) = $seg-&gt;ExtractKeyPhrase( $text or $ref_to_segmented_text );</pre>
+<pre>
+  Given a text or a ref to a segmented text array, return key terms, 
+    indexed terms, identified names, analyzed related terms, 
+    segmented sentences, and ranked sentences.</pre>
+<p>
+</p>
+<h2><a name="keyphrase()_:_extract_keyword/keyphrase_from_a_given_text"><code>keyphrase()</code> : extract keyword/keyphrase from a given text</a></h2>
+<pre>
+  ($rTerm, $rSenList) = $seg-&gt;keyphrase( $text or $ref_to_segmented_text );</pre>
+<pre>
+  Given a text or a ref to a text, return extracted key-phrases, sentences in a
+  list, and inverted sentence list (word=&gt;&quot;Sentence_no1 Sentence_no2 ...&quot;)</pre>
+<p>
+</p>
+<h2><a name="preparelists()_:_prepare_for_keyword/term/abstraction_extraction"><code>PrepareLists()</code> : prepare for keyword/term/abstraction extraction</a></h2>
+<pre>
+  ($rWordList, $rWords, $rSenList, $CWC, $EWC) = $seg-&gt;PrepareLists( $text );</pre>
+<pre>
+  Given a segmented text, accumulate the word count, prepare the WordList for
+  keyword extraction, prepare the sentence list for related term analysis and
+  abstract extraction.</pre>
+<p>
+</p>
+<h2><a name="concateterm()_:_merge_longer_terms_back_with_the_patented_algorithm"><code>ConcateTerm()</code> : merge longer terms back with the patented algorithm</a></h2>
+<pre>
+  $rFL = $seg-&gt;ConcateTerm($rWordList, $rWords, $CWC, $EWC);</pre>
+<pre>
+  Given a prepare word list and word count, merge token back to get 
+  (multi-token) key-phrases, using the patented algorithm developed 
+  by Yuen-Hsien Tseng (Sam).</pre>
+<p>
+</p>
+<h2><a name="clearphrase()_:_clear_extracted_phrases"><code>ClearPhrase()</code> : clear extracted phrases</a></h2>
+<pre>
+  ($rWL, $rFL) = $seg-&gt;ClearPhrase( $rFL );</pre>
+<pre>
+  Given a referece to a hash of extracted phrases, delete unreasonable terms</pre>
+<p>
+</p>
+<h2><a name="clearword()_:_clear_extracted_index_terms"><code>ClearWord()</code> : clear extracted index terms</a></h2>
+<pre>
+ ($rSWL, $rSFL) = $seg-&gt;ClearWord( $rSWL );</pre>
+<pre>
+  Given a text or a reference to a segmented text, return
+  reasonable segmented terms</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods_for_extracting_related_terms">methods for extracting related terms</a></h1>
+<p>
+</p>
+<h2><a name="setsn()_:_created_inverted_structure_for_terms_and_sentence_numbers"><code>SetSN()</code> : created inverted structure for terms and sentence numbers</a></h2>
+<pre>
+  $rSN = $seg-&gt;SetSN($rRWL, $rSenList);</pre>
+<pre>
+  Given a (candidate) related word list and a sentence list, create a inverted
+  hast structure of &quot;word=&gt;sentence_no1 sentence_no2 ...&quot; for later fast
+  analysis of related terms.</pre>
+<p>
+</p>
+<h2><a name="settermlink()_:_set_mutual_information_of_two_terms"><code>SetTermLink()</code> : Set mutual information of two terms</a></h2>
+<pre>
+  $rLinkValue = $seg-&gt;SetTermLink($rWL, $rSN, $rSenList);</pre>
+<pre>
+  Set mutual information of two terms, whose mi &gt; threshold</pre>
+<p>
+</p>
+<h2><a name="trimlink()_:_delete_excessive_term_links_for_graphical_display"><code>TrimLink()</code> : delete excessive term links for graphical display</a></h2>
+<pre>
+  $rNewLinkValue = $seg-&gt;TrimLink($rLinkValue, $rFL);</pre>
+<pre>
+  Trim links of related terms for concise display.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods_for_extracting_abstracts">methods for extracting abstracts</a></h1>
+<p>
+</p>
+<h2><a name="ranksenlist()_:_rank_sentences_in_terms_of_keyword_frequency"><code>RankSenList()</code> : rank sentences in terms of keyword frequency</a></h2>
+<pre>
+  $rSentenceRank = $seg-&gt;RankSenList($rWL, $rFL, $rSN, $rSenList);</pre>
+<pre>
+  Given keyword list in @$rWL, %$rFL,
+  the sentence number for which a term occurs, represented in %$rSN, 
+  compute which sentence contains most keywords listed in @$rWL.
+  Rank the sentences according to accumulated frequencies of the keywords
+  occur in the sentences.
+  Return a reference to an array (a list) of ranked sentence numbers.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="segmenting_methods">segmenting methods</a></h1>
+<pre>
+  Next methods are for segmenting Chinese words. These methods are those
+  that needs to be re-implemented if you have another way of segmenting
+  Chinese words.</pre>
+<p>
+</p>
+<h2><a name="tokenize()_:_tokenize_the_given_text_for_processing"><code>Tokenize()</code> : tokenize the given text for processing</a></h2>
+<pre>
+  $rTokenList = $seg-&gt;Tokenize( $text );</pre>
+<pre>
+  Given a text string, parse it into all 1-character (1-word) token array.</pre>
+<p>
+</p>
+<h2><a name="segment()_:_segment_the_give_text_by_longest_match_with_a_dictionary"><code>segment()</code> : segment the give text by longest match with a dictionary</a></h2>
+<pre>
+  $rSegText = $seg-&gt;segment($text)|$seg-&gt;segment($ref_to_tokenized_text);</pre>
+<pre>
+  Given a text or a reference to a tokenized text array,
+  return a reference to an array where the text is segmented in that array.
+  
+  This method is the main method called for segmenting Chinese words.
+  It use %Dic, and %WLen for longest-first dictionary word matching.
+  It then use some other hashes for unknown word processing.</pre>
+<p>
+</p>
+<h2><a name="processunknown()_:_process_terms_unknown_to_a_lexicon"><code>ProcessUnKnown()</code> : process terms unknown to a lexicon</a></h2>
+<pre>
+  $seg-&gt;ProcessUnKnown($rUnKnown, $rSegText);</pre>
+<pre>
+  Given @UnKnown and @SegText, process unknown words and put the result
+  back to @SegText and then empty @Unknown if the unknown becomes known.
+  
+  use class hashes : %CNumbers, %CASCII, %CForeign, %CSurname, %CSurname2,
+                     %UnCommonSurname, %CNotName
+  Set object variable : $seg-&gt;{'Name'};</pre>
+<p>
+</p>
+<h2><a name="sethashes()_:_set_hashes_for_chinese_text_segmentation"><code>SetHashes()</code> : Set hashes for Chinese text segmentation</a></h2>
+<pre>
+  $seg-&gt;SetHashes();</pre>
+<pre>
+  Set class global : %CNumbers, %CASCII, %CForeign, %CSurname, %CSurname2,
+                     %UnCommonSurname, %CNotName
+  These hashes are used by &amp;ProcessUnKnown().</pre>
+<p>
+</p>
+<hr />
+<h1><a name="_tools_">--- Tools ---</a></h1>
+<pre>
+  Next methods are tools for creating auxiliary (DBM) files.
+  These methods are not used when segmenting words, but the files they
+  created are used when segmenting and cleaning words.</pre>
+<p>
+</p>
+<h2><a name="createdicdbm()_:_create_dbm_files_from_a_lexicon_in_text"><code>CreateDicDBM()</code> : Create DBM files from a lexicon in text</a></h2>
+<pre>
+  use SegWord; &amp;SegWord::CreateDicDBM( $WordList, $DicDBfile, $DicWLfile );</pre>
+<pre>
+  Given a Chinese word list (e.g., wordlist.txt), create a dictionary DBM file
+  (WL.db) and a word length DBM file (WLWL.db) for later fast segmentation.</pre>
+<p>
+</p>
+<h2><a name="createtps()_:_create_a_termpartofspeech_file"><code>CreateTPS()</code> : create a term-part-of-speech file</a></h2>
+<pre>
+  use SegWord; &amp;SegWord::CreateTPS($TermPosFile, $TPSDBfile);</pre>
+<pre>
+  Given a Term-Part-of-speech file, create a DBM file
+  perl -s segword.pm -TPS TermPos.txt =&gt; will create a TPS.db file</pre>
+<p>
+</p>
+<h2><a name="insertspace()_:_insert_a_space_between_each_character_in_a_text"><code>InsertSpace()</code> : insert a space between each character in a text</a></h2>
+<pre>
+  use SegWord; &amp;SegWord::InsertSpace($InFile, $OutFile);</pre>
+<pre>
+  Given a stop word file ($InFile, say stopword-chi.txt), insert a space 
+  between each character of the stop word and delete duplicate terms and then
+  print out the results to $OutFile</pre>
+
+</body>
+
+</html>

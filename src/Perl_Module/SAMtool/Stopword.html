@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Stopword -- A class for handling stop words.</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#methods">Methods</a></li>
+	<ul>
+
+		<li><a href="#new()_:_the_constructor"><code>new()</code> : the constructor</a></li>
+		<li><a href="#isstophead()_:_test_if_a_term_is_in_the_stop_head_dictionary"><code>IsStopHead()</code> : test if a term is in the stop head dictionary</a></li>
+		<li><a href="#isstoptail()_:_test_if_a_term_is_in_the_stop_tail_dictionary"><code>IsStopTail()</code> : test if a term is in the stop tail dictionary</a></li>
+		<li><a href="#iscsw()_:_test_if_a_term_is_in_the_chinese_stop_word_dictionary"><code>IsCSW()</code> : test if a term is in the Chinese Stop word dictionary</a></li>
+		<li><a href="#isesw()_:_test_if_a_term_is_in_the_english_stop_word_dictionary"><code>IsESW()</code> : test if a term is in the English stop word dictionary</a></li>
+		<li><a href="#isemark()_:_test_if_a_term_is_an_english_punctuation_mark"><code>IsEmark()</code> : test if a term is an English punctuation mark</a></li>
+		<li><a href="#iscmark()_:_test_if_a_term_is_a_chinese_punctuation_mark"><code>IsCmark()</code> : test if a term is a Chinese punctuation mark</a></li>
+		<li><a href="#addstophead()_:_add_a_term_to_the_stop_head_dictionary"><code>AddStopHead()</code> : add a term to the stop head dictionary</a></li>
+		<li><a href="#addstoptail()_:_add_a_term_to_the_stop_tail_dictionary"><code>AddStopTail()</code> : add a term to the stop tail dictionary</a></li>
+		<li><a href="#addcsw()_:_add_a_term_to_the_chinese_stop_word_dictionary"><code>AddCSW()</code> : add a term to the Chinese stop word dictionary</a></li>
+		<li><a href="#addesw()_:_add_a_term_to_the_english_stop_word_dictionary"><code>AddESW()</code> : add a term to the English stop word dictionary</a></li>
+		<li><a href="#addemark()_:_add_a_term_to_the_english_punctuation_mark_dictionary"><code>AddEmark()</code> : add a term to the English punctuation mark dictionary</a></li>
+		<li><a href="#addcmark()_:_add_a_term_to_the_chinese_punctuation_mark_dictionary"><code>AddCmark()</code> : add a term to the Chinese punctuation mark dictionary</a></li>
+		<li><a href="#delstophead()_:_delete_a_term_from_the_stop_head_dictionary"><code>DelStopHead()</code> : delete a term from the stop head dictionary</a></li>
+		<li><a href="#delstoptail()_:_delete_a_term_from_the_stop_tail_dictionary"><code>DelStopTail()</code> : delete a term from the stop tail dictionary</a></li>
+		<li><a href="#delcsw()_:_delete_a_term_from_the_chinese_stop_word_dictionary"><code>DelCSW()</code> : delete a term from the Chinese stop word dictionary</a></li>
+		<li><a href="#delesw()_:_delete_a_term_from_the_english_stop_word_dictionary"><code>DelESW()</code> : delete a term from the English stop word dictionary</a></li>
+		<li><a href="#delemark()_:_delete_a_mark_from_the_english_punctuation_dictionary"><code>DelEmark()</code> : delete a mark from the English punctuation dictionary</a></li>
+		<li><a href="#delcmark()_:_delete_a_mark_from_the_chinese_punctuation_dictionary"><code>DelCmark()</code> : delete a mark from the Chinese punctuation dictionary</a></li>
+		<li><a href="#getstophead()_:_get_a_reference_to_the_stop_head_hash_(dictionary)"><code>GetStopHead()</code> : get a reference to the stop head hash (dictionary)</a></li>
+		<li><a href="#getstoptail()_:_get_a_reference_to_the_stop_tail_hash_(dictionary)"><code>GetStopTail()</code> : get a reference to the stop tail hash (dictionary)</a></li>
+		<li><a href="#getcsw()_:_get_a_reference_to_the_chinese_stop_word_hash_(dictionary)"><code>GetCSW()</code> : get a reference to the Chinese stop word hash (dictionary)</a></li>
+		<li><a href="#getesw()_:_get_a_reference_to_the_english_stop_word_hash_(dictionary)"><code>GetESW()</code> : get a reference to the English stop word hash (dictionary)</a></li>
+		<li><a href="#getemark()_:_get_a_reference_to_the_english_punctuation_mark_hash"><code>GetEmark()</code> : get a reference to the English punctuation mark hash</a></li>
+		<li><a href="#getcmark()_:_get_a_reference_to_the_chinese_punctuation_mark_hash"><code>GetCmark()</code> : get a reference to the Chinese punctuation mark hash</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Stopword -- A class for handling stop words.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    use Stopword;
+    $Stop = Stopword-&gt;new( );
+    $Stop-&gt;AddESW('font'); # add 'font' as an English Stop word
+    $Stop-&gt;AddCSW('牽 涉'); # add '牽 涉' as a Chinese Stop word
+    $Stop-&gt;AddEmark(&quot;\t&quot;); # add &quot;\t&quot; as an English punctuation mark
+    $Stop-&gt;AddCmark('﹗'); # add '﹗' as a Chinese punctuation mark
+    $Stop-&gt;AddStopHead('逐'); # add '逐' as a Chinese stop head character
+    $Stop-&gt;AddStopTail('遂'); # add '遂' as a Chinese stop tail character
+    $Stop-&gt;DelESW('font'); # delete 'font' as an English Stop word
+    $Stop-&gt;DelCSW('牽 涉'); # delete '牽 涉' as a Chinese Stop word
+    $Stop-&gt;DelEmark(&quot;\t&quot;); # delete &quot;\t&quot; as an English punctuation mark
+    $Stop-&gt;DelCmark('﹗'); # delete '﹗' as a Chinese punctuation mark
+    $Stop-&gt;DelStopHead('逐'); # delete '逐' as a Chinese stop head character
+    $Stop-&gt;DelStopTail('遂'); # delete '遂' as a Chinese stop tail character
+    if ($Stop-&gt;IsESW('the')) { print &quot;'the'  is an English Stop Word\n&quot;; }
+    if ($Stop-&gt;IsCSW('但 是')) { print &quot;'但 是' is a Chinese Stop Word\n&quot;; }
+    if ($Stop-&gt;IsEmark(',')) { print &quot;',' is an English punctuation mark\n&quot;; }
+    if ($Stop-&gt;IsCmark('，')) { print &quot;'，' is a Chinese punctuation mark\n&quot;; }
+    if ($Stop-&gt;IsStopHead(substr('第 五 號', 0, 2))) { 
+        print &quot;'第' is a Chinese Stop Head Character\n&quot;; }
+    if ($Stop-&gt;IsStopTail(substr('第 五 日', 6, 2))) { 
+        print &quot;'日' is a Chinese Stop Tail Character\n&quot;; }
+    print &quot;English Stop Words: &quot;, (join ', ', $Stop-&gt;GetESW()), &quot;\n&quot;, 
+        &quot;Chinese Stop Words: &quot;, (join ', ', $Stop-&gt;GetCSW()), &quot;\n&quot;, 
+        &quot;English puntuation marks: &quot;, (join ', ', $Stop-&gt;GetEmark()), &quot;\n&quot;, 
+        &quot;Chinese puntuation marks: &quot;, (join ', ', $Stop-&gt;GetCmark()), &quot;\n&quot;, 
+        &quot;Chinese stop head characters: &quot;, (join ', ', $Stop-&gt;GetStopHead()), &quot;\n&quot;, 
+        &quot;Chinese stop tail characters: &quot;, (join ', ', $Stop-&gt;GetStopTail()), &quot;\n&quot;;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<pre>
+    Stop words are often used as in a search engine to filter out 
+    non-semantic-bearing terms.
+  
+Author:
+    Yuen-Hsien Tseng. 
+Date:
+    1998/04/28, last update: 2003/06/02, 2003/11/07</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods">Methods</a></h1>
+<p>
+</p>
+<h2><a name="new()_:_the_constructor"><code>new()</code> : the constructor</a></h2>
+<pre>
+  $Stop = Stopword-&gt;new( {'Attribute_Name'=&gt;'Attribute_Value', ... } );</pre>
+<p>
+</p>
+<h2><a name="isstophead()_:_test_if_a_term_is_in_the_stop_head_dictionary"><code>IsStopHead()</code> : test if a term is in the stop head dictionary</a></h2>
+<pre>
+  $True_Or_False = $stop-&gt;IsStopHead( $term );</pre>
+<p>
+</p>
+<h2><a name="isstoptail()_:_test_if_a_term_is_in_the_stop_tail_dictionary"><code>IsStopTail()</code> : test if a term is in the stop tail dictionary</a></h2>
+<pre>
+  $True_Or_False = $stop-&gt;IsStopTail( $term );</pre>
+<p>
+</p>
+<h2><a name="iscsw()_:_test_if_a_term_is_in_the_chinese_stop_word_dictionary"><code>IsCSW()</code> : test if a term is in the Chinese Stop word dictionary</a></h2>
+<pre>
+  $True_Or_False = $stop-&gt;IsCSW( $term );</pre>
+<p>
+</p>
+<h2><a name="isesw()_:_test_if_a_term_is_in_the_english_stop_word_dictionary"><code>IsESW()</code> : test if a term is in the English stop word dictionary</a></h2>
+<pre>
+  $True_Or_False = $stop-&gt;IsWSW( $term );</pre>
+<p>
+</p>
+<h2><a name="isemark()_:_test_if_a_term_is_an_english_punctuation_mark"><code>IsEmark()</code> : test if a term is an English punctuation mark</a></h2>
+<pre>
+  $True_Or_False = $stop-&gt;IsEmark( $term );</pre>
+<p>
+</p>
+<h2><a name="iscmark()_:_test_if_a_term_is_a_chinese_punctuation_mark"><code>IsCmark()</code> : test if a term is a Chinese punctuation mark</a></h2>
+<pre>
+  $True_Or_False = $stop-&gt;IsCmark( $term );</pre>
+<p>
+</p>
+<h2><a name="addstophead()_:_add_a_term_to_the_stop_head_dictionary"><code>AddStopHead()</code> : add a term to the stop head dictionary</a></h2>
+<pre>
+  $stop-&gt;AddStopHead( $term );</pre>
+<p>
+</p>
+<h2><a name="addstoptail()_:_add_a_term_to_the_stop_tail_dictionary"><code>AddStopTail()</code> : add a term to the stop tail dictionary</a></h2>
+<pre>
+  $stop-&gt;AddStopTail( $term );</pre>
+<p>
+</p>
+<h2><a name="addcsw()_:_add_a_term_to_the_chinese_stop_word_dictionary"><code>AddCSW()</code> : add a term to the Chinese stop word dictionary</a></h2>
+<pre>
+  $stop-&gt;AddCSW( $term );</pre>
+<p>
+</p>
+<h2><a name="addesw()_:_add_a_term_to_the_english_stop_word_dictionary"><code>AddESW()</code> : add a term to the English stop word dictionary</a></h2>
+<pre>
+  $stop-&gt;AddESW( $term );</pre>
+<p>
+</p>
+<h2><a name="addemark()_:_add_a_term_to_the_english_punctuation_mark_dictionary"><code>AddEmark()</code> : add a term to the English punctuation mark dictionary</a></h2>
+<pre>
+  $stop-&gt;AddEmark( $term );</pre>
+<p>
+</p>
+<h2><a name="addcmark()_:_add_a_term_to_the_chinese_punctuation_mark_dictionary"><code>AddCmark()</code> : add a term to the Chinese punctuation mark dictionary</a></h2>
+<pre>
+  $stop-&gt;AddCmark( $term );</pre>
+<p>
+</p>
+<h2><a name="delstophead()_:_delete_a_term_from_the_stop_head_dictionary"><code>DelStopHead()</code> : delete a term from the stop head dictionary</a></h2>
+<pre>
+  $stop-&gt;DelStopHead( $term );</pre>
+<p>
+</p>
+<h2><a name="delstoptail()_:_delete_a_term_from_the_stop_tail_dictionary"><code>DelStopTail()</code> : delete a term from the stop tail dictionary</a></h2>
+<pre>
+  $stop-&gt;DelStopTail( $term );</pre>
+<p>
+</p>
+<h2><a name="delcsw()_:_delete_a_term_from_the_chinese_stop_word_dictionary"><code>DelCSW()</code> : delete a term from the Chinese stop word dictionary</a></h2>
+<pre>
+  $stop-&gt;DelCSW( $term );</pre>
+<p>
+</p>
+<h2><a name="delesw()_:_delete_a_term_from_the_english_stop_word_dictionary"><code>DelESW()</code> : delete a term from the English stop word dictionary</a></h2>
+<pre>
+  $stop-&gt;DelESW( $term );</pre>
+<p>
+</p>
+<h2><a name="delemark()_:_delete_a_mark_from_the_english_punctuation_dictionary"><code>DelEmark()</code> : delete a mark from the English punctuation dictionary</a></h2>
+<pre>
+  $stop-&gt;DelEmark( $term );</pre>
+<p>
+</p>
+<h2><a name="delcmark()_:_delete_a_mark_from_the_chinese_punctuation_dictionary"><code>DelCmark()</code> : delete a mark from the Chinese punctuation dictionary</a></h2>
+<pre>
+  $stop-&gt;DelCmark( $term );</pre>
+<p>
+</p>
+<h2><a name="getstophead()_:_get_a_reference_to_the_stop_head_hash_(dictionary)"><code>GetStopHead()</code> : get a reference to the stop head hash (dictionary)</a></h2>
+<pre>
+  $rStopHead = $stop-&gt;GetStopHead( );</pre>
+<p>
+</p>
+<h2><a name="getstoptail()_:_get_a_reference_to_the_stop_tail_hash_(dictionary)"><code>GetStopTail()</code> : get a reference to the stop tail hash (dictionary)</a></h2>
+<pre>
+  $rStopTail = $stop-&gt;GetStopTail( );</pre>
+<p>
+</p>
+<h2><a name="getcsw()_:_get_a_reference_to_the_chinese_stop_word_hash_(dictionary)"><code>GetCSW()</code> : get a reference to the Chinese stop word hash (dictionary)</a></h2>
+<pre>
+  $rCSW = $stop-&gt;GetCSW( );</pre>
+<p>
+</p>
+<h2><a name="getesw()_:_get_a_reference_to_the_english_stop_word_hash_(dictionary)"><code>GetESW()</code> : get a reference to the English stop word hash (dictionary)</a></h2>
+<pre>
+  $rESW = $stop-&gt;GetESW( );</pre>
+<p>
+</p>
+<h2><a name="getemark()_:_get_a_reference_to_the_english_punctuation_mark_hash"><code>GetEmark()</code> : get a reference to the English punctuation mark hash</a></h2>
+<pre>
+  $rEmark = $stop-&gt;GetEmark( );</pre>
+<p>
+</p>
+<h2><a name="getcmark()_:_get_a_reference_to_the_chinese_punctuation_mark_hash"><code>GetCmark()</code> : get a reference to the Chinese punctuation mark hash</a></h2>
+<pre>
+  $rCmark = $stop-&gt;GetCmark( );</pre>
+
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0032)http://127.0.0.1/ir/segment.html -->
+<HTML><HEAD><TITLE>Automatic segmentation : Demonstration</TITLE>
+<META content="text/html; charset=big5" http-equiv=Content-Type>
+<META content="MSHTML 5.00.2614.3500" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff>
+<CENTER>
+<FORM method="POST" enctype='multipart/form-data' action=/cgi-demo/SAM/SegWord.pl>
+<H1>關鍵詞擷取 / Key Term Extraction</H1>
+<P>
+<p>Enter an URL:
+<INPUT name=url size=55 value=http://>
+<br>or choose a file: <INPUT TYPE="file" size=35 NAME="upfile">
+<P>OR input (copy and paste) a document into the text area 
+below :<BR><TEXTAREA cols=55 name=text rows=10>
+世說新語－「被」時代 降臨中國
+
+    * 2009-08-20 * 中國時報 *【黃淑嫆】.
+
+極具大陸特色的「被」時代來臨！連日來，「被富裕」、「被自殺」、「被就業」等用詞漸漸成為大陸網路上的新流行語，指稱著大陸「被」時代中不勝枚舉的種種荒誕事。
+
+經濟放緩，官方數據卻顯示大陸上半年人均可支配收入增速超過國內生產總值增速，人民因此認為他們的收入其實是「被增長」，人民因此「被富裕」了。
+
+大陸特色的統計，就是「幹部出數字，數字出幹部」。有網友戲稱，「官位是買出來的，政績是吹出來的，榮譽是要出來的，情婦的肚子才是幹出來的」。
+
+而「被自殺」的走紅則起源於安徽阜陽「白宮」事件，曾多次至北京舉報阜陽潁泉區政府豪華辦公樓「白宮」的舉報人李國福，於去年三月間在安徽省第一監獄醫院離奇死亡，當地警方以「自殺」結案。其後，又有貴州甕安十七歲女學生被警方認定「跳河自殺」的爭議死亡案件。
+
+應屆大畢生明明還未找到工作，卻發現校方檔案顯示自己已和一家從未聽說過的公司簽應聘合約，為官方漂亮的大學生就業率作出貢獻，是為「被就業」。
+
+源自英語文法的被動式，看來已成大陸人民日常生活不可或缺的一部分。
+
+</TEXTAREA> 
+
+<P>詞庫 / Dictionary : <SELECT name=dic> 
+  <OPTION selected value='0'>No/不用詞庫
+  <OPTION  value='1'>Yes/12萬詞
+<!--  
+  <OPTION value='0'>22萬詞</OPTION>
+-->
+</SELECT>, 
+Show all relations :
+<input name=ShowAllRT type=radio value=0 checked>No
+<input name=ShowAllRT type=radio value=1>Yes
+
+<p>Key Terms : <SELECT name=ShowAllKT> 
+  <OPTION  value='0'>Maximal Repeated Pattern Only
+  <OPTION selected value='1'>All
+</SELECT>, 
+Stemming :
+<input name=Stemming type=radio value=0 checked>No
+<input name=Stemming type=radio value=1>Yes
+
+<P>
+Delete spaces between English words :
+<input name=DelSpace type=radio value=0 checked>No
+<input name=DelSpace type=radio value=1>Yes
+<INPUT type=submit value="確定 / Submit">
+<H2></H2></FORM>
+<HR>
+Developed on July 21, 1997 by <A 
+href="http://blue.lins.fju.edu.tw/~tseng/">Yuen-Hsien Tseng</A> <A 
+href="mailto:tseng@blue.lins.fju.edu.tw">mailto:tseng@blue.lins.fju.edu.tw</A> 
+</CENTER></BODY></HTML>

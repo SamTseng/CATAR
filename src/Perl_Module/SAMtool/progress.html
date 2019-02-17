@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Progress - report the progress of a time consuming program.</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#methods">methods</a></li>
+	<ul>
+
+		<li><a href="#new()_:_the_constructor"><code>new()</code> : the constructor</a></li>
+		<li><a href="#showprogress()_:_display_progress_message"><code>ShowProgress()</code> : display progress message</a></li>
+		<li><a href="#showprogresspercent()_:_display_progress_message_in_percent_format"><code>ShowProgressPercent()</code> : display progress message in percent format</a></li>
+		<li><a href="#showprogressline()_:_display_progress_message_in_'.'_or_'+'."><code>ShowProgressLine()</code> : display progress message in '.' or '+'.</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<pre>
+    Progress - report the progress of a time consuming program.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    use Progress;
+    if ($ARGV[0] eq 'percent') {
+        $obj = Progress-&gt;new( {'OUT'=&gt;*STDERR{IO},'Format'=&gt;'percent'} );
+    } else {
+        $obj = Progress-&gt;new( {'OUT'=&gt;*STDOUT{IO},'Format'=&gt;'line'} );
+    }
+    $TotalLine = 100;  # or $TotalLine = &amp;getTotal();
+    for($line=1; $line &lt;= 100; $line++) {
+        $percent = $obj-&gt;ShowProgress($line/$TotalLine, $percent);
+    }
+    $percent = $obj-&gt;ShowProgress($line/$TotalLine, $percent);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<pre>
+  Given a ratio of completing some work, show the percentage before completion.
+    
+Author:
+    Yuen-Hsien Tseng.  All rights reserved.
+    
+Date:
+    2003/06/13</pre>
+<p>
+</p>
+<hr />
+<h1><a name="methods">methods</a></h1>
+<p>
+</p>
+<h2><a name="new()_:_the_constructor"><code>new()</code> : the constructor</a></h2>
+<pre>
+  $obj = $class-&gt;new( {'OUT'=&gt;*STDERR{IO},'Format'=&gt;'percent'} );</pre>
+<pre>
+  The attributes in the object can be set by an INI file (through attribute 
+    'INI') or directly given in the constructor's argumnets in a 
+    key=&gt;value format. To know the attribute names, consult class.ini.</pre>
+<pre>
+  Attributes in an object in Perl is often saved in a referece to a hash.
+  A reference to a no-name hash is donated as '{ }', as shown in 
+                $class-&gt;new( { {'OUT'=&gt;*STDERR{IO},'Format'=&gt;'percent'}  );
+ 
+  'OUT'=&gt;*STDERR{IO} : output progress message to standard error.
+  'OUT'=&gt;*STDout{IO} : output progress message to standard output.
+  'Format'=&gt;'percent' : output progress message in percentage.
+  'Format'=&gt;'line' : output progress message in '.' and '+'.</pre>
+<p>
+</p>
+<h2><a name="showprogress()_:_display_progress_message"><code>ShowProgress()</code> : display progress message</a></h2>
+<pre>
+  $p-&gt;ShowProgress($CurrentPercent, $PreviousPercent)</pre>
+<pre>
+  Show $CurrentPercent if $CurrentPercent &gt; $PreviousPercent.
+  The attribute 'Format' will affect the progress message.
+  if Format=&gt;'percent', then percentage will be shown;
+  if format=&gt;'line',    then '.' and '+' will be shown;</pre>
+<p>
+</p>
+<h2><a name="showprogresspercent()_:_display_progress_message_in_percent_format"><code>ShowProgressPercent()</code> : display progress message in percent format</a></h2>
+<pre>
+  $p-&gt;ShowProgressPercent($CurrentPercent, $PreviousPercent)</pre>
+<pre>
+  Show $CurrentPercent in percentage if $CurrentPercent &gt; $PreviousPercent.</pre>
+<p>
+</p>
+<h2><a name="showprogressline()_:_display_progress_message_in_'.'_or_'+'."><code>ShowProgressLine()</code> : display progress message in '.' or '+'.</a></h2>
+<pre>
+  $p-&gt;ShowProgressLine($CurrentPercent, $PreviousPercent)</pre>
+<pre>
+  Show $CurrentPercent in '.' or '+' if $CurrentPercent &gt; $PreviousPercent.</pre>
+
+</body>
+
+</html>
