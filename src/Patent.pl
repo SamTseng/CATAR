@@ -1,6 +1,6 @@
 #!/usr/bin/perl -s
 # Note: $0 is the program name
-    use SamOpt;  &SamOpt();
+    use SamOpt qw(SamOpt);  &SamOpt();
 sub Usage {
     print <<HELP;
 Synopsis:
