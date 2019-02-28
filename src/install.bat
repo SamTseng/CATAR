@@ -3,6 +3,7 @@ cd \CATAR\src
 cpan install Encode::Detect::Detector
 cpan install Statistics::Regression
 cpan install Math::MatrixReal
+cpan install Win32::ODBC
 
 copy *.pm C:\Strawberry\perl\site\lib
 mkdir C:\Strawberry\perl\site\lib\SAMtool
