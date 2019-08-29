@@ -1,3 +1,9 @@
+On 2019/08/25-29
+1. Change automc.pl, ISI.pl to prevent from reporting too many statitics,
+   such as fractional count for fields other than AF, AU, C1, and IU.
+2. Change tool.pl to add CPP for AF, C1, etc for break down analysis.
+3. Change Term_Trend.pl and MDS.pm to remark some statements and for some formatting
+
 On 2019/02/09
 1. Delete all tables and queries in C:\CATAR\src\Patent_org.mdb.
 2. Delete and modify the queries in C:\CATAR\Source_Data\DL_DNN\DL_DNN_1636_NEW.mdb, then

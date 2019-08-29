@@ -99,12 +99,12 @@ sub RunInDOS {
 	if ($Ocut) { $htmlstr = &FromFile2CutTree(); &myexit(); }
 }
 sub myexit {
-	if ($RunInCGI) { return $htmlstr; }
 	$htmlstr = "<html><head><META content='text/html; charset=big5'></head>"
 			. "<body bgcolor=white>" . $htmlstr . "\n<br></body></html>";
-	print $htmlstr; # print out to the browser in CGI environment
+	#print $htmlstr; # comment on 2019/08/27
 	$etime = time();
 	print STDERR "\nIt takes ", $etime - $stime, " seconds for all the steps.\n" if $Odebug;
+	if ($RunInCGI) { return $htmlstr; }
 }
 
 # Use global variable : $Odebug, $Odsn, $Ouid, $IndexName, $IndexPath

@@ -499,24 +499,24 @@ sub ConvertSimFile {
 		$rDid2Cid, $rCid2Cno, $rWanted, $rUnWanted) = @_;
 	my($n, $i, $j, $x, $y, $sim, @Title, @M, $t, $TotalDoc);
 	my($unwanted, $wanted, $ti, $cid, %Old2NewID, %NewID2Cid);
+
 	$i = $j = -1; $unwanted = keys %$rUnWanted;  $wanted = keys %$rWanted;
 #print "UnWant=", join(", ", sort keys %$rUnWanted), "\n";
 	open F, $TitleFile or die "Cannot read file:'$TitleFile', $!";
 #	@Title = <F>; #chomp @Title;
 #	pop @Title if $Title[$#Title] =~ /^\s*$/; # pop out empty line
-
 	while ($ti=<F>) { # 2009/3/07 use this while to replace the above 2 lines
-	# 2009/03/07 # remove those unwanted clusters
-	# 2009/03/07 # or reserve those wanted clusters
-	next if $ti =~ /^\s*$/; # skip if empty line
-	$j++; $cid = (split/ : /, $ti)[0];
-	next if $unwanted and $rUnWanted->{$cid};
-	next if $wanted and not $rWanted->{$cid};
-	push @Title, $ti; 
-	$i++; $Old2NewID{$j} = $i; $NewID2Cid{$i} = $cid;
+		# 2009/03/07 # remove those unwanted clusters
+		# 2009/03/07 # or reserve those wanted clusters
+		next if $ti =~ /^\s*$/; # skip if empty line
+		$j++; $cid = (split/ : /, $ti)[0];
+		next if $unwanted and $rUnWanted->{$cid};
+		next if $wanted and not $rWanted->{$cid};
+		push @Title, $ti; 
+		$i++; $Old2NewID{$j} = $i; $NewID2Cid{$i} = $cid;
 	}
-
 	close(F);
+
 	foreach $t (@Title) {
 #		if ($t =~ /^(\d+) : (\d+)µ§/) { # the node title : "53 : 4µ§,0.13(sens:0.43, sensor:0.32, structure:0.15)"
 		if ($t =~ /^(\d+) : (\d+) Docs./) { # the node title : "53 : 4µ§,0.13(sens:0.43, sensor:0.32, structure:0.15)"
@@ -525,8 +525,8 @@ sub ConvertSimFile {
 	}
 # set attribute TotalDoc, BaseSize for later use
 	if ($TotalDoc > 0) {
-	$me->{'TotalDoc'} = $TotalDoc;
-#	$me->{'BaseSize'} = $TotalDoc if $me->{BaseSize} > $TotalDoc;
+		$me->{'TotalDoc'} = $TotalDoc;
+#		$me->{'BaseSize'} = $TotalDoc if $me->{BaseSize} > $TotalDoc;
 	}
 
 	open F, $SortedFile or die "Cannot read file:'$SortedFile', $!";
@@ -535,21 +535,20 @@ sub ConvertSimFile {
 		($i, $j, $sim) = split ' ', $_; # index is already from 0
 #print "\$Old2NewID{$i}=$Old2NewID{$i}=>$NewID2Cid{ $Old2NewID{$i} }, \$Old2NewID{$j}=$Old2NewID{$j}=>$NewID2Cid{ $Old2NewID{$j} }\n"; 
 	# 2009/03/07 only output those wanted pairs
-	$cid = $NewID2Cid{ $Old2NewID{$i} };
-	next if $unwanted and ($cid eq '' or $rUnWanted->{$cid});
-	next if $wanted and ($cid eq '' or not $rWanted->{$cid});
-	$cid = $NewID2Cid{ $Old2NewID{$j} };
-	next if $unwanted and ($cid eq '' or $rUnWanted->{$cid});
-	next if $wanted and ($cid eq '' or not $rWanted->{$cid});
+		$cid = $NewID2Cid{ $Old2NewID{$i} };
+		next if $unwanted and ($cid eq '' or $rUnWanted->{$cid});
+		next if $wanted and ($cid eq '' or not $rWanted->{$cid});
+		$cid = $NewID2Cid{ $Old2NewID{$j} };
+		next if $unwanted and ($cid eq '' or $rUnWanted->{$cid});
+		next if $wanted and ($cid eq '' or not $rWanted->{$cid});
 #print " \$Old2NewID{$i}=$Old2NewID{$i}=>$NewID2Cid{ $Old2NewID{$i} }, \$Old2NewID{$j}=$Old2NewID{$j}=>$NewID2Cid{ $Old2NewID{$j} }\n"; 
-
 #		($x, $y) = sort {$b <=> $a} ($i, $j); # 2009/03/07
 		($x, $y) = sort {$b <=> $a} ($Old2NewID{$i}, $Old2NewID{$j} );
 		$M[$x][$y] = $sim; # only lower triangle is needed.
 	}
 	close(F);
-	open FF, ">$SimFile" or die "Cannot write to file:'$SimFile', $!";
-	
+
+	open FF, ">$SimFile" or die "Cannot write to file:'$SimFile', $!";	
 	$n = (scalar @Title);
 	print FF "$n\n", @Title;
 	for ($i=1; $i<$n; $i++) {
@@ -577,16 +576,31 @@ sub CreateDendrogram {
 		$Cid2Dids{$cid} .= "$did\t"; $Cid2Ndoc{$cid}++;
 #print "$cid : $did=>",(split / : /, $rTitle->[$did])[0],"\n";
 	}
-	print STDERR "Number of clusters mismatch: \$Cid2Ndoc=", scalar keys %Cid2Ndoc,
-		"<=>", scalar keys %$rCid2Cno, "=\$rCid2Cno\n" if $me->{'Cid2Cno'};
+# Comment next statement because it seems do no hard on 2019/08/29
+#	print STDERR "Number of clusters mismatch: \$Cid2Ndoc=", scalar keys %Cid2Ndoc,
+#		"<=>", scalar keys %$rCid2Cno, "=\$rCid2Cno\n" if $me->{'Cid2Cno'};
+# On 2019/08/29:
+# perl -s  Term_Trend.pl -Ocolor -Omap -Ocut=0.01 ../Result/Sam_BC_S2
+#   It takes 0 seconds to cut tree having 4 records and 2 internal nodes
+# mds.exe 2 ../Result/Sam_BC_S2/SimPairs.txt > ../Result/Sam_BC_S2/Coordinate.txt
+#
+# Note if option -OCno is used, an error line occurs, like the following:
+# perl -s  Term_Trend.pl -Ocolor -Omap -Ocut=0.01 -OCNo -OhtmlTree=../Result/Sam_BC/0_0.01.html ../Result/Sam_BC_S2
+#   It takes 0 seconds to cut tree having 4 records and 2 internal nodes
+# Number of clusters mismatch: $Cid2Ndoc=2<=>4=$rCid2Cno
+# mds.exe 2 ../Result/Sam_BC_S2/SimPairs.txt > ../Result/Sam_BC_S2/Coordinate.txt
+# This is because we set $mds->{'Cid2Cno'} in line 458 at Term_Trend.pl
+# As to why there is a mismatch, see $rDC->GetCid2Cno($main::OhtmlTree);
+#  in line 457 at Term_Trend.pl
+
 	@Cids = sort {$Cid2Ndoc{$b} <=> $Cid2Ndoc{$a}} keys %Cid2Ndoc;
 	my($i, $DFi, $BDFi, $DocNameCi, @DocNameCi, $DisPairCi, @DisPairCi);
 	my($CallCi, $DivCi, $CanvasCi);
 	my($name, $pair, $numLeaves, $HTML);
 	for($i=0; $i<@Cids; $i++) {
-    my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, \%Cid2Dids, $Cids[$i]);
-    push @DocNameCi, $name;    push @DisPairCi, $pair;
-    $CallCi .= <<End_Here;
+    	my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, \%Cid2Dids, $Cids[$i]);
+    	push @DocNameCi, $name;    push @DisPairCi, $pair;
+    	$CallCi .= <<End_Here;
     treeObj=buildTree($numLeaves, $i); 
     tree=treeObj.tree;
     root=treeObj.root;
@@ -594,13 +608,13 @@ sub CreateDendrogram {
     drawDendrogram(tree, root, names, 'df$i', 300); // Editable tree width
 //  drawDendrogram(tree, root, names, 'df$i', 400); // this would yield wider tree
     drawBezierDendrogram(tree,root,names,'bdf$i',true,true);
-    
+
 End_Here
-    $DFi .= "#df".$i."{\n    position:relative;\n    margin:0 0 0 36px;\n"
-    	. "    font-size:75%;\n    border:0px solid white;\n    }\n";
-    $BDFi .= "#bdf".$i."{\n    margin:10px 0 10px 36px;\n}\n";
-    $DivCi .= '<div style="position: relative; width: 800px; height: 600px;" id="df'.$i.'"></div>'."\n";
-    $CanvasCi .= '<canvas height="600" width="800" id="bdf'.$i.'"></canvas>'."\n";
+    	$DFi .= "#df".$i."{\n    position:relative;\n    margin:0 0 0 36px;\n"
+    		. "    font-size:75%;\n    border:0px solid white;\n    }\n";
+    	$BDFi .= "#bdf".$i."{\n    margin:10px 0 10px 36px;\n}\n";
+    	$DivCi .= '<div style="position: relative; width: 800px; height: 600px;" id="df'.$i.'"></div>'."\n";
+    	$CanvasCi .= '<canvas height="600" width="800" id="bdf'.$i.'"></canvas>'."\n";
 	}
 	$DocNameCi = join(",\n\n", map{"[\n$_\n]"} @DocNameCi) . "\n";
 	$DisPairCi = join(",\n\n", map{"[\n$_\n]"} @DisPairCi) . "\n";

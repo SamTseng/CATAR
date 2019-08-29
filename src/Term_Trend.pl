@@ -407,7 +407,7 @@ sub ClusterTitle5 {
 #畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
 #perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=2.25 -OCNo -OhtmlTree=../Result/ATR1_BC_S4/0_0.01.html ../Result/ATR1_BC_S5
 #
-#C:\CATAR_src\src>perl term_trend.pl -Ocolor -Omap -Ocut=0.0 -Oscale=1.0 ..\Result\SC_LIS_JBC_S2
+#perl term_trend.pl -Ocolor -Omap -Ocut=0.0 -Oscale=1.0 ..\Result\SC_LIS_JBC_S2
 # Given the clustered results in the index path, create 2-D map by MDS.
 # use options: -Ocolor, -Ocut, -Oct_low_tf, -Odebug,
 #  Owant="ClusterID1 ClusterID2 ClusterID3 ..."

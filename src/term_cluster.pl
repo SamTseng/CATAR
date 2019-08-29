@@ -87,7 +87,9 @@ sub DumpWGindexWords {
     my($iid, $OutFile) = @_;  
     my($wg, $term_cnt, $i, $t, $d, $info, $df, $tid, $percent, $n);
     $wg = $me->{'wg'};
+    use IO::Handle; # https://stackoverflow.com/questions/4538767/how-do-i-flush-a-file-in-perl
     open F, ">$OutFile" or die "Cannot write to file:'$OutFile'.\n$!";
+    F->flush(); # 2019/03/26; This seems not working
     $term_cnt = $wg->GetTermNo();  $n = $percent = 0;
     my $pro = Progress->new( {'OUT'=>*STDERR{IO},'Format'=>'line'} );
     print STDERR "There are $term_cnt terms\n";
@@ -100,10 +102,10 @@ sub DumpWGindexWords {
         $tid = $wg->GetKeywordID($t);
         print STDERR "i=$i, tid=$tid, t='$t'\n" if $tid != $i;
         $info = $wg->GetTermDocInfo($tid, $iid);
-#print F "iid=$iid\tt=$t\tinfo=$info\n";
+#print  "iid=$iid\tt=$t\tinfo=$info\n";
         if ($info =~ /^(\d+),/) { $df = $1; } else { $df = -1; }
         next if $df <=0;
-				print F "$t\t$d\t$df\n"; $n++;
+        print F "$t\t$d\t$df\n"; $n++;
     }
     $percent = $pro->ShowProgress($i/$term_cnt, $percent);
     close(F);

@@ -1,139 +1,138 @@
 #!/usr/bin/perl -s
-	use SamOpt qw(SamOpt);  &SamOpt();
+use SamOpt qw(SamOpt);  &SamOpt();
 # This program is to process the related records on 2006/03/29 by Yuen-Hsien Tseng
-	use vars; use strict;
-#	use lib '/demo/DbXls';
-#	use DbXls;
-	use Spreadsheet::WriteExcel; 
-	# see http://lena.franken.de/perl_hier/excel.html for more examples
-	use Encode::TW; # this line must exist, despite we have the next line
-	use Encode qw/encode decode from_to/;
-	use Encode::Detect::Detector;
-
-	use Statistics::Regression;
-	use Math::MatrixReal; # Matrices are represented in Math::MatrixReal format
-	use SVD;
-	use SAMtool::Stem;
-	use SAMtool::SegWord;
-	use SAMtool::Progress;
-	use SAMtool::Stopword;
-	# use DBI ':sql_types';  require "InitDBH.pl"; # remark on 2019/01/24
-  use DBI ':sql_types'; # This is required to avoid: Bareword "DBI::SQL_LONGVARCHAR" not allowed while "strict subs" in use at ISI.pl line 591.ISI.pl had compilation errors.
-  use InitDBH qw(InitDBH); # Added on 2019/01/24
-	my $stime = time();
+use vars; use strict;
+# use lib '/demo/DbXls';
+# use DbXls;
+use Spreadsheet::WriteExcel; 
+# see http://lena.franken.de/perl_hier/excel.html for more examples
+use Encode::TW; # this line must exist, despite we have the next line
+use Encode qw/encode decode from_to/;
+use Encode::Detect::Detector;
+use Statistics::Regression;
+use Math::MatrixReal; # Matrices are represented in Math::MatrixReal format
+use SVD;
+use SAMtool::Stem;
+use SAMtool::SegWord;
+use SAMtool::Progress;
+use SAMtool::Stopword;
+# use DBI ':sql_types';  require "InitDBH.pl"; # remark on 2019/01/24
+use DBI ':sql_types'; # This is required to avoid: Bareword "DBI::SQL_LONGVARCHAR" not allowed while "strict subs" in use at ISI.pl line 591.ISI.pl had compilation errors.
+use InitDBH qw(InitDBH); # Added on 2019/01/24
+my $stime = time();
 
 # perl -s ISI.pl -OBigDoc Sam_JBC c:\CATAR\Source_Data\Sam\Sam.mdb Journal ..\doc\Sam_JBC
 # perl -s ISI.pl -OBigDoc Sam_ABC c:\CATAR\Source_Data\Sam\Sam.mdb Author ..\doc\Sam_ABC
-	if ($main::OBigDoc) { &ISI2BigDoc(@ARGV); &myexit(); }
+if ($main::OBigDoc) { &ISI2BigDoc(@ARGV); &myexit(); }
 
 # D:\demo\STPIWG\src>perl -s ISI.pl -OminDF=5 -OtermHis agr agr DE ..\Result\agr\agr_DE.txt  "1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006"> ..\Result\agr\agr_DE_History.txt
 # D:\demo\STPIWG\src>perl -s ISI.pl -OminDF=10 -OtermHis agr agr DE ..\Result\agr\agr_DE.txt  "1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005"> ..\Result\agr\agr_DE_History95-05.txt
 # Number of records: 73418. It takes 4 seconds
-	if ($main::OtermHis) { &Get_ISI_Term_history(@ARGV); &myexit(); }
+if ($main::OtermHis) { &Get_ISI_Term_history(@ARGV); &myexit(); }
 # D:\demo\STPIWG\src>perl -s ISI.pl -OtermTrend ..\Result\agr\agr_DE_History95-05.txt "791 5448 6056 6363 6211 6773 7475 8028 7700 9187 9268" > ..\Result\agr\agr_DE_Trend95-05.txt
-	if ($main::OtermTrend) { &Get_ISI_Term_Trend(@ARGV); &myexit(); }
+if ($main::OtermTrend) { &Get_ISI_Term_Trend(@ARGV); &myexit(); }
 # perl -s ISI.pl -Ov -Onorm=abs ..\Result\InfoBank_S3\2_4_4_0.01_PY.txt
-	if ($main::Ov) { TimeSeriesMatrix_Conversion(@ARGV); &myexit(); }
+if ($main::Ov) { TimeSeriesMatrix_Conversion(@ARGV); &myexit(); }
 # perl -s ISI.pl -OmergeTrend agr agr ..\Result\agr\agr_SC_DocList.txt ..\Result\agr_SC\term_cluster.html "1996 1997 1998 1999 2000 2001 2002 2003 2004 2005" "5448 6056 6363 6211 6773 7475 8028 7700 9187 9268" > ..\Result\agr_SC\agr_SC_clu0.0_Trend.txt
-	if ($main::OmergeTrend) { &MergeHistory(@ARGV); &myexit(); }
+if ($main::OmergeTrend) { &MergeHistory(@ARGV); &myexit(); }
 
 # perl -s ISI.pl -Obreakdown -Onorm=abs -Ob1=0.3371 agr agr JI ..\Result\agr\agr_SC_DocList.txt ..\Result\agr_SC\agr_SC_clu0.0_Trend_abs_Sorted_type.txt "1996 1997 1998 1999 2000 2001 2002 2003 2004 2005" "5448 6056 6363 6211 6773 7475 8028 7700 9187 9268" > ..\Result\agr_SC\agr_SC_clu0.0_Trend_abs_Sorted_type_JI.txt
 # Use option: -OSkipEmpty
-	if ($main::Obreakdown) { &BreakDown(@ARGV); &myexit(); }
+if ($main::Obreakdown) { &BreakDown(@ARGV); &myexit(); }
 # perl -s ISI.pl -Oeet -Onorm=abs -Ob1=0.3371 ..\Result\agr_SC\agr_SC_clu0.0_Trend_abs_Sorted_type_C1_SVD.txt > ..\Result\agr_SC\agr_SC_clu0.0_Trend_abs_C1.txt
-	if ($main::Oeet) { &ExtractEigenTrend(@ARGV); &myexit(); }
+if ($main::Oeet) { &ExtractEigenTrend(@ARGV); &myexit(); }
 # perl -s ISI.pl -Ofc=30 ..\Result\agr_SC\agr_SC_clu0.0_Trend_abs_Sorted_type_C1_SVD.txt > ..\Result\agr_SC\agr_SC_clu0.0_Trend_abs_Sorted_type_C1_8.txt
-	if ($main::Ofc) { &FilterCountry(@ARGV); &myexit(); }
+if ($main::Ofc) { &FilterCountry(@ARGV); &myexit(); }
 	
 # perl -s ISI.pl -Osample 0.5 ..\Result\agr_SC\term_cluster.html ..\Result\agr_SC\agr_SC_clu0.0_Trend.txt
-	if ($main::Osample) { &Sampling(@ARGV); &myexit(); }
-	if ($main::OmergeYear) { &MergeYear(@ARGV); &myexit(); }
-	if ($main::OYearRange) { &YearRange(@ARGV); &myexit(); }
+if ($main::Osample) { &Sampling(@ARGV); &myexit(); }
+if ($main::OmergeYear) { &MergeYear(@ARGV); &myexit(); }
+if ($main::OYearRange) { &YearRange(@ARGV); &myexit(); }
 
-	if ($main::OSortByTrend) { &SortByTrend(@ARGV); &myexit(); }
-	if ($main::OInsertTrendType) { &InsertTrendType(@ARGV); &myexit(); }
+if ($main::OSortByTrend) { &SortByTrend(@ARGV); &myexit(); }
+if ($main::OInsertTrendType) { &InsertTrendType(@ARGV); &myexit(); }
 	
 # perl -s ISI.pl -OtermDoc -OminDF=10 agr agr SC ..\Result\agr\agr_SC.txt > ..\Result\agr\agr_SC_DocList.txt
-	if ($main::OtermDoc) { &Get_ISI_Term_DocList(@ARGV); &myexit(); }
+if ($main::OtermDoc) { &Get_ISI_Term_DocList(@ARGV); &myexit(); }
 # perl -s ISI.pl -OSFtmDoc -OminDF=2 EduEval EEPA318 "TI, AB" ..\Result\EEPA318\keys_rw.txt > ..\Result\EEPA318\keys_rw_DocList.txt
 # perl -s ISI.pl -OSFtmDoc -OminDF=2 -ODBID=ID ItaA TSeg "DName, Dscpt" ..\Result\ItaA\ItaA_key_rt.txt > ..\Result\ItaA\ItaA_key_rt_DocList.txt
-	if ($main::OSFtmDoc) { &Get_Selected_Free_Term_DocList(@ARGV); &myexit(); }
+if ($main::OSFtmDoc) { &Get_Selected_Free_Term_DocList(@ARGV); &myexit(); }
 
 # It seems that ACCESS cannot import ISIAll.txt due to its size.
 #  So let's split ISIAll.txt into several small files.
 # D:\demo\STPIWG\Source_Data>perl -s ..\src\ISI.pl -Osplit  ISIAll.txt ISI
 # It takes about 120 seconds.
-	if ($main::Osplit) { &SplitFiles(@ARGV); &myexit(); }
-	if ($main::Ot2p) { &ConvertTabDelimited2PlainText(@ARGV); &myexit(); }
+if ($main::Osplit) { &SplitFiles(@ARGV); &myexit(); }
+if ($main::Ot2p) { &ConvertTabDelimited2PlainText(@ARGV); &myexit(); }
 # perl -s ISI.pl -OISIt File_NanoPaperTW NanoPaperTW [DE|IT|SC]
 # perl -s ISI.pl -OISIt NanoPaperWD ISIAll_NoDup SC
 # perl -s ISI.pl -OISIt -OSC2C=SC2C.txt envi01 TPaper "SC PY" ..\Source_Data\envi01\envi01.mdb
-	if ($main::OISIt) { &Get_ISI_Terms(@ARGV); &myexit(); }
+if ($main::OISIt) { &Get_ISI_Terms(@ARGV); &myexit(); }
 # perl -s ISI.pl -Oj9X SC_Edu TPaper C1 ..\Source_Data\SC_Edu\SC_Edu.mdb > ..\Result\SC_Edu\J9_C1.txt
-	if ($main::Oj9X) { &Get_ISI_J9X(@ARGV); &myexit(); }
+if ($main::Oj9X) { &Get_ISI_J9X(@ARGV); &myexit(); }
 # perl -s ISI.pl -OAUCA ..\Result\SC_Edu\AU.txt ..\Result\SC_Edu\CA.txt >  ..\Result\SC_Edu\AU_CA.txt
-	if ($main::OAUCA) { &AU_CA(@ARGV); &myexit(); }
+if ($main::OAUCA) { &AU_CA(@ARGV); &myexit(); }
 # perl -s ISI.pl -O2xls -OmaxR=200 envi01 ..\Result\envi01 ..\Result\envi01\envi01_by_field.xls
 # perl -s ISI.pl -O2xls=2 -Of=..\Result\envi01_dc_S4\2_6_6_0.05_all_2.txt envi01_dc_S4 ..\Result\envi01_dc_S4 ..\Result\envi01_dc_S4\envi01_dc_S4_by_field.xls
-	if ($main::O2xls) { &Insert2Excel(@ARGV); &myexit(); }
+if ($main::O2xls) { &Insert2Excel(@ARGV); &myexit(); }
 # perl -s ISI.pl -OmCR SC_EF TPaper ..\Source_Data\SC_EF\SC_EF.mdb > ..\Result\SC_EF\SOmCR.txt
-	if ($main::OmCR) { &Match_with_CR(@ARGV); &myexit(); }
+if ($main::OmCR) { &Match_with_CR(@ARGV); &myexit(); }
 
 
 # perl -s ISI.pl -OY5 ..\Result\food\C1_PY.txt > ..\Result\food\C1_PY_5.txt
-	if ($main::OY5) { &Every5Years(@ARGV); &myexit(); }
+if ($main::OY5) { &Every5Years(@ARGV); &myexit(); }
 # perl -s ISI.pl -OPYCPP ..\Result\Edu0012\C1_PY_5.txt ..\Result\Edu0012\C1_PY_TC_5.txt > ..\Result\Edu0012\C1_PY_CPP_5.txt
-	if ($main::OPYCPP) { &ComputePYCPP(@ARGV); &myexit(); }
+if ($main::OPYCPP) { &ComputePYCPP(@ARGV); &myexit(); }
 # perl -s ISI.pl -Om2f ..\Result\Edu0512_JBC_S2\2_eLearn.txt ..\Result\Edu0512_JBC_S2\5_SciEdu.txt > ..\Result\Edu0512_JBC_S2\2_and_5.txt
-	if ($main::Om2f) { &MergeTwoFields(@ARGV); &myexit(); }
+if ($main::Om2f) { &MergeTwoFields(@ARGV); &myexit(); }
 
 # perl -s ISI.pl -Omfd DP ..\Result\NTNU > ..\Result\NTNU\DP_IF.txt
-	if ($main::Omfd) { &MergeFieldDistribution(@ARGV); &myexit(); }
+if ($main::Omfd) { &MergeFieldDistribution(@ARGV); &myexit(); }
 
 # perl -s ISI.pl -Omi=9 ..\Result\food\MI.txt > ..\Result\food\MI.htm
-	if ($main::Omi) { &OrganizeMI(@ARGV); &myexit(); }
+if ($main::Omi) { &OrganizeMI(@ARGV); &myexit(); }
 # perl -s ISI.pl -OinsTerms InfoBank TPaper "TI,AB" SC D:\STPI\2008_Project\data\product.txt 
-	if ($main::OinsTerms) {&InsertTerms2Field(@ARGV); &myexit(); }
+if ($main::OinsTerms) {&InsertTerms2Field(@ARGV); &myexit(); }
 # perl -s ISI.pl -Omtd ..\Result\NanoPaperTW_SC.txt ..\Result\NanoPaperWD_SC.txt
-	if ($main::Omtd) { &MergeTermDistribution(@ARGV); &myexit(); }
+if ($main::Omtd) { &MergeTermDistribution(@ARGV); &myexit(); }
 # perl -s ISI.pl -Ochktm EduEval EEPA318 (to check the overlap of terms in [DE|SC\ID] and TI+AB)
-	if ($main::Ochktm) { &CheckTerm(@ARGV); &myexit(); }
+if ($main::Ochktm) { &CheckTerm(@ARGV); &myexit(); }
 # perl -s ISI.pl -OavgCnt EduEval EEPA318 (to check the word count in TI and AB)
-	if ($main::OavgCnt) { AvgWordCount(@ARGV); &myexit(); }
+if ($main::OavgCnt) { AvgWordCount(@ARGV); &myexit(); }
 # perl -s ISI.pl -O2DB food01 TPaper ..\Source_Data\food01\food01.mdb ..\Source_Data\food01\food01_all.txt
-	if ($main::O2DB) { &InsertIntoDBMS(@ARGV); &myexit(); }
+if ($main::O2DB) { &InsertIntoDBMS(@ARGV); &myexit(); }
 # perl -s ISI.pl -O2Tseg food01 TPaper TSeg ..\Source_Data\food01\food01.mdb	
-	if ($main::O2Tseg) { &InsertIntoTseg(@ARGV); &myexit(); }
+if ($main::O2Tseg) { &InsertIntoTseg(@ARGV); &myexit(); }
 	
-sub myexit { print STDERR "# It takes ", time()-$stime, " seconds\n"; exit; }
+sub myexit { print STDERR "# It takes ", time()-$stime, " seconds\n\n"; exit; }
 
 # Global variables :
-	my @AllFields = split /\s+/, "
-		PT	AU	BA	ED	GP	AF	CA	TI	SO	SE	
-		LA	DT	CT	CY	CL	SP	HO	DE	ID	AB	
-		C1	RP	EM	CR	NR	TC	PU	PI	PA	SN	
-		BN	DI	J9	JI	PD	PY	VL	IS	PN	SU	
-		SI	BP	EP	AR	DI	PG	SC	GA	UT"; 
-	# Actually, @AllFields is not used. It is here only for human inspection.
-	my (%UsefulFields, @UsefulFieldIndex, $AU_idx, $AF_idx, $C1_idx, $AB_idx);
-	# add the field: 'IU': the institute of the authors on 2009/01/30
-	my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC UT";
-#	my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC LA UT"; # add LA on 2012/10/02
-#	@UsefulFields = split ' ', "AU TI SO PY VL AB C1 BP MC CC TA DS CH MQ PR MI UT"
-	@UsefulFields = split ' ', "AU AF TI SO PY VL AB C1 BP MC CC MI UT"
-		if $main::OBioAbs;
+my @AllFields = split /\s+/, "
+	PT	AU	BA	ED	GP	AF	CA	TI	SO	SE	
+	LA	DT	CT	CY	CL	SP	HO	DE	ID	AB	
+	C1	RP	EM	CR	NR	TC	PU	PI	PA	SN	
+	BN	DI	J9	JI	PD	PY	VL	IS	PN	SU	
+	SI	BP	EP	AR	DI	PG	SC	GA	UT"; 
+# Actually, @AllFields is not used. It is here only for human inspection.
+my (%UsefulFields, @UsefulFieldIndex, $AU_idx, $AF_idx, $C1_idx, $AB_idx);
+# add the field: 'IU': the institute of the authors on 2009/01/30
+my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC UT";
+# my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC LA UT"; # add LA on 2012/10/02
+# @UsefulFields = split ' ', "AU TI SO PY VL AB C1 BP MC CC TA DS CH MQ PR MI UT"
+@UsefulFields = split ' ', "AU AF TI SO PY VL AB C1 BP MC CC MI UT"
+	if $main::OBioAbs;
 #print STDERR join(", ", @UsefulFields), "\n"; exit;
-	$AU_idx = 0; # the index is for the above, $UsefulFields{AU} = $AU_idx
-	$AF_idx = 1; # the index is for the above, $UsefulFields{AF} = $AF_idx
-	$AB_idx = 6; # the index is for the above, $UsefulFields{AB} = $AB_idx
-	$C1_idx = 7; # the index is for the above, $UsefulFields{C1} = $C1_idx
-	# These above 3 variables can be replaced with the following hash %UsefulFields
-	for(my $i=0;$i<@UsefulFields;$i++){$UsefulFields{$UsefulFields[$i]}=$i;}
-	# %UsefulFields contains, for example, AU as its key and 0 as its value
-	my ($n, $m) = &ParseISI(@ARGV);
-	print STDERR "There are $n records.\n";
-	print STDERR "There are $m records whose fields do not match.\n";
-	&myexit();
+$AU_idx = 0; # the index is for the above, $UsefulFields{AU} = $AU_idx
+$AF_idx = 1; # the index is for the above, $UsefulFields{AF} = $AF_idx
+$AB_idx = 6; # the index is for the above, $UsefulFields{AB} = $AB_idx
+$C1_idx = 7; # the index is for the above, $UsefulFields{C1} = $C1_idx
+# These above 3 variables can be replaced with the following hash %UsefulFields
+for(my $i=0;$i<@UsefulFields;$i++){$UsefulFields{$UsefulFields[$i]}=$i;}
+# %UsefulFields contains, for example, AU as its key and 0 as its value
+my ($n, $m) = &ParseISI(@ARGV);
+print STDERR "There are $n records.\n";
+print STDERR "There are $m records whose fields do not match.\n";
+&myexit();
 
 # Use option : $Ocountry : to print the countries of all papers
 # Use option : $OCPI : CPI (Cited Paper Id) is the file's basename which
@@ -208,16 +207,17 @@ sub SetFieldIndex { # given the line of fields
 		if $j != scalar keys %UsefulFields;
 #	for(my $i=0;$i<@UsefulFields;$i++){$UsefulFields{$UsefulFields[$i]}=$i;}
 	while (($i, $j) = each %UF2Idx) { $UsefulFields{$i} = $j; } # reset %UsefulFields
-if ($main::Odebug>1) {
-print STDERR "\%UsefulFields=\n", join("\n", map{"$_\t$UsefulFields{$_}"} 
-	sort {$UsefulFields{$a}<=>$UsefulFields{$b}} keys %UsefulFields), "\n";
-print STDERR "\@UsefulFieldIndex=@UsefulFieldIndex\n";
-}
+  if ($main::Odebug>1) {
+	print STDERR "\%UsefulFields=\n", join("\n", map{"$_\t$UsefulFields{$_}"} 
+		sort {$UsefulFields{$a}<=>$UsefulFields{$b}} keys %UsefulFields), "\n";
+	print STDERR "\@UsefulFieldIndex=@UsefulFieldIndex\n";
+  }
 	return ($AU_idx, $AF_idx, $C1_idx, $AB_idx, @UsefulFieldIndex);
 }
 
-# Convert the data in some fields of @D to standard form and grow @D with IU, DP
-#   change @D, %Country
+# Convert the data in some fields of @D to standard form 
+#   and grow @D with IU, DP.
+# Change @D, %Country
 # Use global $AU_idx, $C1_idx, $AB_idx, $AF_idx
 sub StandardizeFields {
 	my($rD, $rCountry) = @_;  
@@ -262,13 +262,15 @@ sub StandardizeFields {
 #     [Chen, Chiung-Mei] Chang Gung Univ, Coll Med, Dept Neurol, Chang Gung Mem Hosp, Taipei, Taiwan.
 #     [Chang, Chun-Yen] Natl Taiwan Normal Univ, Sci Educ Ctr, Taipei, Taiwan.
 #  PY 2014
+#
 # Example 2: N authors, single address
 #  AU Dundes, L
 #     Harlow, R
 #  AF Dundes, L
 #     Harlow, R
 #  C1 McDaniel Coll, Dept Sociol, Westminster, MD 21157 USA.
-#  PY 205
+#  PY 2015
+#
 # Example 3: N authors, M addresses
 #  AU Monkman, K
 #     Ronald, M
@@ -284,15 +286,17 @@ sub StandardizeFields {
 #  C1 SUMMERFIELD F W ; DEP FOOD SCI TECHNOL, UNIV CALIF, DAVIS, CA 95616, USA
 #  C1 Ishigami, Akihito; Toho Univ, Dept Biochem, Fac Pharmaceut Sci, 2-2-1 Miyama, Chiba 2748510, Japan
 # 
-# On 205/12/08, try to match the authors with their institutes
+# On 2015/12/08, try to match the authors with their institutes
 #  but as shown in the above Example 3, this attempt is impossible.
 # I can only match those new records with the format:
 #  [AF1; AF2; ..] IU, DP, ..., C1
 # and change the content of AF
   my @AFs = (); my @AF = (); my($IU);
 	while ($rD->[$C1_idx] =~ /\[([^\]]+)\]\s*([^,]+),/g) {
-		@AF = split /;\s*/, $1; $IU = $2;
-		@AF = map {"$_: $IU"} @AF;
+		@AF = split /;\s*/, $1; # $IU = $2; 
+		# change the above line into next lines on 2019/08/26
+		$IU = &Normalize_Terms($2, 'IU');
+		@AF = map {&Normalize_Author($_) .": $IU"} @AF;
 		push @AFs, @AF;
 	}
 	# $rD->[$AF_idx] = join "; ", @AFs; # remarks on 2019/01/14
@@ -774,7 +778,7 @@ sub InsertTerms2Field {
 	}
 	$STH->finish; $STH2->finish;
 	$DBH->disconnect;
-	print STDERR "\n# Number of records: $nr\n";
+	print STDERR "# Number of records: $nr\n";
 }
 
 # perl -s ISI.pl -OmCR SC_EF TPaper ..\Source_Data\SC_EF\SC_EF.mdb > ..\Result\SC_EF\SOmCR.txt
@@ -978,7 +982,7 @@ sub Get_ISI_Terms {
 		}
 		print "_Slope_\t", (map{&ts($_,2)."\t"} @Slope), "\n\n";
 	}
-	print STDERR "\n# Number of records: $nr\n";
+	print STDERR "# Number of records: $nr\n";
 	return if ($Fields ne 'CR');
 	open FO, ">../Result/$DSN/CA.txt" or die "Cannot write to '../Result/$DSN/CA.txt'";
 	map { print FO "$_\t".&ts($CA{$_},1)."\n"} sort {$CA{$b} <=> $CA{$a}} keys %CA;
@@ -1006,15 +1010,15 @@ sub Normalize_Authors { # Normalize multiple authors
 	return join("; ", @AUs);
 }
 
-sub Normalize_Terms {
+sub Normalize_Terms { # change this function on 2019/08/26
 	my($SC, $FieldName) = @_; my($sc, @SC);
-	@SC = split /; /, $SC;
-	if ($FieldName eq 'SC') {
-		foreach $sc (@SC) { $sc = join(' ', map {ucfirst lc} split(' ', $sc)); }
-	} elsif ($FieldName eq 'DE') {
+	@SC = split /; /, $SC; # for multiple phrases separated by "; "
+	if ($FieldName eq 'DE') {
 		foreach $sc (@SC) { $sc = join(' ', map {lc Stem::stem($_)} split(' ', $sc)); }
 	} elsif ($FieldName eq 'ID') {
 		foreach $sc (@SC) { $sc = join(' ', map {uc Stem::stem(lc $_)} split(' ', $sc)); }
+	} else { # for other fields with single multi-word phrase
+		foreach $sc (@SC) { $sc = join(' ', map {ucfirst lc} split(' ', $sc)); }
 	}
 	return join('; ', @SC);
 }
@@ -1317,7 +1321,7 @@ sub Get_ISI_Term_DocList {
 #		print "$i : $t : $hTDF->{$t} : $Terms{$t}\n";
 	print "$i : $t : ", ($Terms{$t}=~tr/\t/\t/)/2, " : $Terms{$t}\n"; # 2009/11/24
 	}
-	print STDERR "\n# Number of records: $nr\n";
+	print STDERR "# Number of records: $nr\n";
 } # End of &Get_ISI_Term_DocList()
 
 
@@ -1397,7 +1401,7 @@ print STDERR "Total records: $N\n";
 #		print "$i : $t : $hTDF->{$t} : $Terms{$t}\n";
 		print "$i : $t : $df : $Terms{$w}\n";
 	}
-	print STDERR "\n# Number of records: $n\n";
+	print STDERR "# Number of records: $n\n";
 }
 
 
@@ -1439,7 +1443,7 @@ sub Get_ISI_Term_history {
 		$py = join("\t", map{($PY{$_}?$PY{$_}:0)} @Years); # under the year range
 		print "$t\t$i\t$py\n";
 	}
-	print STDERR "\n# Number of records: $nr\n";
+	print STDERR "# Number of records: $nr\n";
 }
 
 # perl -s ISI.pl -OtermTrend -Onorm=abs ..\Result\pub\pub_kts.txt "6872 6186 5822 6350" > ..\Result\pub\pub_kts_trend.txt
@@ -2725,7 +2729,11 @@ sub MergeFieldDistribution {
 	$i = 0;
 	foreach $f (@Files) {
 		$ff = $dir .'/'. $field . $f; #print STDERR "read $ff\n";
-		$hT[$i] = &ReadTerms($ff);
+		if (-e $ff) { # added on 2019/08/25
+			$hT[$i] = &ReadTerms($ff);
+		} else {
+			print("There is no need to deal with file: '$ff'.\n");
+		}
 		$i++;
 	}
 	@Terms = sort {$hT[0]->{$b} <=> $hT[0]->{$a}} keys %{$hT[0]};

@@ -622,7 +622,7 @@ sub DeleteStopword {
 		if ($Stop->IsESW(substr($w, rindex($w, ' ')+1, length($w)))) { delete $me->{'Inv'}{$w}; next; }
 #print "w=$w, ", $Stop->IsCSW($w),"\n" if $w eq '本 發 明';
 		if ($Stop->IsCSW($w)) { delete $me->{'Inv'}{$w}; next; } # 2006/04/18
-print "w=$w, ", substr($w, 0, 5)," , ",$Stop->IsCSW(substr($w, 0, index($w, ' ')+2)), "\n" if substr($w, 0, 5) eq '如 申';
+#print "w=$w, ", substr($w, 0, 5)," , ",$Stop->IsCSW(substr($w, 0, index($w, ' ')+2)), "\n" if substr($w, 0, 5) eq '如 申';
 		if ($Stop->IsCSW(substr($w, 0, 5))) { delete $me->{'Inv'}{$w}; next; }
 #		if ($Stop->IsCSW(substr($w, 0, 7))) { delete $me->{'Inv'}{$w}; next; }
 #		if ($Stop->IsCSW(substr($w, rindex($w, ' ')-2, length($w)))) { delete $me->{'Inv'}{$w}; next; }
@@ -1487,7 +1487,7 @@ sub GetTP{
 		$ti++;	$percent = $Progress->ShowProgress($ti/$tn, $percent) if $me->{debug} >= 1;
 		next if $t =~ /\d+\.?\d*/; # escape numbers
 		next if length($t)<3; # term length too short
-		next if $t =~ /一|二|三|\Q四\E|五|六|七|八|九|十/; # escape numbers
+		next if $t =~ /一|二|三|\Q四\E|五|六|七|八|九|十/; # escape numbers
 #print STDERR "$t=>'", $Stop->IsESW($t), "', Stopword::ESW{$t}='", $Stopword::ESW{$t} ,"'\n" if $t =~ /^produc\w?$/;
 #		next if $Stop->IsESW($t);
 #		next if $Stop->IsESW(substr($t, 0, index($t, ' '))); # 2005/08/08
@@ -1634,7 +1634,7 @@ sub ComputeTermFreqInClass{
 		$ti++;	$percent = $Progress->ShowProgress($ti/$tn, $percent) if $me->{debug} >= 1;
 		next if $t =~ /\d+\.?\d*/; # escape numbers
 		next if length($t)<3; # term length too short
-		next if $t =~ /一|二|三|\Q四\E|五|六|七|八|九|十/; # escape numbers
+		next if $t =~ /一|二|三|\Q四\E|五|六|七|八|九|十/; # escape numbers
 #print STDERR "$t=>'", $Stop->IsESW($t), "', Stopword::ESW{$t}='", $Stopword::ESW{$t} ,"'\n" if $t =~ /^produc\w?$/;
 #		next if $Stop->IsESW($t);
 #		next if $Stop->IsESW(substr($t, 0, index($t, ' '))); # 2005/08/08

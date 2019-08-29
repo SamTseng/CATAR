@@ -571,7 +571,9 @@ sub SortInvertedFile { # 雜項功能，特定情況需要
 	while (<>) {
 		chomp; ($t, $posting) = split /\t/, $_;
 #		next if $t =~ /^\s*$/g;
-		$i++; (next and print STDERR "i=$i, $_\n") if $t eq ' ';
+#		$i++; (next and print STDERR "i=$i, $_\n") if $t eq ' ';
+# Replace the above line with the next line
+		$i++; (print STDERR "i=$i, $_\n" and next) if $t eq ' ';
 		next if ($main::Ophrase and ($t=~tr/ / /)==0); # skip single words if $Ophrase
 		$df = ($posting =~ tr/,/,/) / 2;
 		$Terms{$t} = $df;
@@ -1278,7 +1280,7 @@ foreach $seg (@Seg) {
 	} # otherwise, we have something to be printed out
 
 # Get the cluster id. Format: "1(6):<UL>"
-	if ($seg =~ /(\d+)\(\d+\):<UL>/i) { $cid = $1; } 
+	if ($seg =~ /(\d+)\(\d+\):<UL>/i) { $cid = $1; } # $cid is "1" in the above example
 	else { die "Cannot match cid:'", substr($seg, 0, 20), "'\n"; }
 
 # Get the number of items in the cluster
@@ -1287,7 +1289,7 @@ foreach $seg (@Seg) {
 	$Cid2Id_Num[$cid] = $Id_Num_in_C;
 	# $Id_Num_in_C is in the format: "374 : 220筆". It is used with $cid
 
-	# insert table into the first :. e.g. "<p>181(3):<UL>"
+	# insert HTML table tab into cluster head :. e.g. "<p>181(3):<UL>"
 	$seg =~ s/:<UL>/:<table border=1><tr><td valign=top><UL>/; 
 	$str = ''; $line = ($seg =~ tr/\n/\n/ + 1); # maximum of information lines
 	$TCsum = 0;
@@ -1310,7 +1312,9 @@ foreach $seg (@Seg) {
 			if ($field eq 'PY') {
 				my @PY = sort {$a <=> $b} keys %PY; # must use all years
 				my @PYvalue = (); # since some clusters do not have full years
-				foreach my $f (@PY) { push @PYvalue, $rSC->{$f}; }
+				# foreach my $f (@PY) { push @PYvalue, $rSC->{$f}; }
+			# The above line is replaced by the next line on 2019/08/26
+				foreach my $f ($PY[0]..$PY[-1]) { push @PYvalue, $rSC->{$f}; }
 #print STDERR "\n", join(', ', @PYvalue),"\n"; # important for debugging
 				$slope = &Compute_Slope(\@PYvalue);
 				$SC .= "<br>Slope:$slope\n";
@@ -1322,18 +1326,24 @@ foreach $seg (@Seg) {
 				$SC .= "<li>_Total_ : \$Total\n<li>_HHI_ : \$HHI\n<li>_1/HHI_ : \$HHIi\n";
 				$SCt .= "_Total_\t\$Total\n_HHI_\t\$HHI\n_1/HHI_\t\$HHIi\n";
 			}
-			foreach $f (sort {$rSC->{$b} <=> $rSC->{$a}} keys %$rSC) {
-				$max = $rSC->{$f} if $max < $rSC->{$f};
-				last if (($max > $main::Omin and $rSC->{$f} <= $main::Omin) 
-					or ($max <= $main::Omin and $rSC->{$f} < $max)); # 2007/08/08
-				$total += $rSC->{$f}; push @HHI, $rSC->{$f}; # 2011/04/14
+			# When $field =~ /AF|AU|C1|IU/, need to compute additional TC and CPP
+#			foreach $f (sort {$rSC->{$b} <=> $rSC->{$a}} keys %$rSC) {
+#				$total += $rSC->{$f}; push @HHI, $rSC->{$f}; # 2011/04/14
+			foreach $f (sort {&f($rSC->{$b}) <=> &f($rSC->{$a})} keys %$rSC) {
+				my $df = &f($rSC->{$f});
+				$total += $df; push @HHI, $df; # 2011/04/14
 				$SC .= "<li>$f : $rSC->{$f}\n";
 				$SCt .= "$f\t$rSC->{$f}\n";
 #				$SC .= "<li>$f : ". &ts($rSC->{$f})."\n"; # 2009/02/11
 #				$SCt .= "$f\t".&ts($rSC->{$f})."\n"; # 2009/02/11
-#				last if $j++ > $line;
 				last if $j++ > $line and not $main::Otxt;
 				last if $j >= $main::Otxt and defined $main::Otxt;
+				$max = $df if $max < $df;
+				last if (($max > $main::Omin and $df <= $main::Omin) 
+					or ($max <= $main::Omin and $df < $max)); # 2007/08/08
+#				$max = $rSC->{$f} if $max < $rSC->{$f};
+#				last if (($max > $main::Omin and $rSC->{$f} <= $main::Omin) 
+#					or ($max <= $main::Omin and $rSC->{$f} < $max)); # 2007/08/08
 			}
 			if ($field =~ /C1|CJ|SC|SO|IU|DP/) {
 				my($hhi, $hhii) = &Compute_HHI($total, \@HHI);
@@ -1342,7 +1352,6 @@ foreach $seg (@Seg) {
 				$SC =~ s/\$HHI/$hhi/;		$SCt =~ s/\$HHI/$hhi/;
 				$SC =~ s/\$HHIi/$hhii/;		$SCt =~ s/\$HHIi/$hhii/;
 			}
-			
 		} # end of if ($field
 		my $ff = $field; $ff =~ s/[\[\]]//g;
 		$str .= "<td valign=top>$ff<ol>\n$SC</ol></td>\n";
@@ -1364,10 +1373,15 @@ foreach $seg (@Seg) {
 	$percent = $Progress->ShowProgress($i/@Seg, $percent);
 }
 
+# get the first element of a string: "4 : 15" or "4 : 15 : 3.75"
+sub f {my($a) = @_; my @A = split(' : ', $a); return $A[0];}
+
 # Given a set of Dids and a field, return the accumulated information for that field
+# When $field =~ /AF|AU|C1|IU/, need to compute additional TC and CPP
 sub GetInfoByDid {
 	my($rDid, $DBH, $table, $field) = @_;
-	my($sql, $STH, $did, $SC, @SC, %SC, $year, $month, $day, $n, $PY, $encoding_name);
+	my($sql, $STH, $did, $SC, @SC, %SC, %TC, @TC);
+	my($year, $month, $day, $n, $PY, $encoding_name);
 # Prepare the SQL statement
 	if ($table eq 'Patent') { # do nothing, delay to &GetPatentInfo()
 	} else {
@@ -1378,6 +1392,7 @@ sub GetInfoByDid {
 			$sql = "SELECT $field FROM $table where UT = ?";
 		}
 		$sql =~ s/ FROM/, PY FROM/ if $field eq 'TC'; # 2010/11/06
+		$sql =~ s/ FROM/, TC FROM/ if $field =~ /AF|AU|C1|IU|DP/; # 2019/08/26
 		$STH = $DBH->prepare($sql) or die "Can't prepare SQL=$sql, $DBI::errstr\n";
 	}
 # Execute the SQL statement and save the result in @SC
@@ -1395,27 +1410,39 @@ sub GetInfoByDid {
 			chomp $SC; # 2012/01/19
 			$encoding_name = Encode::Detect::Detector::detect($SC);
 			if ($encoding_name =~ /UTF-8/i) { # if utf8-encoded
-#				$SC = encode("big5", $SC);
-#			if ($encoding_name !~ /big5/i) { # if utf8-encoded
 				from_to($SC, $encoding_name, 'big5'); 
 			}
 			if ($field eq 'TC') {
 				$PY = &Normalize_PY($PY);
 				$SC{$PY} += $SC; # accumulate TC for each year
 			} else {
-				push @SC, (split /;\s*/, $SC);
+				@TC = (split /;\s*/, $SC);
+				push @SC, @TC;
+				if ($field =~ /AF|AU|C1|IU|DP/) { 
+#warn("did=$did, field=$field, TC(PY)=$PY, \$SC=$SC, \@SC=" . join(';; ', @SC));
+					foreach my $sc (@TC) { # ucfirst lc (each element in @SC)
+						$TC{$sc} += $PY; # $PY is content of TC
+					}
+#warn(join("; ", map{"$_:$TC{$_}"} sort keys %TC));
+				}
 			}
 		}
 	}
-	$n = scalar @SC; # number of items in the field, 2009/02/11
-	foreach $SC (@SC) { 
-		$SC = &Normalize_PY($SC) if ($field eq 'PY');
-		$SC = join (' ', map{ucfirst lc} split(/ /, $SC)) 
-#			if $field eq '[IN]' or $field eq 'IN';
-			if $field eq 'IU';
-#		$SC = &Normalize_Author($SC) if $field eq 'AU';   	
-		$SC{$SC}++; 
+	# $n = scalar @SC; # number of items in the field, 2009/02/11
+	foreach my $sc (@SC) { 
+		$sc = &Normalize_PY($sc) if ($field eq 'PY');
+		$SC{$sc}++; 
 #	$SC{$SC}+=1/$n; # 2009/02/11
+	}
+	if ($field =~ /AF|AU|C1|IU|DP/) { # modify the value of %SC
+		for my $sc (keys %SC) { # change value "NC" into "NC : TC : CPP"
+			if ($SC{$sc} == 0) {
+warn("field=$field, SC=$SC, PY=$PY, SC{$sc}=$SC{$sc}");
+				$SC{$sc} = "0 : $TC{$sc} : 0"
+			} else {
+				$SC{$sc} = $SC{$sc}.' : '.$TC{$sc}.' : '.&ts($TC{$sc}/$SC{$sc}, 2);
+			}
+		}
 	}
 	return \%SC;
 }
@@ -1453,6 +1480,7 @@ sub Compute_HHI {
 	for($i=0; $i<$n; $i++) { $sum += ($rA->[$i]/$n)**2; }
 	return ($sum, ($sum>0)?1/$sum:0);
 }
+
 # Use options: Oday, Omonth if OSC=IssuedDate or OSC=ApplyDate is used
 sub GetPatentInfo {
 	my($DBH, $id, $field) = @_;

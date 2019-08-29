@@ -109,7 +109,7 @@ sub FieldAggregation {
 		&myexec($cmd);
 	}
 	$cmd="$prog ISI.pl -OISIt -OSC2C=ISI_SC2C.txt $DSN $Table SC $DB_Path > ../Result/$DSN/SC2C.txt";
-	&myexec($cmd);
+	&myexec($cmd) if (defined $main::OSC2C); # added on 2019/08/25
 
 # 與年代作交叉分析：
 	@Fields = split ' ', "AF AU DP IU C1 SC SO J9 TC";
@@ -120,14 +120,15 @@ sub FieldAggregation {
 # fractional count 是指同一篇文章有n個作者時，每個作者累計1/n次
 # 相對於 normal count，是指同一篇文章有n個作者時，每個作者累計1次
 		$cmd="$prog ISI.pl -OISIt -OfracCount -Ocr=100 $DSN $Table $ff $DB_Path > ../Result/$DSN/${f}_PY_fc.txt";
+		# add if condition in the next line on 2019/08/25
+		&myexec($cmd) if ($f eq 'AF' or $f eq 'AU'  or $f eq 'IU' or $f eq 'C1'); 
+	}
+	if (defined $main::OSC2C) { # added on 2019/08/25
+		$cmd="$prog ISI.pl -OISIt -Ocr=100 -OSC2C=ISI_SC2C.txt $DSN $Table SC $DB_Path > ../Result/$DSN/SC2C_PY.txt";
+		&myexec($cmd);
+		$cmd="$prog ISI.pl -OISIt -OfracCount -Ocr=100 -OSC2C=ISI_SC2C.txt $DSN $Table SC $DB_Path > ../Result/$DSN/SC2C_PY_fc.txt";
 		&myexec($cmd);
 	}
-	$cmd="$prog ISI.pl -OISIt -Ocr=100 -OSC2C=ISI_SC2C.txt $DSN $Table SC $DB_Path > ../Result/$DSN/SC2C_PY.txt";
-	&myexec($cmd);
-# fractional count 是指同一篇文章有n個作者時，每個作者累計1/n次
-# 相對於 normal count，是指同一篇文章有n個作者時，每個作者累計1次
-	$cmd="$prog ISI.pl -OISIt -OfracCount -Ocr=100 -OSC2C=ISI_SC2C.txt $DSN $Table SC $DB_Path > ../Result/$DSN/SC2C_PY_fc.txt";
-	&myexec($cmd);
 
 # 與被引用次數做交叉分析
   if (not $main::OBioAbs) {
@@ -139,13 +140,36 @@ sub FieldAggregation {
 # fractional count 是指同一篇文章有n個作者時，每個作者累計1/n次
 # 相對於 normal count，是指同一篇文章有n個作者時，每個作者累計1次
 		$cmd="$prog ISI.pl -OISIt -OfracCount -Ocr=100 $DSN $Table \"$ff, TC\" $DB_Path > ../Result/$DSN/${f}_PY_TC_fc.txt";
-		&myexec($cmd);
+		# add if condition in the next line on 2019/08/25
+		&myexec($cmd) if ($f eq 'AF' or $f eq 'AU' or $f eq 'IU' or $f eq 'C1');
 # 計算 CPP （Citations per Paper）指標
 		$cmd="$prog ISI.pl -Omfd $f ../Result/$DSN > ../Result/$DSN/${f}_CPP.txt";
-		&myexec($cmd);
+		# add if condition in the next line on 2019/08/25
+		&myexec($cmd) if ($f eq 'AF' or $f eq 'AU' or $f eq 'IU' or $f eq 'C1');
 	}
   }
 
+	if ($main::OY5) { # added on 2019/0825
+		&Aggregate5Year($DSN, $Table, $DB_Path);
+	}
+
+# 瞭解 DE、ID、SC等欄位內的詞彙，在標題與內文中出現的比例：
+	$cmd="$prog ISI.pl -Ochktm $DSN $Table $DB_Path "
+		."> ../Result/$DSN/_${DSN}_stat.txt";
+	&myexec($cmd) if not $main::OBioAbs;
+# 統計標題、摘要等欄位之字數與統計值：
+	$cmd="$prog ISI.pl -OavgCnt $option $DSN $Table $DB_Path "
+		.">> ../Result/$DSN/_${DSN}_stat.txt";
+	&myexec($cmd);
+
+# 最後，將結果目錄下的所有文字檔案，轉入到 Excel 中
+	$cmd="$prog ISI.pl -O2xls -OmaxR=500 $DSN ../Result/$DSN "
+	."../Result/$DSN/_${DSN}_by_field.xls";
+	&myexec($cmd);
+}
+
+sub Aggregate5Year {
+	my($DSN, $Table, $DB_Path, ) = @_; my($cmd, $f);
 # 與年代做交叉分析的資料，做每五年累計的統計
 	foreach $f ('C1', 'SC', 'SC2C', 'SO', 'J9') {
 		$cmd="$prog ISI.pl -OY5 ../Result/$DSN/${f}_PY.txt > ../Result/$DSN/${f}_PY_5.txt";
@@ -166,20 +190,6 @@ sub FieldAggregation {
 		$cmd="$prog ISI.pl -Omi=5 ../Result/$DSN/MI.txt > ../Result/$DSN/MI.htm";
 		&myexec($cmd);
 	}
-
-# 瞭解 DE、ID、SC等欄位內的詞彙，在標題與內文中出現的比例：
-	$cmd="$prog ISI.pl -Ochktm $DSN $Table $DB_Path "
-		."> ../Result/$DSN/_${DSN}_stat.txt";
-	&myexec($cmd) if not $main::OBioAbs;
-# 統計標題、摘要等欄位之字數與統計值：
-	$cmd="$prog ISI.pl -OavgCnt $option $DSN $Table $DB_Path "
-		.">> ../Result/$DSN/_${DSN}_stat.txt";
-	&myexec($cmd);
-
-# 最後，將結果目錄下的所有文字檔案，轉入到 Excel 中
-	$cmd="$prog ISI.pl -O2xls -OmaxR=500 $DSN ../Result/$DSN "
-	."../Result/$DSN/_${DSN}_by_field.xls";
-	&myexec($cmd);
 }
 
 
@@ -281,7 +291,6 @@ Stage3:
 	$cut = &Clustering_S2toS3($DSN, $DB_Path, 4, $cut, $BC);
 
 Stage5:
-#$cut=0.02;
 	&PromptMsg1($DSN, 4, $cut);
 	$cut = &Clustering_S2toS3($DSN, $DB_Path, 5, $cut, $BC);
 
@@ -449,7 +458,7 @@ sub Cluster_Map_Cut {
 	$cmd = "$prog Term_Trend.pl -Ocolor -Omap -Ocut=$cut $OutDir";
 	if (int($option / 2) == 1) { # if 2 or 3
 		 # if small number of items, create maps unconditionally
-		myexec($cmd) if ($NumItems < 1000);
+		#myexec($cmd) if ($NumItems < 1000); # comment on 2019/08/27
 	}  # if too many items, create MDS map may wait too long
 	
 # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
@@ -476,7 +485,7 @@ sub Cluster_Map_MultiCut {
 	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.0, $option, $BC);
 	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.01, $option, $BC);
 	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.02, $option, $BC);
-	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.05, $option, $BC);
+#	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.05, $option, $BC);
 #	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.07, $option, $BC);
 #	&Cluster_Map_Cut($DSN, $DB_Path, $n, 0.10, $option, $BC);
 }
@@ -700,7 +709,7 @@ sub Cluster_Map_Cut_dc {
 # 畫出主題圖：
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.05 -Omap ../Result/SciE_dc
 	$cmd = "$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap $OutDir";
-	&myexec($cmd) if int($option / 2) == 1; # if 2 or 3
+	#&myexec($cmd) if int($option / 2) == 1; # if 2 or 3 # comment on 2019/08/27
 # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=1.5 -OCNo -OhtmlTree=../Result/ATR3_BC_S4/0_0.01.html ../Result/ATR3_BC_S5
 	$cmd = "$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap -OCNo -OhtmlTree="
@@ -711,8 +720,8 @@ sub Cluster_Map_Cut_dc {
 sub Cluster_Map_MultiCut_dc {
 	my($DSN, $DB_Path, $n, $low_df, $low_tf, $ct_low_tf, $CW) = @_; my($op);
 	$op = ($n<2)?1:3; # skip drawing the topic map if $n too low
-	&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.01,$op,$low_df,$low_tf,$ct_low_tf, $CW);
-	&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.02,$op,$low_df,$low_tf,$ct_low_tf, $CW);
+	#&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.01,$op,$low_df,$low_tf,$ct_low_tf, $CW);
+	#&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.02,$op,$low_df,$low_tf,$ct_low_tf, $CW);
 	&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.05,$op,$low_df,$low_tf,$ct_low_tf, $CW);
 	&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.07,$op,$low_df,$low_tf,$ct_low_tf, $CW);
 	&Cluster_Map_Cut_dc($DSN,$DB_Path,$n,0.10,$op,$low_df,$low_tf,$ct_low_tf, $CW);
