@@ -7,7 +7,8 @@ package MDS;
 
 # do not allocate whilte, black, red, and blue, they are reserved.
 # for color palate, see http://www.frogtown.com/~lori/rgb.html
-	my(@Color, @ColorNames); # Add ColorNames on 2012/01/15
+# Remark next line on 2019/08/30
+#	my(@Color, @ColorNames); # Add ColorNames on 2012/01/15
 
 =head1 NAME
 
@@ -31,16 +32,15 @@ MDS -- A class for MultiDimentional Scaling (MDS) mapping.
 	$mds->SetValue('fill', 1); # to fill the circle area or not, 1=Yes,0=No
 	$mds->SetValue('InitialMap', 'Coordinate.txt'); # to draw the map based on a previous one
 	if ($Ocolor) { # if want to map different colors for different clusters
-	use Cluster;
-	$rDC = Cluster->new( { 'debug'=>$Odebug } );
-	$rDC->SetValue('IndexPath', $IndexPath);
-	$rDC->ReadTree();
-	($rDid2Cid, $rCid2Dids) = $rDC->CutCollection($Ocut);
-	
+		use Cluster;
+		$rDC = Cluster->new( { 'debug'=>$Odebug } );
+		$rDC->SetValue('IndexPath', $IndexPath);
+		$rDC->ReadTree();
+		($rDid2Cid, $rCid2Dids) = $rDC->CutCollection($Ocut);
 	}
 	$mds->PrintAttributes(); # for debugging
-	$mds->mdsmap(2, "$IndexPath/SortedPairs.txt", 
-	"$IndexPath/Title.txt", "$IndexPath/map_$Ocut.png", $rDid2Cid, $rCid2Dids);
+	$mds->mdsmap(2, "$IndexPath/SortedPairs.txt", "$IndexPath/Title.txt",
+	"$IndexPath/map_$Ocut.png", $rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted);
 
 
 =head1 DESCRIPTION
@@ -112,166 +112,167 @@ sub new {
 	my $img = $me->{'IMG'};
 # first call to colorAllocate set the background color
 	$img->colorAllocate(255, 255, 255); # white, the background color
-@Color = ( # The color values are copied from the output cmyk2rgb.pl
-  $img->colorAllocate(255, 0, 0), # Red
-  $img->colorAllocate(0, 255, 0), # Green
-  $img->colorAllocate(0, 0, 255), # Blue
-  $img->colorAllocate(255, 255, 0), # Yellow
-  $img->colorAllocate(255, 0, 255), # Magenta
-  $img->colorAllocate(0, 255, 255), # Cyan
-  $img->colorAllocate(0, 255, 127), # Emerald
-  $img->colorAllocate(255, 148, 0), # YellowOrange
-  $img->colorAllocate(0, 127, 255), # RoyalBlue
-  $img->colorAllocate(127, 0, 255), # Plum
-  $img->colorAllocate(255, 0, 127), # OrangeRed
-  $img->colorAllocate(127, 255, 0), # LimeGreen
-  $img->colorAllocate(255, 127, 76), # Peach
-  $img->colorAllocate(255, 48, 255), # VioletRed
-  $img->colorAllocate(102, 19, 0), # Brown
-  $img->colorAllocate(219, 148, 112), # Tan
-  $img->colorAllocate(255, 204, 255), # LightMagenta
-  $img->colorAllocate(3, 255, 122), # JungleGreen
-  $img->colorAllocate(217, 255, 79), # GreenYellow
-  $img->colorAllocate(217, 242, 255), # LSkyBlue
-  $img->colorAllocate(0, 0, 0), # Black
-  $img->colorAllocate(255, 229, 41), # Goldenrod
-  $img->colorAllocate(153, 51, 204), # DarkOrchid
-  $img->colorAllocate(255, 138, 127), # Melon
-  $img->colorAllocate(255, 125, 0), # BurntOrange
-  $img->colorAllocate(184, 20, 11), # BrickRed
-  $img->colorAllocate(255, 10, 156), # WildStrawberry
-  $img->colorAllocate(204, 255, 178), # LightGreen
-  $img->colorAllocate(255, 94, 255), # CarnationPink
-  $img->colorAllocate(140, 36, 255), # Purple
-  $img->colorAllocate(255, 99, 33), # Orange
-  $img->colorAllocate(124, 21, 235), # Fuchsia
-  $img->colorAllocate(255, 133, 255), # Lavender
-  $img->colorAllocate(20, 224, 27), # ForestGreen
-  $img->colorAllocate(255, 181, 41), # Dandelion
-  $img->colorAllocate(189, 255, 61), # SpringGreen
-  $img->colorAllocate(255, 173, 122), # Apricot
-  $img->colorAllocate(79, 255, 127), # SeaGreen
-  $img->colorAllocate(140, 39, 0), # RawSienna
-  $img->colorAllocate(224, 105, 255), # Thistle
-  $img->colorAllocate(255, 120, 158), # Salmon
-  $img->colorAllocate(54, 31, 255), # Violet
-  $img->colorAllocate(15, 191, 78), # PineGreen
-  $img->colorAllocate(64, 25, 255), # RoyalPurple
-  $img->colorAllocate(89, 222, 255), # CornflowerBlue
-  $img->colorAllocate(3, 126, 145), # MidnightBlue
-  $img->colorAllocate(15, 117, 255), # NavyBlue
-  $img->colorAllocate(173, 23, 55), # Maroon
-  $img->colorAllocate(15, 227, 255), # Cerulean
-  $img->colorAllocate(10, 255, 255), # ProcessBlue
-  $img->colorAllocate(97, 255, 224), # SkyBlue
-  $img->colorAllocate(38, 255, 204), # Turquoise
-  $img->colorAllocate(194, 48, 0), # Bittersweet
-  $img->colorAllocate(35, 250, 165), # TealBlue
-  $img->colorAllocate(143, 255, 66), # YellowGreen
-  $img->colorAllocate(76, 13, 0), # Sepia
-  $img->colorAllocate(255, 255, 153), # LightYellow
-  $img->colorAllocate(157, 17, 168), # RedViolet
-  $img->colorAllocate(38, 255, 171), # BlueGreen
-  $img->colorAllocate(255, 0, 222), # RubineRed
-  $img->colorAllocate(97, 110, 196), # CadetBlue
-  $img->colorAllocate(255, 204, 178), # LightOrange
-  $img->colorAllocate(55, 153, 8), # OliveGreen
-  $img->colorAllocate(173, 92, 255), # Orchid
-  $img->colorAllocate(204, 255, 255), # LightCyan
-  $img->colorAllocate(166, 25, 22), # Mahogany
-  $img->colorAllocate(204, 204, 255), # LightPurple
-  $img->colorAllocate(255, 255, 127), # Canary
-  $img->colorAllocate(34, 22, 245), # BlueViolet
-  $img->colorAllocate(255, 59, 33), # RedOrange
-  $img->colorAllocate(229, 255, 204), # LFadedGreen
-  $img->colorAllocate(255, 46, 255), # Rhodamine
-  $img->colorAllocate(165, 25, 250), # Mulberry
-  $img->colorAllocate(46, 255, 178), # Aquamarine
-  $img->colorAllocate(255, 217, 242), # Pink
-  $img->colorAllocate(110, 115, 255), # Periwinkle
-  $img->colorAllocate(127, 127, 127), # Gray # the last must be Gray
-);
-
-@ColorNames = (  # The color names are copied from the output cmyk2rgb.pl
-  'Red',		#(255, 0, 0)
-  'Green',		#(0, 255, 0)
-  'Blue',		#(0, 0, 255)
-  'Yellow',		#(255, 255, 0)
-  'Magenta',		#(255, 0, 255)
-  'Cyan',		#(0, 255, 255)
-  'Emerald',		#(0, 255, 127)
-  'YellowOrange',		#(255, 148, 0)
-  'RoyalBlue',		#(0, 127, 255)
-  'Plum',		#(127, 0, 255)
-  'OrangeRed',		#(255, 0, 127)
-  'LimeGreen',		#(127, 255, 0)
-  'Peach',		#(255, 127, 76)
-  'VioletRed',		#(255, 48, 255)
-  'Brown',		#(102, 19, 0)
-  'Tan',		#(219, 148, 112)
-  'LightMagenta',		#(255, 204, 255)
-  'JungleGreen',		#(3, 255, 122)
-  'GreenYellow',		#(217, 255, 79)
-  'LSkyBlue',		#(217, 242, 255)
-  'Black',		#(0, 0, 0)
-  'Goldenrod',		#(255, 229, 41)
-  'DarkOrchid',		#(153, 51, 204)
-  'Melon',		#(255, 138, 127)
-  'BurntOrange',		#(255, 125, 0)
-  'BrickRed',		#(184, 20, 11)
-  'WildStrawberry',		#(255, 10, 156)
-  'LightGreen',		#(204, 255, 178)
-  'CarnationPink',		#(255, 94, 255)
-  'Purple',		#(140, 36, 255)
-  'Orange',		#(255, 99, 33)
-  'Fuchsia',		#(124, 21, 235)
-  'Lavender',		#(255, 133, 255)
-  'ForestGreen',		#(20, 224, 27)
-  'Dandelion',		#(255, 181, 41)
-  'SpringGreen',		#(189, 255, 61)
-  'Apricot',		#(255, 173, 122)
-  'SeaGreen',		#(79, 255, 127)
-  'RawSienna',		#(140, 39, 0)
-  'Thistle',		#(224, 105, 255)
-  'Salmon',		#(255, 120, 158)
-  'Violet',		#(54, 31, 255)
-  'PineGreen',		#(15, 191, 78)
-  'RoyalPurple',		#(64, 25, 255)
-  'CornflowerBlue',		#(89, 222, 255)
-  'MidnightBlue',		#(3, 126, 145)
-  'NavyBlue',		#(15, 117, 255)
-  'Maroon',		#(173, 23, 55)
-  'Cerulean',		#(15, 227, 255)
-  'ProcessBlue',		#(10, 255, 255)
-  'SkyBlue',		#(97, 255, 224)
-  'Turquoise',		#(38, 255, 204)
-  'Bittersweet',		#(194, 48, 0)
-  'TealBlue',		#(35, 250, 165)
-  'YellowGreen',		#(143, 255, 66)
-  'Sepia',		#(76, 13, 0)
-  'LightYellow',		#(255, 255, 153)
-  'RedViolet',		#(157, 17, 168)
-  'BlueGreen',		#(38, 255, 171)
-  'RubineRed',		#(255, 0, 222)
-  'CadetBlue',		#(97, 110, 196)
-  'LightOrange',		#(255, 204, 178)
-  'OliveGreen',		#(55, 153, 8)
-  'Orchid',		#(173, 92, 255)
-  'LightCyan',		#(204, 255, 255)
-  'Mahogany',		#(166, 25, 22)
-  'LightPurple',		#(204, 204, 255)
-  'Canary',		#(255, 255, 127)
-  'BlueViolet',		#(34, 22, 245)
-  'RedOrange',		#(255, 59, 33)
-  'LFadedGreen',		#(229, 255, 204)
-  'Rhodamine',		#(255, 46, 255)
-  'Mulberry',		#(165, 25, 250)
-  'Aquamarine',		#(46, 255, 178)
-  'Pink',		#(255, 217, 242)
-  'Periwinkle',		#(110, 115, 255)
-  'Gray',		#(127, 127, 127)
-);
-
+	my @Color = ( # The color values are copied from the output cmyk2rgb.pl
+	  # $img->colorAllocate() return an integer
+	  $img->colorAllocate(255, 0, 0), # Red, 
+	  $img->colorAllocate(0, 255, 0), # Green
+	  $img->colorAllocate(0, 0, 255), # Blue
+	  $img->colorAllocate(255, 255, 0), # Yellow
+	  $img->colorAllocate(255, 0, 255), # Magenta
+	  $img->colorAllocate(0, 255, 255), # Cyan
+	  $img->colorAllocate(0, 255, 127), # Emerald
+	  $img->colorAllocate(255, 148, 0), # YellowOrange
+	  $img->colorAllocate(0, 127, 255), # RoyalBlue
+	  $img->colorAllocate(127, 0, 255), # Plum
+	  $img->colorAllocate(255, 0, 127), # OrangeRed
+	  $img->colorAllocate(127, 255, 0), # LimeGreen
+	  $img->colorAllocate(255, 127, 76), # Peach
+	  $img->colorAllocate(255, 48, 255), # VioletRed
+	  $img->colorAllocate(102, 19, 0), # Brown
+	  $img->colorAllocate(219, 148, 112), # Tan
+	  $img->colorAllocate(255, 204, 255), # LightMagenta
+	  $img->colorAllocate(3, 255, 122), # JungleGreen
+	  $img->colorAllocate(217, 255, 79), # GreenYellow
+	  $img->colorAllocate(217, 242, 255), # LSkyBlue
+	  $img->colorAllocate(0, 0, 0), # Black
+	  $img->colorAllocate(255, 229, 41), # Goldenrod
+	  $img->colorAllocate(153, 51, 204), # DarkOrchid
+	  $img->colorAllocate(255, 138, 127), # Melon
+	  $img->colorAllocate(255, 125, 0), # BurntOrange
+	  $img->colorAllocate(184, 20, 11), # BrickRed
+	  $img->colorAllocate(255, 10, 156), # WildStrawberry
+	  $img->colorAllocate(204, 255, 178), # LightGreen
+	  $img->colorAllocate(255, 94, 255), # CarnationPink
+	  $img->colorAllocate(140, 36, 255), # Purple
+	  $img->colorAllocate(255, 99, 33), # Orange
+	  $img->colorAllocate(124, 21, 235), # Fuchsia
+	  $img->colorAllocate(255, 133, 255), # Lavender
+	  $img->colorAllocate(20, 224, 27), # ForestGreen
+	  $img->colorAllocate(255, 181, 41), # Dandelion
+	  $img->colorAllocate(189, 255, 61), # SpringGreen
+	  $img->colorAllocate(255, 173, 122), # Apricot
+	  $img->colorAllocate(79, 255, 127), # SeaGreen
+	  $img->colorAllocate(140, 39, 0), # RawSienna
+	  $img->colorAllocate(224, 105, 255), # Thistle
+	  $img->colorAllocate(255, 120, 158), # Salmon
+	  $img->colorAllocate(54, 31, 255), # Violet
+	  $img->colorAllocate(15, 191, 78), # PineGreen
+	  $img->colorAllocate(64, 25, 255), # RoyalPurple
+	  $img->colorAllocate(89, 222, 255), # CornflowerBlue
+	  $img->colorAllocate(3, 126, 145), # MidnightBlue
+	  $img->colorAllocate(15, 117, 255), # NavyBlue
+	  $img->colorAllocate(173, 23, 55), # Maroon
+	  $img->colorAllocate(15, 227, 255), # Cerulean
+	  $img->colorAllocate(10, 255, 255), # ProcessBlue
+	  $img->colorAllocate(97, 255, 224), # SkyBlue
+	  $img->colorAllocate(38, 255, 204), # Turquoise
+	  $img->colorAllocate(194, 48, 0), # Bittersweet
+	  $img->colorAllocate(35, 250, 165), # TealBlue
+	  $img->colorAllocate(143, 255, 66), # YellowGreen
+	  $img->colorAllocate(76, 13, 0), # Sepia
+	  $img->colorAllocate(255, 255, 153), # LightYellow
+	  $img->colorAllocate(157, 17, 168), # RedViolet
+	  $img->colorAllocate(38, 255, 171), # BlueGreen
+	  $img->colorAllocate(255, 0, 222), # RubineRed
+	  $img->colorAllocate(97, 110, 196), # CadetBlue
+	  $img->colorAllocate(255, 204, 178), # LightOrange
+	  $img->colorAllocate(55, 153, 8), # OliveGreen
+	  $img->colorAllocate(173, 92, 255), # Orchid
+	  $img->colorAllocate(204, 255, 255), # LightCyan
+	  $img->colorAllocate(166, 25, 22), # Mahogany
+	  $img->colorAllocate(204, 204, 255), # LightPurple
+	  $img->colorAllocate(255, 255, 127), # Canary
+	  $img->colorAllocate(34, 22, 245), # BlueViolet
+	  $img->colorAllocate(255, 59, 33), # RedOrange
+	  $img->colorAllocate(229, 255, 204), # LFadedGreen
+	  $img->colorAllocate(255, 46, 255), # Rhodamine
+	  $img->colorAllocate(165, 25, 250), # Mulberry
+	  $img->colorAllocate(46, 255, 178), # Aquamarine
+	  $img->colorAllocate(255, 217, 242), # Pink
+	  $img->colorAllocate(110, 115, 255), # Periwinkle
+	  $img->colorAllocate(127, 127, 127), # Gray # the last must be Gray
+	);
+	$me->{rColor} = \@Color;  # added on 2019/08/30
+	my @ColorNames = (  # The color names are copied from the output cmyk2rgb.pl
+	  'Red',		#(255, 0, 0)
+	  'Green',		#(0, 255, 0)
+	  'Blue',		#(0, 0, 255)
+	  'Yellow',		#(255, 255, 0)
+	  'Magenta',		#(255, 0, 255)
+	  'Cyan',		#(0, 255, 255)
+	  'Emerald',		#(0, 255, 127)
+	  'YellowOrange',		#(255, 148, 0)
+	  'RoyalBlue',		#(0, 127, 255)
+	  'Plum',		#(127, 0, 255)
+	  'OrangeRed',		#(255, 0, 127)
+	  'LimeGreen',		#(127, 255, 0)
+	  'Peach',		#(255, 127, 76)
+	  'VioletRed',		#(255, 48, 255)
+	  'Brown',		#(102, 19, 0)
+	  'Tan',		#(219, 148, 112)
+	  'LightMagenta',		#(255, 204, 255)
+	  'JungleGreen',		#(3, 255, 122)
+	  'GreenYellow',		#(217, 255, 79)
+	  'LSkyBlue',		#(217, 242, 255)
+	  'Black',		#(0, 0, 0)
+	  'Goldenrod',		#(255, 229, 41)
+	  'DarkOrchid',		#(153, 51, 204)
+	  'Melon',		#(255, 138, 127)
+	  'BurntOrange',		#(255, 125, 0)
+	  'BrickRed',		#(184, 20, 11)
+	  'WildStrawberry',		#(255, 10, 156)
+	  'LightGreen',		#(204, 255, 178)
+	  'CarnationPink',		#(255, 94, 255)
+	  'Purple',		#(140, 36, 255)
+	  'Orange',		#(255, 99, 33)
+	  'Fuchsia',		#(124, 21, 235)
+	  'Lavender',		#(255, 133, 255)
+	  'ForestGreen',		#(20, 224, 27)
+	  'Dandelion',		#(255, 181, 41)
+	  'SpringGreen',		#(189, 255, 61)
+	  'Apricot',		#(255, 173, 122)
+	  'SeaGreen',		#(79, 255, 127)
+	  'RawSienna',		#(140, 39, 0)
+	  'Thistle',		#(224, 105, 255)
+	  'Salmon',		#(255, 120, 158)
+	  'Violet',		#(54, 31, 255)
+	  'PineGreen',		#(15, 191, 78)
+	  'RoyalPurple',		#(64, 25, 255)
+	  'CornflowerBlue',		#(89, 222, 255)
+	  'MidnightBlue',		#(3, 126, 145)
+	  'NavyBlue',		#(15, 117, 255)
+	  'Maroon',		#(173, 23, 55)
+	  'Cerulean',		#(15, 227, 255)
+	  'ProcessBlue',		#(10, 255, 255)
+	  'SkyBlue',		#(97, 255, 224)
+	  'Turquoise',		#(38, 255, 204)
+	  'Bittersweet',		#(194, 48, 0)
+	  'TealBlue',		#(35, 250, 165)
+	  'YellowGreen',		#(143, 255, 66)
+	  'Sepia',		#(76, 13, 0)
+	  'LightYellow',		#(255, 255, 153)
+	  'RedViolet',		#(157, 17, 168)
+	  'BlueGreen',		#(38, 255, 171)
+	  'RubineRed',		#(255, 0, 222)
+	  'CadetBlue',		#(97, 110, 196)
+	  'LightOrange',		#(255, 204, 178)
+	  'OliveGreen',		#(55, 153, 8)
+	  'Orchid',		#(173, 92, 255)
+	  'LightCyan',		#(204, 255, 255)
+	  'Mahogany',		#(166, 25, 22)
+	  'LightPurple',		#(204, 204, 255)
+	  'Canary',		#(255, 255, 127)
+	  'BlueViolet',		#(34, 22, 245)
+	  'RedOrange',		#(255, 59, 33)
+	  'LFadedGreen',		#(229, 255, 204)
+	  'Rhodamine',		#(255, 46, 255)
+	  'Mulberry',		#(165, 25, 250)
+	  'Aquamarine',		#(46, 255, 178)
+	  'Pink',		#(255, 217, 242)
+	  'Periwinkle',		#(110, 115, 255)
+	  'Gray',		#(127, 127, 127)
+	);
+	$me->{rColorNames} = \@ColorNames; # added on 2019/08/30
 	return $me;
 }
 
@@ -416,13 +417,13 @@ sub GetValue {
 
 =head2 Main methods
 
-=head2 $mds->mdsmap($dim, $SortedFile, $TitileFile, $OutFile)
+=head2 $mds->mdsmap($dim, $SortedFile, $TitileFile, $OutPNGFile)
 
   Input/output:
 	$dim : number of dimensions, usually 2
 	$SortedFile : SortedPairs.txt resulted from cluster.pm
 	$TitleFile : Title.txt resulted from cluster.pm
-	$OutFile : file to hold the mapping result
+	$OutPNGFile : file to hold the mapping result
   Note: Before calling this method, you should set the attributes:
 	mds_exe = D:\demo\File\L04\bin\mds.exe
 	SimFile : the input file required by mds.exe
@@ -451,13 +452,13 @@ Step3.
 =cut
 # Currently this function uses the mds program from http://www.let.rug.nl/~kleiweg/indexs.html
 sub mdsmap {
-	my($me, $dim, $SortedFile, $TitleFile, $OutFile, 
-		$rDid2Cid, $rCid2Cno, $rWanted, $rUnWanted) = @_;
+	my($me, $dim, $SortedFile, $TitleFile, $OutPNGFile, 
+		$rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted) = @_;
 	my($cmd, $rTitle, $rOld2NewID);
 # 1. convert the SimFile format, if necessary
 #	$rTitle = $me->ConvertSimFile($SortedFile, $TitleFile, $me->{'SimFile'});
 	($rTitle, $rOld2NewID) = $me->ConvertSimFile($SortedFile, $TitleFile, 
-		$me->{'SimFile'}, $rDid2Cid, $rCid2Cno, $rWanted, $rUnWanted);
+		$me->{'SimFile'}, $rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted);
 # 2. call mds
 	if (-f $me->{'InitialMap'}) {
 # mds [-K | -S] [-i filename] [-o filename] dimensions  difference-table-file 
@@ -480,14 +481,14 @@ sub mdsmap {
 		. " > " . $me->{'Coordinate'};
 	}
 	print STDERR "$cmd\n";
-	system($cmd) == 0 
-	  or die "'$cmd' failed: $?\n";
+	system($cmd) == 0  or die "'$cmd' failed: $?\n";
 # 3. read back the output for create the map
-#	$me->CreateMap($me->{'Coordinate'}, $rTitle, $OutFile, $rDid2Cid, $rOld2NewID);
 	my($did, $cid, %Did2Cid);
 	while (($did, $cid) = each %$rDid2Cid) # 2009/03/07
 		{ $Did2Cid{ $rOld2NewID->{$did} } = $cid; }
-	$me->CreateMap($me->{'Coordinate'}, $rTitle, $OutFile, 
+	# %Did2Cid is a new version of $rDid2Cid
+	# @$rTitle is a new version of Title.txt
+	$me->CreateMap($me->{'Coordinate'}, $rTitle, $OutPNGFile, 
 		\%Did2Cid, $rOld2NewID, $rCid2Cno);
 }
 
@@ -496,7 +497,7 @@ sub mdsmap {
 =cut
 sub ConvertSimFile {
 	my($me, $SortedFile, $TitleFile, $SimFile,  
-		$rDid2Cid, $rCid2Cno, $rWanted, $rUnWanted) = @_;
+		$rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted) = @_;
 	my($n, $i, $j, $x, $y, $sim, @Title, @M, $t, $TotalDoc);
 	my($unwanted, $wanted, $ti, $cid, %Old2NewID, %NewID2Cid);
 
@@ -513,7 +514,9 @@ sub ConvertSimFile {
 		next if $unwanted and $rUnWanted->{$cid};
 		next if $wanted and not $rWanted->{$cid};
 		push @Title, $ti; 
-		$i++; $Old2NewID{$j} = $i; $NewID2Cid{$i} = $cid;
+		$i++;                  # $i is new line number (from 0) in @Title
+		$Old2NewID{$j} = $i;   # $j is original line number (from 0) in Title.txt
+		$NewID2Cid{$i} = $cid; # $i to original $cid in Title.txt
 	}
 	close(F);
 
@@ -523,8 +526,7 @@ sub ConvertSimFile {
 			$TotalDoc += $2; 
 		} else {  $TotalDoc ++;  }
 	}
-# set attribute TotalDoc, BaseSize for later use
-	if ($TotalDoc > 0) {
+	if ($TotalDoc > 0) { # set attribute TotalDoc, BaseSize for later use
 		$me->{'TotalDoc'} = $TotalDoc;
 #		$me->{'BaseSize'} = $TotalDoc if $me->{BaseSize} > $TotalDoc;
 	}
@@ -564,16 +566,17 @@ sub ConvertSimFile {
 	}
 	close(FF);
 #exit;
-	$me->CreateDendrogram(\@Title, \@M, $rDid2Cid, $rCid2Cno); # 2012/01/12
+	$me->CreateDendrogram(\@Title, \@M, $rDid2Cid, $rCid2Dids, $rCid2Cno); # 2012/01/12
 	return (\@Title, \%Old2NewID);
 }
 
 
 sub CreateDendrogram {
-	my($me, $rTitle, $rM, $rDid2Cid, $rCid2Cno) = @_;
+	my($me, $rTitle, $rM, $rDid2Cid, $rCid2Dids, $rCid2Cno) = @_;
 	my($did, $cid, %Cid2Dids, %Cid2Ndoc, @Cids);
 	while (($did, $cid) = each %$rDid2Cid) { 
-		$Cid2Dids{$cid} .= "$did\t"; $Cid2Ndoc{$cid}++;
+#		$Cid2Dids{$cid} .= "$did\t"; $Cid2Ndoc{$cid}++;
+		$Cid2Ndoc{$cid}++; # replace above line on 2019/08/31
 #print "$cid : $did=>",(split / : /, $rTitle->[$did])[0],"\n";
 	}
 # Comment next statement because it seems do no hard on 2019/08/29
@@ -598,7 +601,8 @@ sub CreateDendrogram {
 	my($CallCi, $DivCi, $CanvasCi);
 	my($name, $pair, $numLeaves, $HTML);
 	for($i=0; $i<@Cids; $i++) {
-    	my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, \%Cid2Dids, $Cids[$i]);
+#    	my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, \%Cid2Dids, $Cids[$i]);
+    	my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, $rCid2Dids, $Cids[$i]);
     	push @DocNameCi, $name;    push @DisPairCi, $pair;
     	$CallCi .= <<End_Here;
     treeObj=buildTree($numLeaves, $i); 
@@ -709,7 +713,7 @@ sub GetNodeLabel {
 
 =cut
 sub CreateMap {
-	my($me, $InFile, $rTitle, $OutFile, $rDid2Cid, $rOld2NewID, $rCid2Cno) = @_;
+	my($me, $CoordinateFile, $rTitle, $OutPNGFile, $rDid2Cid, $rOld2NewID, $rCid2Cno) = @_;
 # @$rTitle is an array to hold the title of each document
 	my($dim, $dn, $rx, $ry, $cx, $cy, $nodei, $label, $title, $tn, $xn, $yn, $tm);
 	my($img, $white, $black, $red, $blue, $gray55, $rDid2Color, $did, $color);
@@ -718,11 +722,11 @@ sub CreateMap {
 	$white = $img->colorAllocate(255,255,255);
 	$black = $img->colorAllocate(0,0,0);	   
 	$red = $img->colorAllocate(255,0,0);	  
-	$gray55 = $img->colorAllocate(140, 140, 140); # gray55
+	$gray55 = $img->colorAllocate(140, 140, 140); # $gray55==81
 
 	$me->{'OutlierColor'} = $gray55; # 2007/05/09
 #	$blue = $img->colorAllocate(0,0,255); # already has been used
-	$rDid2Color = $me->AllocateColor($img, $rDid2Cid); # Cid2Color
+	$rDid2Color = $me->AllocateColor($img, $rDid2Cid);
 	# make the background transparent and interlaced
 	$img->transparent($white);
 	$img->interlaced('true');
@@ -733,37 +737,42 @@ sub CreateMap {
 # $yn : number of y coordinates read
 # $tn : number of title (circles) read
 # $tm : number of possibly extra title (circles) read
-	$tm = 0;
-	open F, $InFile or die "Cannot read file:'$InFile', $!";
-	$dn = 0; $nodei = 0; $did = 0;
-	my($rPajekNodes); $me->{LabelID} = 0; # Set to zero for later use
+	$tm = 0; $dn = 0; $nodei = 0; 
+	$did = 0; # cluster sequence number in Coordinate.txt
+	open F, $CoordinateFile or die "Cannot read file:'$CoordinateFile', $!";
+	my($rPajekNodes); 
+	$me->{LabelID} = 0; # Set to zero for later use
 	while (<F>) { # read the file containing x and y coordinates
 		chomp;
 		next if /^#|^\s*$/g; # skip if comment or empty line
 		if (/^(\d+)$/) { # number of coordinates
-			$dim = $1; 
-#		} elsif (/^([\- ][01]\.\d+)$/) { # read in X or Y, depending on $dn
-		} elsif (/^([\- ]\d+\.\d+e?-?\d*)$/) { # read in X or Y, depending on $dn
-			if ($dn == 0) { $rx = $1; $dn = 1; $xn++; } 
-			else { 
-				$ry = $1; $dn = 0; $yn++;
-	# Assume we have only 2-dimensions: X- and Y-axis, now call:
-				$color = $rDid2Color->{$did};
-#print STDERR "Did2Cids{$did}=$rDid2Cid->{$did}, Cid2Color{$rDid2Cid->{$did}}=$rDid2Color->{$did}, color=$color, title=$title\n";
-				if ($color eq '') { $color = $gray55; }
-				$rPajekNodes = $me->PlotOne($img, $rx, $ry, 10, $color, $label, $title, $red, 
-					$rCid2Cno, $rPajekNodes); # @PajekNodes contain each row for a Pajek file
-				$did++;
-			}
-#		} elsif (/^(\d+) : (\d+)µ§/) { # the node title : "53 : 4µ§,0.13(sens:0.43, sensor:0.32, structure:0.15)"
+			$dim = $1;
+# 34 : 6 Docs. : 0.020000(cluster:5.1121, min:3.0151, map:3.0151, text:2.0833)
+# -0.31321413
+# -0.05544575
 		} elsif (/^(\d+) : (\d+) Docs./) { # the node title : "53 : 4µ§,0.13(sens:0.43, sensor:0.32, structure:0.15)"
-			$title = $_; $label = "$1:$2"; 
+			$title = $_; $label = "$1:$2";
 			$nodei++; $tn++; $dn = 0; # reset dn to x axis
 #	} elsif (/^(\d+) : \d+/) {
 #		$label = "$1:10"; 
 #		$nodei++; 
 		} elsif (/([^ ]+)\s+:\s+(.+)/) { # /6969912 : Embedded.../ or /ISI:000167255500002 : 2001:Automatic cataloguing/
 			$title = $_; $label = $2; $tn++;
+#		} elsif (/^([\- ][01]\.\d+)$/) { # read in X or Y, depending on $dn
+		} elsif (/^([\- ]\d+\.\d+e?-?\d*)$/) { # read in X or Y, depending on $dn
+			if ($dn == 0) { 
+				$rx = $1; $dn = 1; $xn++;
+			} else { 
+				$ry = $1; $dn = 0; $yn++;
+	# Assume we have only 2-dimensions: X- and Y-axis, now call:
+				$color = $rDid2Color->{$did};
+#warn("Did2Cid->{$did}=$rDid2Cid->{$did}, Did2Color{$did}=$rDid2Color->{$did}, label=$label, gray55=$gray55");
+#warn("title=$title\n");
+				if ($color eq '') { $color = $gray55; }
+				$rPajekNodes = $me->PlotOne($img, $rx, $ry, 10, $color, $label, $title, $red, 
+					$rCid2Cno, $rPajekNodes); # @PajekNodes contain each row for a Pajek file
+				$did++; # Remark on 2019/08/30
+			}
 		} else {
 #		warn "no match : $_\n"; 
 			$tn++; $tm++;
@@ -772,18 +781,20 @@ sub CreateMap {
 	}
 	close(F);	
 	# convert into png data
-	open FF, ">$OutFile" or die "Cannot write to file:'$OutFile', $!";
+	open FF, ">$OutPNGFile" or die "Cannot write to file:'$OutPNGFile', $!";
 	binmode(FF);
 	print FF $img->png;
 	print STDERR "Number of title: $tn, extra title: $tm, coordinates: ($xn, $yn)\n";
 
-# Write to a file in Pajek format # 2012/01/15
-	my ($nid, $nlabel, $x, $y, $size, $ic, $MaxSize, $r, @Rows, %Rows, $vos); 
+# Write to files in Pajek format and in VOSviewer format # 2012/01/15
+	my ($nid, $nlabel, $x, $y, $size, $ic, $MaxSize, $r);
+	my (@Rows, %Rows, $vos); 
 	$MaxSize = 0;	@Rows = split /\n/, $rPajekNodes;
 	foreach $r (@Rows) {
 		($nid, $nlabel, $x, $y, $size, $ic, $color) = split /\t/, $r;
 		$MaxSize = $size if $MaxSize < $size; $Rows{$nid} = $r;
-	} $rPajekNodes =''; # reset $rPajekNodes
+	} 
+	$rPajekNodes =''; # reset $rPajekNodes
 	foreach $r (sort {$a <=> $b} keys %Rows) { # Vertex ID should start from 1 for Pajek
 		($nid, $nlabel, $x, $y, $size, $ic, $color) = split /\t/, $Rows{$r};
 		$size = sprintf("%1.4f", 5*$size/$MaxSize); # size should between 0-5 
@@ -792,28 +803,40 @@ sub CreateMap {
 		$cx = ($x+1)/2; # convert to position x in [0..1]  (between 0 and 1) 
 		$cy = ($y+1)/2; # convert to position y in [0..1]  (between 0 and 1) 
 # For Pajek format, see: http://www.educa.fmf.uni-lj.si/datana/pub/networks/pajek/draweps.htm
-		$rPajekNodes .= "$nid \"$nlabel\" $cx $cy x_fact $size y_fact $size $ic $ColorNames[$color]\n";
+#		$rPajekNodes .= "$nid \"$nlabel\" $cx $cy x_fact $size y_fact $size $ic $ColorNames[$color]\n";
+		$rPajekNodes .= "$nid \"$nlabel\" $cx $cy x_fact $size y_fact $size $ic $me->{rColorNames}[$color]\n";
 		$vos .= "$nid, \"$nlabel\", \"$me->{L1toLabel}{$nlabel}\", $x, $y, $size, $color\n";
 	}
 	open P, ">".$me->{PajekFile} or die "Cannot write to file:'$me->{PajekFile}'";
 	print P "*Vertices ", (scalar (split/\n/, $rPajekNodes)), "\n$rPajekNodes";
 	close(P);
+
 	open P, ">".$me->{VOSFile} or die "Cannot write to file:'$me->{VOSFile}'";
 	print P "id, label, description, x, y, weight, cluster\n$vos";
 	close(P);
 }
 
-# Given %Did2Cids and @Color, return %Did2Color
-sub AllocateColor {
-	my($me, $img, $rDid2Cid) = @_; my(%Cid2Color, %Did2Color, $i, $did, $cid);
+sub AllocateColor_org {
+	my($me, $img, $rDid2Cid) = @_; 
+	my(%Cid2Color, %Did2Color, $i, $did, $cid);
 	%Cid2Color = reverse %$rDid2Cid; # get unique cids as keys to %Cid2Colr
 	$i = 0; # map each cid to a unique color
 	foreach $cid (sort {$a <=> $b} keys %Cid2Color) {
-		$Cid2Color{$cid} = $Color[$i % scalar @Color];
+		$Cid2Color{$cid} = $me->{rColor}[($i % scalar @{$me->{rColor}})];
 		$i++;
 	} # now map each did to a color
 	foreach $did (keys %$rDid2Cid) {
 		$cid = $rDid2Cid->{$did};
+		$Did2Color{$did} = $Cid2Color{$cid}
+	}
+	return \%Did2Color;
+}
+
+sub AllocateColor {
+	my($me, $img, $rDid2Cid) = @_; 
+	my(%Cid2Color, %Did2Color, $did, $cid);
+	while (($did, $cid) = each %$rDid2Cid) {
+		$Cid2Color{$cid} = $me->{rColor}[($cid % scalar @{$me->{rColor}})];
 		$Did2Color{$did} = $Cid2Color{$cid}
 	}
 	return \%Did2Color;
@@ -873,7 +896,7 @@ sub PlotOne {
 	if ($label ne '') {
 		$img->string(gdSmallFont,$cx-5,$cy-5,$label,$LabelColor);
 	}
-#print STDERR "id=$label, color=$color\n";
+#warn("label=$label, color=$color\n");
 	# And fill it with red
 #	$img->fill(50,50,$red);
 #	$img->line(50, 50, 25, 35, $red);

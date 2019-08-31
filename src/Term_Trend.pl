@@ -1,4 +1,7 @@
 #!/usr/bin/perl -s
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
     use SamOpt qw(SamOpt);  &SamOpt();
 # Given a set of term clusters (or a set of terms), the frequency
 #   of each term (for filtering terms), and the index of time-stamped documents
@@ -445,7 +448,7 @@ sub CreateMap {
 		use Cluster;
 		$rDC = Cluster->new( { 'debug'=>$main::Odebug } );
 		$rDC->SetValue('IndexPath', $IndexPath);
-		$rDC->ReadTree();
+		$rDC->ReadTree(); # read 'Tree.txt'
 		$rDC->SetValue("ct_low_tf", $main::Oct_low_tf) if $main::Oct_low_tf ne '';
 		($rDid2Cid, $rCid2Dids) = $rDC->CutCollection($main::Ocut);
 		# $rCid2Dids may have Cids which contain empty documents, while the 
@@ -458,8 +461,32 @@ sub CreateMap {
 			$mds->{'Cid2Cno'} = 1; # indicates there is a mapping to be used
 			$Cno = 'Cno'; # for appending to the file name
 		}
+#warn("\$rDid2Cid=" . join('; ', map{"$_:$rDid2Cid->{$_}"} keys %$rDid2Cid));
+#warn("\$rCid2Dids=" . join('; ', map{"$_:$rCid2Dids->{$_}"} keys %$rCid2Dids));
+#warn("\$rCid2Cno=" . join('; ', map{"$_:$rCid2Cno->{$_}"} keys %$rCid2Cno));
+# With $main::OhtmlTree=../Result/Sam_BC_S2/0_0.0.html having the content:
+# 1(2):
+# 	2 : 8 Docs. : 0.022556 (automatic:4.0000, text:4.0000, document:3.0000, generation:2.0000, patent:1.8371) 
+# 		0 : 34 : 6 Docs. : 0.020000(cluster:5.1121, min:3.0151, map:3.0151, text:2.0833) 
+# 		2 : 14 : 2 Docs. : 0.113208(automatic:3.1269, text:1.4142, data:1.3587, retrospective:1.3587, thesauru:1.3587) 
+# 2(2):
+# 	1 : 5 Docs. : 0.100000 (perceptron:4.0000, neural:4.0000, code:3.0619, reed-muller:1.8371, multilayer:1.8371) 
+# 		1 : 15 : 3 Docs. : 0.095238(neural network:3.1269, sort:2.3452, quadratic:2.3452, perceptron:1.7273) 
+# 		3 : 3 : 2 Docs. : 0.285714(code:4.0000, multilayer:1.3587, decod reed-muller code by multilayer perceptron:1.3587, reed ... 
+# 3(1):
+# 	4 : 1 Docs. : 0 (comparison:2.0000, detect:2.0000, hot:2.0000, topic:2.0000, scientometric:1.0000) 
+# 	4 : 36 : 1 Docs. : 0(detect:2.0000, hot:2.0000, comparison:2.0000, topic:1.0622, scientometric:0.6794)
+#
+# C:\CATAR\src>perl -s Term_Trend.pl -Ocolor -Omap -Ocut=0.0 -OCNo -OhtmlTree=../Result/Sam_BC_S2/0_0.0.html ../Result/Sam_BC_S2
+#	$rDid2Cid=2:2; 3:1; 4:4; 0:2; 1:1 at Term_Trend.pl line 464.
+#	$rCid2Dids=2:0  2; 4:4; 1:1     3 at Term_Trend.pl line 465.
+#	$rCid2Cno=4:3; 1:2; 2:1 at Term_Trend.pl line 466.
+# Now from $rDC->CutCollection($main::Ocut) and $main::OhtmlTree:
+# Cid in $rDid2Cid, $rCid2Dids, and $Cid2Cno is the internal cluster ID
+# CNo in $rCid2Cno is the Cluster sequence number
+# Dids are the second-level ids, they are the index (line number from 0)
+#  in Title.txt. So by reading Title.txt we can use Did to locate its title.
     }
-# We need a way to determine the information in $rCid2Cno
     my($DocNum, $CatNum) = (scalar keys %$rDid2Cid, scalar keys %$rCid2Dids);
     print STDERR "  It takes ", time()-$stime, " seconds to cut tree having "
 	, "$DocNum records and $CatNum internal nodes\n";
@@ -475,7 +502,7 @@ sub CreateMap {
 	"$IndexPath/SortedPairs.txt", 
 	"$IndexPath/Title.txt", 
 	"$IndexPath/map_".$mds->{scale}."_${Cno}_${NoOL}$main::Ocut.png", 
-	$rDid2Cid, $rCid2Cno, $rWanted, $rUnWanted);
+	$rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted);
     print STDERR "  These files have been created under $IndexPath:\n",
     	"    SimPairs.txt, Coordinate.txt, ", 
     	"map_$mds->{scale}_${Cno}_${NoOL}$main::Ocut.png,\n",

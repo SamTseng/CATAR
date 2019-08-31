@@ -1,4 +1,7 @@
 #!/usr/bin/perl -s
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
     use SamOpt qw(SamOpt);  &SamOpt();
 # This program is an example of using the APIs of DocCluster.pm. 2004/01/27
 # You need SAM module or SAMtool module.

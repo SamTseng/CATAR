@@ -4,6 +4,9 @@
 #   Written on 2005/06/12 by Yuen-Hsien Tseng
 # D:\demo\lwp>perl -s ParseSciRef.pl nanoSciRefs.txt >nanoSciRefs_3.txt
 # perl -s ParseSciRef.pl nanoSciRefs.txt > nanoSciRefs_2.txt
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
     use SamOpt;  &SamOpt();
     use ParseSciRef;
     $SciRef = ParseSciRef->new( );

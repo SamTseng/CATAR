@@ -1,5 +1,7 @@
 #!/usr/bin/perl -s
-# Note: $0 is the program name
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
     use SamOpt qw(SamOpt);  &SamOpt();
 sub Usage {
     print <<HELP;

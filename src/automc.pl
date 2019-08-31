@@ -1,4 +1,7 @@
 #!/usr/bin/perl -s
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
 	use SamOpt qw(SamOpt);  &SamOpt();
 	my $prog;
 #	$prog = "parl CATAR.par ";
@@ -458,16 +461,17 @@ sub Cluster_Map_Cut {
 	$cmd = "$prog Term_Trend.pl -Ocolor -Omap -Ocut=$cut $OutDir";
 	if (int($option / 2) == 1) { # if 2 or 3
 		 # if small number of items, create maps unconditionally
-		#myexec($cmd) if ($NumItems < 1000); # comment on 2019/08/27
+		myexec($cmd) if ($NumItems < 1000); # comment on 2019/08/27
 	}  # if too many items, create MDS map may wait too long
 	
 # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=1.5 -OCNo -OhtmlTree=../Result/ATR3_BC_S4/0_0.01.html ../Result/ATR3_BC_S5
 	$cmd = "$prog Term_Trend.pl -Ocolor -Omap -Ocut=$cut -OCNo -OhtmlTree="
-		.	"${OutDir_1}/0_${cut}.html $OutDir";
+#		.	"${OutDir_1}/0_${cut}.html $OutDir"; # use next line on 2019/08/29
+		.	"${OutDir}/0_${cut}.html $OutDir";
 	if (int($option / 2) == 1) { # if 2 or 3
 		 # if small number of items, create maps unconditionally
-		myexec($cmd) if (($NumItems < 1000) and ($OutDir !~ /JBC_S2/));
+		myexec($cmd) if (($NumItems < 1000)); # and ($OutDir !~ /JBC_S2/));
 	}  # if too many items, create MDS map may wait too long
 }
 
@@ -709,7 +713,7 @@ sub Cluster_Map_Cut_dc {
 # 畫出主題圖：
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.05 -Omap ../Result/SciE_dc
 	$cmd = "$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap $OutDir";
-	#&myexec($cmd) if int($option / 2) == 1; # if 2 or 3 # comment on 2019/08/27
+	&myexec($cmd) if int($option / 2) == 1; # if 2 or 3 # comment on 2019/08/27
 # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=1.5 -OCNo -OhtmlTree=../Result/ATR3_BC_S4/0_0.01.html ../Result/ATR3_BC_S5
 	$cmd = "$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap -OCNo -OhtmlTree="

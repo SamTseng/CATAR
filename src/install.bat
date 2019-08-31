@@ -5,6 +5,5 @@ cpan install Statistics::Regression
 cpan install Math::MatrixReal
 cpan install Win32::ODBC
 
-copy *.pm C:\Strawberry\perl\site\lib
 mkdir C:\Strawberry\perl\site\lib\SAMtool
 copy Perl_Module\SAMtool\* C:\Strawberry\perl\site\lib\SAMtool

@@ -9,7 +9,9 @@
 #      視為該詞之文件內容：約 230 秒
 # 五、進行此 1000 篇文件的 歸類 ：約 1200 秒
 # 六、利用不同參數得到不同歸類結果：約 13 秒
-# 
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
     use SamOpt qw(SamOpt);  &SamOpt();
     use vars;  use strict;
     use SAMtool::Progress;

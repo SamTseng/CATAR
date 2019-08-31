@@ -1013,7 +1013,7 @@ sub SaveTree {
 sub ReadTree {
 	my($me) = @_;  my($ReadTree, $node, $k, $v, @Root, %Root, %Tree, $file);
 	my($NumRoot, $NumNode) = (0, 1); # (No. of internal node) + 1, 2008/05/08
-	$file = $me->{"IndexPath"} . # for saving the results
+	$file = $me->{"IndexPath"} . # for reading the results
 	(($me->{"IndexPath"}=~m#[/\\]$#)?"":'/') . $TreeFile;
 	open F, "$file" || ($me->{'error'} = "Cannot read file:'$file'");
 	while (<F>) {

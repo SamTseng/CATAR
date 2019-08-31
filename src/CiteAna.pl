@@ -1,4 +1,7 @@
 #!/usr/bin/perl -s
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
 	use SamOpt qw(SamOpt);  &SamOpt();
 	use strict; use vars; 
 	use Encode::TW; # this line must exist, despite we have the next line

@@ -1,4 +1,7 @@
 #!/usr/bin/perl -s
+# https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
+use File::Basename;
+use lib dirname (__FILE__);
 use SamOpt qw(SamOpt);  &SamOpt();
 # This program is to process the related records on 2006/03/29 by Yuen-Hsien Tseng
 use vars; use strict;
