@@ -104,7 +104,7 @@ sub FieldAggregation {
 	$option = '-OBioAbs' if $main::OBioAbs;
 
 # 從 SciLit.mdb中，統計各欄位內容（詞彙）的出現次數（篇數）：
-	@Fields = split ' ', "PY AU CR DE ID"; # SC SO J9 在與年代做交叉分析時會做統計
+	@Fields = split ' ', "PY AU CR DE ID LA"; # SC SO J9 在與年代做交叉分析時會做統計
 	# AU 會在 filterRT.pl 中會用到，不要在此省略掉
 	@Fields = split ' ', "PY MC CC MI" if $main::OBioAbs;
 	foreach $f (@Fields) {
@@ -117,14 +117,14 @@ sub FieldAggregation {
 # 與年代作交叉分析：
 	@Fields = split ' ', "AF AU DP IU C1 SC SO J9 TC";
 	foreach $f (@Fields) {
-		$ff = $f; $ff = "[$ff]" if $f eq 'IU';
+		$ff = $f; #$ff = "[$ff]" if $f eq 'IU'; remark on 2019/09/01
 		$cmd="$prog ISI.pl -OISIt -Ocr=100 $DSN $Table $ff $DB_Path > ../Result/$DSN/${f}_PY.txt";
 		&myexec($cmd);
 # fractional count 是指同一篇文章有n個作者時，每個作者累計1/n次
 # 相對於 normal count，是指同一篇文章有n個作者時，每個作者累計1次
 		$cmd="$prog ISI.pl -OISIt -OfracCount -Ocr=100 $DSN $Table $ff $DB_Path > ../Result/$DSN/${f}_PY_fc.txt";
 		# add if condition in the next line on 2019/08/25
-		&myexec($cmd) if ($f eq 'AF' or $f eq 'AU'  or $f eq 'IU' or $f eq 'C1'); 
+		&myexec($cmd) if ($f =~ /AF|AU|IU|C1/); 
 	}
 	if (defined $main::OSC2C) { # added on 2019/08/25
 		$cmd="$prog ISI.pl -OISIt -Ocr=100 -OSC2C=ISI_SC2C.txt $DSN $Table SC $DB_Path > ../Result/$DSN/SC2C_PY.txt";
@@ -137,18 +137,18 @@ sub FieldAggregation {
   if (not $main::OBioAbs) {
 	@Fields = split ' ', "AF AU DP IU C1 SC SO J9";
 	foreach $f (@Fields) {
-		$ff = $f; $ff = "[$ff]" if $f eq 'IU';
+		$ff = $f; # $ff = "[$ff]" if $f eq 'IU'; remark on 2019/09/01
 		$cmd="$prog ISI.pl -OISIt -Ocr=100 $DSN $Table \"$ff, TC\" $DB_Path > ../Result/$DSN/${f}_PY_TC.txt";
 		&myexec($cmd);
 # fractional count 是指同一篇文章有n個作者時，每個作者累計1/n次
 # 相對於 normal count，是指同一篇文章有n個作者時，每個作者累計1次
 		$cmd="$prog ISI.pl -OISIt -OfracCount -Ocr=100 $DSN $Table \"$ff, TC\" $DB_Path > ../Result/$DSN/${f}_PY_TC_fc.txt";
 		# add if condition in the next line on 2019/08/25
-		&myexec($cmd) if ($f eq 'AF' or $f eq 'AU' or $f eq 'IU' or $f eq 'C1');
+		&myexec($cmd) if ($f =~ /AF|AU|IU|C1/);
 # 計算 CPP （Citations per Paper）指標
 		$cmd="$prog ISI.pl -Omfd $f ../Result/$DSN > ../Result/$DSN/${f}_CPP.txt";
 		# add if condition in the next line on 2019/08/25
-		&myexec($cmd) if ($f eq 'AF' or $f eq 'AU' or $f eq 'IU' or $f eq 'C1');
+		&myexec($cmd) if ($f =~ /AF|AU|IU|C1/);
 	}
   }
 
@@ -156,13 +156,13 @@ sub FieldAggregation {
 		&Aggregate5Year($DSN, $Table, $DB_Path);
 	}
 
-# 瞭解 DE、ID、SC等欄位內的詞彙，在標題與內文中出現的比例：
+# 瞭解 DE, ID, SC 等欄位內的詞彙，在標題與內文中出現的比例：
 	$cmd="$prog ISI.pl -Ochktm $DSN $Table $DB_Path "
 		."> ../Result/$DSN/_${DSN}_stat.txt";
 	&myexec($cmd) if not $main::OBioAbs;
 # 統計標題、摘要等欄位之字數與統計值：
 	$cmd="$prog ISI.pl -OavgCnt $option $DSN $Table $DB_Path "
-		.">> ../Result/$DSN/_${DSN}_stat.txt";
+		.">> ../Result/$DSN/_${DSN}_stat.txt"; # use >> because DE, ID, SC 
 	&myexec($cmd);
 
 # 最後，將結果目錄下的所有文字檔案，轉入到 Excel 中

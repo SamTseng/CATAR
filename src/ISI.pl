@@ -119,10 +119,10 @@ my @AllFields = split /\s+/, "
 # Actually, @AllFields is not used. It is here only for human inspection.
 my (%UsefulFields, @UsefulFieldIndex, $AU_idx, $AF_idx, $C1_idx, $AB_idx);
 # add the field: 'IU': the institute of the authors on 2009/01/30
-my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC UT";
-# my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC LA UT"; # add LA on 2012/10/02
+#my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC UT";
+my @UsefulFields = split ' ', "AU AF TI SO DE ID AB C1 CR NR TC J9 PY VL BP SC LA UT"; # add LA on 2012/10/02, 2019/09/01
 # @UsefulFields = split ' ', "AU TI SO PY VL AB C1 BP MC CC TA DS CH MQ PR MI UT"
-@UsefulFields = split ' ', "AU AF TI SO PY VL AB C1 BP MC CC MI UT"
+@UsefulFields = split ' ', "AU AF TI SO PY VL AB C1 BP MC CC MI UT" 
 	if $main::OBioAbs;
 #print STDERR join(", ", @UsefulFields), "\n"; exit;
 $AU_idx = 0; # the index is for the above, $UsefulFields{AU} = $AU_idx
@@ -424,8 +424,8 @@ sub ParseMultiLineRecord {
 		# Now the data in the useful field is from $i to $j-1
 			$Lines[$i] =~ s/^$field/  /; # replace the field name with blanks
 # Different field needs different processing
-			if ($field =~ /TI|AB|DE|ID|SO|SC|NR|TC|PY|UT|J9|VL|BP|MC|CC|MI/) {
-#			if ($field =~ /TI|AB|DE|ID|SO|SC|NR|TC|PY|UT|J9|VL|BP|MC|CC|MI|LA/) { # add LA on 2012/10/02
+#			if ($field =~ /TI|AB|DE|ID|SO|SC|NR|TC|PY|UT|J9|VL|BP|MC|CC|MI/) {
+			if ($field =~ /TI|AB|DE|ID|SO|SC|NR|TC|PY|UT|J9|VL|BP|MC|CC|MI|LA/) { # add LA on 2012/10/02, 2019/09/01
 				$d = join(' ', @Lines[$i..($j-1)]);
 			} elsif ($field =~ /AU|AF|CR|C1/) {
 				$d = join('; ', @Lines[$i..($j-1)]);
@@ -900,8 +900,10 @@ sub Compute_HHI {
 # Given a DSN, a Table in a DBMS, and the field in that table,
 #   Output all the terms in that field and their document frequencies.
 sub Get_ISI_Terms {
-	my($DSN, $Table, $Fields, $DB_Path) = @_; my($terms, @Terms, $t, %Terms);
-	my($nr, $id, $py, $minpy, $maxpy, $PY_T2Freq, $i, $n, $tc, $encoding_name);
+	my($DSN, $Table, $Fields, $DB_Path) = @_; 
+	my($terms, @Terms, $t, %Terms);
+	my($nr, $id, $py, $minpy, $maxpy, $PY_T2Freq, $i, $n, $tc, $sum);
+	my($encoding_name);
 	my $rSC2C = &Read_SC2C($main::OSC2C) if -e $main::OSC2C;
 	my $DBH = &InitDBH($DSN, $DB_Path);
 #	my $sql = "SELECT UT, $Fields FROM $Table where PY < 2006 and PY > 2002";
@@ -910,7 +912,7 @@ sub Get_ISI_Terms {
 		   or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
 	$STH->execute()
 		   or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
-	$nr = 0; $minpy = 100000000; $maxpy = 0;
+	$sum = $nr = 0; $minpy = 100000000; $maxpy = 0;
 #print STDERR "\$sql=$sql\n";
 #	while (($id, $py, $terms) = $STH->fetchrow_array) {
 	while (($id, $py, $terms, $tc) = $STH->fetchrow_array) {
@@ -923,6 +925,7 @@ sub Get_ISI_Terms {
 			from_to($terms, $encoding_name, 'big5'); 
 		}
 		$n = @Terms = split /;\s*/, $terms;
+		$sum += $n; # 2019/09/01
 		foreach $t (@Terms) {
 			$t =~ s/^\"|\"$//g;
 #			$t = join (' ', map{ucfirst lc} split(/ /, $t)) 
@@ -945,10 +948,14 @@ sub Get_ISI_Terms {
 				# accumulate their number of occurrence
 				$PY_T2Freq->{$py}{$t}+=(($Fields=~/TC/)?$tc:1);
 			}
-		} 
+		}
 	}
 	$STH->finish;
 	$DBH->disconnect;
+	print STDERR 
+		"  Among $nr records, '$Fields' contains $sum number, avg=", 
+		sprintf("%1.4f",($sum/$nr)), "\n" 
+		if $Fields !~ /[, ]/ and not $main::Ocr; # if single field
 
 	@Terms = sort {$Terms{$b} <=> $Terms{$a}} keys %Terms;
 	my($au, $yr, $jl, $r, %CA, %CY, %CJ);
@@ -2177,20 +2184,22 @@ print STDERR "Total records: $N\n";
 	if ($main::OBioAbs) 
 	{&AvgWordCount_BioAbs($seg, $pro, $DBH, $Table, $N); exit; }
 	my($n, $t, @Terms, $rAB, $text, $percent);
-	my($ut, $py, $au, $ti, $ab, $de, $id, $sc, $nr, $tc, $cr, $c1, $in, $dp);
-	my $sql = "SELECT UT, AU, TI, AB, DE, ID, SC, NR, TC, CR, C1, IU, DP FROM $Table";
+	my($ut, $py, $af, $au, $ti, $ab, $de, $id, $sc, $nr, $tc, $cr, $c1, $in, $dp, $la);
+	my $sql = "SELECT UT, AF, AU, TI, AB, DE, ID, SC, NR, TC, CR, C1, IU, DP, LA FROM $Table";
+# Replace next line with the above line on 2019/09/01
+#	my $sql = "SELECT UT, AU, TI, AB, DE, ID, SC, NR, TC, CR, C1, IU, DP FROM $Table";
 #	my $sql = "SELECT UT, PY, TI, AB, DE, ID, SC FROM $Table where DE like 'biomass recovery%'";
 	my $STH = $DBH->prepare($sql)
 		   or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
 	$STH->execute()
 		   or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
 	$n = 0;
-	my($c, @AU, @TI, @AB, @DE, @ID, @SC, @NR, @TC, @CR, @C1, @IU, @DP, @C);
-	foreach $c (@AU[0..3], @TI[0..3], @AB[0..3], @DE[0..3], @ID[0..3], 
-	@SC[0..3], @NR[0..3], @TC[0..3], @C1[0..3], @IU[0..3], @DP[0..3]) { $c=0; }
-	$AU[1] = $TI[1] = $AB[1] = $DE[1] = $ID[1] = $SC[1] = $NR[1] 
-		= $TC[1] = $C1[1] = $IU[1] = $DP[1] = 100000;
-	while (($ut, $au, $ti, $ab, $de, $id, $sc, $nr, $tc, $cr, $c1, $in, $dp) = $STH->fetchrow_array) {
+	my($c, @AF, @AU, @TI, @AB, @DE, @ID, @SC, @NR, @TC, @CR, @C1, @IU, @DP, @LA, @C);
+	foreach $c (@AF[0..3], @AU[0..3], @TI[0..3], @AB[0..3], @DE[0..3], @ID[0..3], 
+	@SC[0..3], @NR[0..3], @TC[0..3], @C1[0..3], @IU[0..3], @DP[0..3], @LA[0..3]) { $c=0; }
+	$AF[1] = $AU[1] = $TI[1] = $AB[1] = $DE[1] = $ID[1] = $SC[1] = $NR[1] 
+		= $TC[1] = $C1[1] = $IU[1] = $DP[1] = $LA[1] = 100000;
+	while (($ut, $af, $au, $ti, $ab, $de, $id, $sc, $nr, $tc, $cr, $c1, $in, $dp, $la) = $STH->fetchrow_array) {
 		$n++;
 # index 0: sum of word counts, 1: min of word count, 2: max, 3: empty record count
 		$rAB = $seg->Tokenize($ti); # tokenize each word in the title
@@ -2202,6 +2211,9 @@ print STDERR "Total records: $N\n";
 		$AB[0] += $c; $AB[1] = $c if $c < $AB[1] and $c>0;
 		$AB[2]  = $c if $AB[2] < $c; $AB[3]++ if $c == 0;
 		
+		$c = @C = split /;\s*/, $af;
+		$AF[0] += $c;   $AF[1] = $c  if $c < $AF[1] and $c>0;
+		$AF[2]  = $c if $AF[2] < $c; $AF[3]++ if $c == 0;
 		$c = @C = split /;\s*/, $au;
 		$AU[0] += $c;   $AU[1] = $c  if $c < $AU[1] and $c>0;
 		$AU[2]  = $c if $AU[2] < $c; $AU[3]++ if $c == 0;
@@ -2223,13 +2235,16 @@ print STDERR "Total records: $N\n";
 		$c = @C = split /;\s*/, $dp;
 		$DP[0] += $c;   $DP[1] = $c  if $c < $DP[1] and $c>0;
 		$DP[2]  = $c if $DP[2] < $c; $DP[3]++ if $c == 0;
+		$c = @C = split /;\s*/, $la;
+		$LA[0] += $c;   $LA[1] = $c  if $c < $LA[1] and $c>0;
+		$LA[2]  = $c if $LA[2] < $c; $LA[3]++ if $c == 0;
 			
-	$NR[0] += $nr; $NR[1] = $nr if $nr < $NR[1] and $cr ne '';
-	$NR[2]  = $nr if $NR[2] < $nr; $NR[3]++ if $nr == 0;
-	$TC[0] += $tc; $TC[1] = $tc if $tc < $TC[1] and $tc ne '';
-	$TC[2]  = $tc if $TC[2] < $tc; $TC[3]++ if $tc == 0;
-	
-	$percent = $pro->ShowProgress($n/$N, $percent);
+		$NR[0] += $nr; $NR[1] = $nr if $nr < $NR[1] and $cr ne '';
+		$NR[2]  = $nr if $NR[2] < $nr; $NR[3]++ if $nr == 0;
+		$TC[0] += $tc; $TC[1] = $tc if $tc < $TC[1] and $tc ne '';
+		$TC[2]  = $tc if $TC[2] < $tc; $TC[3]++ if $tc == 0;
+
+		$percent = $pro->ShowProgress($n/$N, $percent);
 	}
 	$percent = $pro->ShowProgress($n/$N, $percent);
 	$STH->finish;
@@ -2241,10 +2256,12 @@ print STDERR "Total records: $N\n";
 		  "SC: EmptyRec=$SC[3], MaxWordCount=$SC[2], MinWordCount=$SC[1], Avg=", &ts($SC[0]/$N), "\n",
 		  "NR: ZeroRec=$NR[3], Max=$NR[2], Min=$NR[1], Avg=", &ts($NR[0]/$N), "\n",
 		  "TC: ZeroRec=$TC[3], Max=$TC[2], Min=$TC[1], Avg=", &ts($TC[0]/$N), "\n",
+		  "AF: ZeroRec=$AF[3], Max=$AF[2], Min=$AF[1], Avg=", &ts($AF[0]/$N), "\n",
 		  "AU: ZeroRec=$AU[3], Max=$AU[2], Min=$AU[1], Avg=", &ts($AU[0]/$N), "\n",
 		  "C1: ZeroRec=$C1[3], Max=$C1[2], Min=$C1[1], Avg=", &ts($C1[0]/$N), "\n",
 		  "IU: ZeroRec=$IU[3], Max=$IU[2], Min=$IU[1], Avg=", &ts($IU[0]/$N), "\n",
 		  "DP: ZeroRec=$DP[3], Max=$DP[2], Min=$DP[1], Avg=", &ts($DP[0]/$N), "\n",
+		  "LA: ZeroRec=$LA[3], Max=$LA[2], Min=$LA[1], Avg=", &ts($LA[0]/$N), "\n",
 		  "Total Records=$N\n"; # 2011/04/13
 }
 
@@ -2382,21 +2399,21 @@ sub FilterCountry {
 	while (<>) {
 		($cid, $nt, $sim, $terms, $df, $df_ratio, $b1, $trend_type, @R) = split /\t/, $_;
 		if ($cid ne $cid_p) {
-		$i++; $cid_p = $cid;
-		if ($main::Ofc>0 and $i > $main::Ofc) {
-			last;
-		} else { # Ofc=+ or Ofc=++
-		if ($trend_type =~ /$pat/) { $flag = 1; } else { $flag = 0; }
-		}
+			$i++; $cid_p = $cid;
+			if ($main::Ofc>0 and $i > $main::Ofc) {
+				last;
+			} else { # Ofc=+ or Ofc=++
+				if ($trend_type =~ /$pat/) { $flag = 1; } else { $flag = 0; }
+			}
 		}
 		if ($main::Ofc =~ /\+/ and $df_ratio eq '' and $df_ratio_p ne '') { 
-		# for each new cluster, even in the same cid
-		if ($trend_type =~ /$pat/) { $flag = 1; } else { $flag = 0; }
+			# for each new cluster, even in the same cid
+			if ($trend_type =~ /$pat/) { $flag = 1; } else { $flag = 0; }
 		}
 		if (not $flag) { $df_ratio_p = $df_ratio; next; }
 		if ($df_ratio eq '') { # output this line unconditionally
-	} elsif ($terms !~ /JAPAN|NETHERLANDS|USA|KOREA|CHINA|TAIWAN|ISRAEL|ENGLAND/) {
-		$df_ratio_p = $df_ratio; next;
+		} elsif ($terms !~ /JAPAN|NETHERLANDS|USA|KOREA|CHINA|TAIWAN|ISRAEL|ENGLAND/) {
+			$df_ratio_p = $df_ratio; next;
 		}
 		print $_;
 		$df_ratio_p = $df_ratio;
@@ -2412,16 +2429,16 @@ sub TimeSeriesMatrix_Conversion {
 	while ($line = <>) { # read in the matrix, set @Head1, @Head2, $M
 		chomp; 
 		if ($line =~ /Field: PY/) { 
-		$flag = 1; # next 2 lines are headlines
-		$line = <>; $line =~ s/\s+$//; @Head1 = split /\t/, $line;
-		$line = <>; $line =~ s/\s+$//; @Head2 = split /\t/, $line;
-		next;
+			$flag = 1; # next 2 lines are headlines
+			$line = <>; $line =~ s/\s+$//; @Head1 = split /\t/, $line;
+			$line = <>; $line =~ s/\s+$//; @Head2 = split /\t/, $line;
+			next;
 		}
 		if ($flag) {
-		$line =~ s/\s+$//; # chop off empty white spaces
-		@M2 = split /\t/, $line;
-		for (my $i=0; $i<@M2; $i++) { $M1[$n][$i] = $M2[$i]; }
-		$n++;
+			$line =~ s/\s+$//; # chop off empty white spaces
+			@M2 = split /\t/, $line;
+			for (my $i=0; $i<@M2; $i++) { $M1[$n][$i] = $M2[$i]; }
+			$n++;
 		}
 	}
 # Now we have @Head1, @Head2, and $M1
@@ -2432,9 +2449,9 @@ sub TimeSeriesMatrix_Conversion {
 
 # Second line is the overall trend and its time series 
 	for($i=1; $i<@Head1; $i++) {
-	for($j=0; $j<$n; $j++) {
-		$Y2DF[$j] += $M1[$j][$i]; $df += $M1[$j][$i];
-	}
+		for($j=0; $j<$n; $j++) {
+			$Y2DF[$j] += $M1[$j][$i]; $df += $M1[$j][$i];
+		}
 	}
 	($ob0, $ob1, $type) = &TrendType(\@Y2DF, \@Y2DF, $ob0, $ob1);
 print STDERR "The trend type for the 'Y2DF' is:\n $ob0, $ob1, $type\n";
@@ -2442,13 +2459,13 @@ print STDERR "The trend type for the 'Y2DF' is:\n $ob0, $ob1, $type\n";
 
 # For each line, compute the slope of linear regression
 	for($i=1; $i<@Head1; $i++) {
-	undef @Year2DF; $df = 0;
-	for($j=0; $j<$n; $j++) {
-		$df += $Year2DF[$j] = $M1[$j][$i];
-	}
-	($b0, $b1, $type) = &TrendType(\@Year2DF, \@Year2DF, $ob0, $ob1);
-	print "$Head1[$i], $Head2[$i]\t$df\t$b0\t$b1\t$type\t", 
-		join("\t", @Year2DF), "\n";
+		undef @Year2DF; $df = 0;
+		for($j=0; $j<$n; $j++) {
+			$df += $Year2DF[$j] = $M1[$j][$i];
+		}
+		($b0, $b1, $type) = &TrendType(\@Year2DF, \@Year2DF, $ob0, $ob1);
+		print "$Head1[$i], $Head2[$i]\t$df\t$b0\t$b1\t$type\t", 
+			join("\t", @Year2DF), "\n";
 	}
 }
 
