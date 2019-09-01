@@ -438,6 +438,12 @@ sub ParseMultiLineRecord {
 			$d =~ s/^\s+|\s+$//g; # delete the leading and trailing blanks
 			$d =~ s/\([^)]+\)//g if ($field =~ /AU/);  # delete email in ()
 			if ($field =~ /PY/ and $d =~ /(\d\d\d\d)\-\d\d\d\d/) { $d = $1; }
+			if ($field eq 'SO') { # Added on 2019/09/01
+				if ($d =~ /,/) {
+					warn("\nSO: $d\n  trancated into '$`'");
+					$d = $`;
+				}
+			}
 # MI age influence, chicken breast fillet (poultry product, quality), cook
 #	yield, fluid loss, postchill carcass aging duration, shear force values
 # MI food chemistry, meat (biochemical analysis, meat product, quality),
