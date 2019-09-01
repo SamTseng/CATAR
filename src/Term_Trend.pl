@@ -19,7 +19,7 @@ use lib dirname (__FILE__);
 # perl -s Term_Trend.pl -Omap Result/NSC_DocCluster
 # On 2011/04/25:
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.01 -Omap -Oscale=2.5 -ONoOL -OhtmlTree=..\Result\SC_Edu_JBC_S2\0_0.01.html ..\Result\SC_Edu_JBC_S3
-    &CreateMap(@ARGV) if $main::Omap;
+    &ConstructMaps(@ARGV) if $main::Omap;
 
 
 =comment until next =cut
@@ -415,7 +415,7 @@ sub ClusterTitle5 {
 # use options: -Ocolor, -Ocut, -Oct_low_tf, -Odebug,
 #  Owant="ClusterID1 ClusterID2 ClusterID3 ..."
 #  Ounwant="ClusterID1 ClusterID2 ClusterID3 ..."
-sub CreateMap {
+sub ConstructMaps {
     my($IndexPath, $InitialMap) = @_; 
     my($mds, $rDC, $rDid2Cid, $rCid2Dids, $rCid2Cno, $Cno, $NoOL);
     my($rWanted, $rUnWanted) = ({}, {}); # set reference to a hash to a var.
@@ -450,11 +450,11 @@ sub CreateMap {
 		$rDC->SetValue('IndexPath', $IndexPath);
 		$rDC->ReadTree(); # read 'Tree.txt'
 		$rDC->SetValue("ct_low_tf", $main::Oct_low_tf) if $main::Oct_low_tf ne '';
+#		($rDid2Cid, $rCid2Dids, $rCid2Cno) = $rDC->CutCollection($main::Ocut);
+# The above $rCid2Cno contains current stage information, not that in the previous stage
 		($rDid2Cid, $rCid2Dids) = $rDC->CutCollection($main::Ocut);
 		# $rCid2Dids may have Cids which contain empty documents, while the 
 		# Cids in $rDid2Cid do not have empty documents # 2012/01/11
-#		($rDid2Cid, $rCid2Dids, $rCid2Cno) = $rDC->CutCollection($main::Ocut);
-# The above $rCid2Cno contains current stage information, not that in the previous stage
 		$main::OhtmlTree = $main::OHT if $main::OHT;#option OHT is equivalent to OhtmlTree
 		if (-r $main::OhtmlTree) { # if the HTML Tree from previous stage is given
 			$rCid2Cno = $rDC->GetCid2Cno($main::OhtmlTree);
@@ -465,17 +465,23 @@ sub CreateMap {
 #warn("\$rCid2Dids=" . join('; ', map{"$_:$rCid2Dids->{$_}"} keys %$rCid2Dids));
 #warn("\$rCid2Cno=" . join('; ', map{"$_:$rCid2Cno->{$_}"} keys %$rCid2Cno));
 # With $main::OhtmlTree=../Result/Sam_BC_S2/0_0.0.html having the content:
-# 1(2):
+# 1(2): # where 1 is Cno, and the 2 in the next line is Cid
 # 	2 : 8 Docs. : 0.022556 (automatic:4.0000, text:4.0000, document:3.0000, generation:2.0000, patent:1.8371) 
 # 		0 : 34 : 6 Docs. : 0.020000(cluster:5.1121, min:3.0151, map:3.0151, text:2.0833) 
 # 		2 : 14 : 2 Docs. : 0.113208(automatic:3.1269, text:1.4142, data:1.3587, retrospective:1.3587, thesauru:1.3587) 
-# 2(2):
+		# where 0 and 2 are Did
+	# where 34 and 14 should be specified in the $main::Owant or $main::Ounwant
+# 2(2): # where 2 is Cno, and the 1 in the next line is Cid
 # 	1 : 5 Docs. : 0.100000 (perceptron:4.0000, neural:4.0000, code:3.0619, reed-muller:1.8371, multilayer:1.8371) 
 # 		1 : 15 : 3 Docs. : 0.095238(neural network:3.1269, sort:2.3452, quadratic:2.3452, perceptron:1.7273) 
 # 		3 : 3 : 2 Docs. : 0.285714(code:4.0000, multilayer:1.3587, decod reed-muller code by multilayer perceptron:1.3587, reed ... 
-# 3(1):
+		# where 1 and 3 are Did
+	# where 15 and 3 should be specified in the $main::Owant or $main::Ounwant
+# 3(1): # where 3 is Cno, and the 4 in the next line is Cid
 # 	4 : 1 Docs. : 0 (comparison:2.0000, detect:2.0000, hot:2.0000, topic:2.0000, scientometric:1.0000) 
 # 	4 : 36 : 1 Docs. : 0(detect:2.0000, hot:2.0000, comparison:2.0000, topic:1.0622, scientometric:0.6794)
+		# where 4 are Did
+	# where 36 should be specified in the $main::Owant or $main::Ounwant
 #
 # C:\CATAR\src>perl -s Term_Trend.pl -Ocolor -Omap -Ocut=0.0 -OCNo -OhtmlTree=../Result/Sam_BC_S2/0_0.0.html ../Result/Sam_BC_S2
 #	$rDid2Cid=2:2; 3:1; 4:4; 0:2; 1:1 at Term_Trend.pl line 464.

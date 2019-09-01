@@ -1140,16 +1140,14 @@ print STDERR "\nPartition documents with threshold: '$Threshold'.\n" if $me->{de
 #while (my($k, $v)=each %CatId2DocIds) { print "Cid=$k, Did=$v\n"; }
 #while (my($k, $v)=each %Cid2Cno) { print "Cid=$k, Cno=$v\n"; }
 	return (\%DocId2CatIds, \%CatId2DocIds);
-# The attempt to label each circle in the topic map with Cluster Number (Cno) 
-# 	is failed using the concept of %Cid2Cno, since we are in the wrong stage.
-# For example, the circles in the topic map of Stage 3 correspond to the clusters
-#   in the topic tree of Stage 2. 
-# So %Cid2Cno should be those in Stage 2, not in the currest stage (Stage 3).
 #	@Root = sort { $NewRoot{$b} <=> $NewRoot{$a} } keys %NewRoot; # 2011/04/25
 #	for($i=0; $i<@Root; $i++) { $Cid2Cno{(split/:/,$Root[$i])[0]}=$i+1; } # 2011/04/25
-	# The sorted result should be the same as &CreateTreeHML(). 
+	# The sorted result should be the same as &CreateTreeHTML(). 
 	# Otherwise, %Cid2Cno would contain incorrect information
+	# But we cannot guarantee the sorted order due to tie numbers.
 #	return (\%DocId2CatIds, \%CatId2DocIds, \%Cid2Cno);  # 2011/04/25
+	# Thus, the attempt to label each circle in the topic map with 
+	#  Cluster Number (Cno) failed using the concept of %Cid2Cno.
 }
 
 

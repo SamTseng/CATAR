@@ -417,13 +417,15 @@ sub GetValue {
 
 =head2 Main methods
 
-=head2 $mds->mdsmap($dim, $SortedFile, $TitileFile, $OutPNGFile)
+=head2 $mds->mdsmap($dim, $SortedFile, $TitleFile, $OutPNGFile, $rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted)
 
   Input/output:
 	$dim : number of dimensions, usually 2
 	$SortedFile : SortedPairs.txt resulted from cluster.pm
 	$TitleFile : Title.txt resulted from cluster.pm
 	$OutPNGFile : file to hold the mapping result
+	For $rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted, 
+	  please check &ConstructMaps() in Term_Trend.pl
   Note: Before calling this method, you should set the attributes:
 	mds_exe = D:\demo\File\L04\bin\mds.exe
 	SimFile : the input file required by mds.exe
@@ -455,30 +457,30 @@ sub mdsmap {
 	my($me, $dim, $SortedFile, $TitleFile, $OutPNGFile, 
 		$rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted) = @_;
 	my($cmd, $rTitle, $rOld2NewID);
-# 1. convert the SimFile format, if necessary
-#	$rTitle = $me->ConvertSimFile($SortedFile, $TitleFile, $me->{'SimFile'});
+# 1. Read $SortedFile, $TitleFile, write $SimFile
 	($rTitle, $rOld2NewID) = $me->ConvertSimFile($SortedFile, $TitleFile, 
 		$me->{'SimFile'}, $rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted);
+
 # 2. call mds
 	if (-f $me->{'InitialMap'}) {
 # mds [-K | -S] [-i filename] [-o filename] dimensions  difference-table-file 
 #=comment
-	$cmd = $me->{'mds_exe'} . " -i " . $me->{'InitialMap'}
-		. " -K $dim " . $me->{'SimFile'} 
-		. " > " . $me->{'Coordinate'};
+		$cmd = $me->{'mds_exe'} . " -i " . $me->{'InitialMap'}
+			. " -K $dim " . $me->{'SimFile'} 
+			. " > " . $me->{'Coordinate'};
 #=cut
 =comment
-	$cmd = $me->{'mds_exe'} . " $dim " . $me->{'SimFile'} 
-		. " > " . $me->{'Coordinate'} . '_tmp.txt';
-	print STDERR "$cmd\n";
-	system($cmd);
-	$cmd = $me->{'mds_exe'} . " -i " . $me->{'Coordinate'} . '_tmp.txt'
-		. " -K $dim " . $me->{'SimFile'} 
-		. " > " . $me->{'Coordinate'};
+		$cmd = $me->{'mds_exe'} . " $dim " . $me->{'SimFile'} 
+			. " > " . $me->{'Coordinate'} . '_tmp.txt';
+		print STDERR "$cmd\n";
+		system($cmd);
+		$cmd = $me->{'mds_exe'} . " -i " . $me->{'Coordinate'} 
+			. '_tmp.txt' . " -K $dim " . $me->{'SimFile'} 
+			. " > " . $me->{'Coordinate'};
 =cut
 	} else {
-	$cmd = $me->{'mds_exe'} . " $dim " . $me->{'SimFile'} 
-		. " > " . $me->{'Coordinate'};
+		$cmd = $me->{'mds_exe'} . " $dim " . $me->{'SimFile'} 
+			. " > " . $me->{'Coordinate'};
 	}
 	print STDERR "$cmd\n";
 	system($cmd) == 0  or die "'$cmd' failed: $?\n";
@@ -493,6 +495,13 @@ sub mdsmap {
 }
 
 =head2 $mds->ConvertSimFile()
+
+Read $SortedFile, $TitleFile, write $SimFile.
+Return @Title from Title.txt. @Title is a reduced version of Title.txt
+	if $main:Owant (%$rWanted) or $main::Ounwant (%$rWanted) are used.
+Return %Old2NewID: Old line number id (from 0) in Title.txt 
+	to new line number id (from 0) in @Title
+	if $main:Owant (%$rWanted) or $main::Ounwant (%$rWanted) are used.
 
 =cut
 sub ConvertSimFile {
@@ -565,45 +574,30 @@ sub ConvertSimFile {
 		}
 	}
 	close(FF);
-#exit;
-	$me->CreateDendrogram(\@Title, \@M, $rDid2Cid, $rCid2Dids, $rCid2Cno); # 2012/01/12
+# This function may have bugs if $main::Owant or $main::Ounwant are used,
+	$me->CreateDendrogram(\@Title, \@M, $rDid2Cid, $rCid2Dids);
 	return (\@Title, \%Old2NewID);
 }
 
-
+# On 2019/08/31:
+# This function may have bugs if $main::Owant or $main::Ounwant are used,
+#   because $rDid2Cid, $rCid2Dids are not adjusted.
 sub CreateDendrogram {
-	my($me, $rTitle, $rM, $rDid2Cid, $rCid2Dids, $rCid2Cno) = @_;
-	my($did, $cid, %Cid2Dids, %Cid2Ndoc, @Cids);
+	my($me, $rTitle, $rM, $rDid2Cid, $rCid2Dids) = @_;
+	my($did, $cid, %Cid2Ndoc, @Cids);
 	while (($did, $cid) = each %$rDid2Cid) { 
-#		$Cid2Dids{$cid} .= "$did\t"; $Cid2Ndoc{$cid}++;
 		$Cid2Ndoc{$cid}++; # replace above line on 2019/08/31
 #print "$cid : $did=>",(split / : /, $rTitle->[$did])[0],"\n";
 	}
-# Comment next statement because it seems do no hard on 2019/08/29
-#	print STDERR "Number of clusters mismatch: \$Cid2Ndoc=", scalar keys %Cid2Ndoc,
-#		"<=>", scalar keys %$rCid2Cno, "=\$rCid2Cno\n" if $me->{'Cid2Cno'};
-# On 2019/08/29:
-# perl -s  Term_Trend.pl -Ocolor -Omap -Ocut=0.01 ../Result/Sam_BC_S2
-#   It takes 0 seconds to cut tree having 4 records and 2 internal nodes
-# mds.exe 2 ../Result/Sam_BC_S2/SimPairs.txt > ../Result/Sam_BC_S2/Coordinate.txt
-#
-# Note if option -OCno is used, an error line occurs, like the following:
-# perl -s  Term_Trend.pl -Ocolor -Omap -Ocut=0.01 -OCNo -OhtmlTree=../Result/Sam_BC/0_0.01.html ../Result/Sam_BC_S2
-#   It takes 0 seconds to cut tree having 4 records and 2 internal nodes
-# Number of clusters mismatch: $Cid2Ndoc=2<=>4=$rCid2Cno
-# mds.exe 2 ../Result/Sam_BC_S2/SimPairs.txt > ../Result/Sam_BC_S2/Coordinate.txt
-# This is because we set $mds->{'Cid2Cno'} in line 458 at Term_Trend.pl
-# As to why there is a mismatch, see $rDC->GetCid2Cno($main::OhtmlTree);
-#  in line 457 at Term_Trend.pl
-
+	# %Cid2Ndoc: number of of sub-clusters in cluster Cid
 	@Cids = sort {$Cid2Ndoc{$b} <=> $Cid2Ndoc{$a}} keys %Cid2Ndoc;
 	my($i, $DFi, $BDFi, $DocNameCi, @DocNameCi, $DisPairCi, @DisPairCi);
 	my($CallCi, $DivCi, $CanvasCi);
 	my($name, $pair, $numLeaves, $HTML);
 	for($i=0; $i<@Cids; $i++) {
-#    	my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, \%Cid2Dids, $Cids[$i]);
-    	my($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, $rCid2Dids, $Cids[$i]);
-    	push @DocNameCi, $name;    push @DisPairCi, $pair;
+    	($name, $pair, $numLeaves) = $me->GetOneTree($rTitle, $rM, $rCid2Dids, $Cids[$i]);
+    	push @DocNameCi, $name;
+		push @DisPairCi, $pair;
     	$CallCi .= <<End_Here;
     treeObj=buildTree($numLeaves, $i); 
     tree=treeObj.tree;
@@ -641,10 +635,11 @@ sub GetOneTree {
 	my($me, $rTitle, $rM, $rCid2Dids, $cid) = @_;
 	my(@Dids, %Dids, $did, $ti, $idx, @Idx);
 	@Dids = split /\t/, $rCid2Dids->{$cid};
-#	foreach $did (@Dids) { $Dids{$did} = 1; } # this is wrong!
+# $rTitle->[$did] in the next line should be the whole titles in Title.txt
+#   to remove the bugs if $main::Owant or $main::Ounwant are used.
 	foreach $did (@Dids) { $Dids{(split / : /, $rTitle->[$did])[0]} = 1; }
-	$idx = -1;
-	foreach $ti (@$rTitle) {
+	$idx = -1; # remove those not in @$rTitle (reduced Title.txt) 
+	foreach $ti (@$rTitle) { 
 		$idx++;
 		$did = (split/ : /, $ti)[0];
 		push @Idx, $idx if $Dids{$did};
@@ -673,13 +668,14 @@ sub GetOneTree {
 }
 
 sub GetNodeLabel {
-	my($me, $ti) = @_; my($id, $size, $sim, $cdes, $label, @Label, $des, $J9);
+	my($me, $ti) = @_; 
+	my($id, $size, $sim, $label, @Label, $des, $J9);
 # Get a label from $ti, where $ti may have the following format:
 # 24 : 172 Docs. : 1.0(ASLIB PROC: 1.0, ASLIB PROCEEDINGS: 1.0)
 # 1647 : 4376 Docs. : 0.001046(library:414.3054, information:104.5307, academic:86.8283, retrieval:85.9621, literacy:72.7760)
     if ($ti=~/(\d+) : (\d+)[^:]+ : ([\d\.]+)\(([^\)]+)\)/) {
-    	$id = $1; $size = $2; $sim = $3; $des = $cdes = $4;
-    	if ($des =~ / 1.0\b/) { $J9 = 1; } else { $J9 = 0; }
+    	$id = $1; $size = $2; $sim = $3; $des = $4;
+    	if ($des =~ / 1.0\b/) { $J9 = 1; } else { $J9 = 0; } # to be checked
     	while ($des =~ /([^:]+):\s*[\d\.]+,?\s*/g) { # may cause bug for Chinese
     		$label = $1; # match the one before ":414.3054" or ": 1.0"
     		push @Label, $label;
@@ -715,7 +711,7 @@ sub GetNodeLabel {
 sub CreateMap {
 	my($me, $CoordinateFile, $rTitle, $OutPNGFile, $rDid2Cid, $rOld2NewID, $rCid2Cno) = @_;
 # @$rTitle is an array to hold the title of each document
-	my($dim, $dn, $rx, $ry, $cx, $cy, $nodei, $label, $title, $tn, $xn, $yn, $tm);
+	my($dim, $dn, $rx, $ry, $cx, $cy, $label, $title, $tn, $xn, $yn, $tm);
 	my($img, $white, $black, $red, $blue, $gray55, $rDid2Color, $did, $color);
 	$img = $me->{'IMG'};
 	# allocate some colors
@@ -726,7 +722,7 @@ sub CreateMap {
 
 	$me->{'OutlierColor'} = $gray55; # 2007/05/09
 #	$blue = $img->colorAllocate(0,0,255); # already has been used
-	$rDid2Color = $me->AllocateColor($img, $rDid2Cid);
+	$rDid2Color = $me->AllocateColor($img, $rDid2Cid, $rCid2Cno);
 	# make the background transparent and interlaced
 	$img->transparent($white);
 	$img->interlaced('true');
@@ -737,8 +733,9 @@ sub CreateMap {
 # $yn : number of y coordinates read
 # $tn : number of title (circles) read
 # $tm : number of possibly extra title (circles) read
-	$tm = 0; $dn = 0; $nodei = 0; 
+	$tn = 0; $tm = 0; $dn = 0;
 	$did = 0; # cluster sequence number in Coordinate.txt
+# Assume the node (title) sequence in Coordinate.txt is the same as that in Title.txt
 	open F, $CoordinateFile or die "Cannot read file:'$CoordinateFile', $!";
 	my($rPajekNodes); 
 	$me->{LabelID} = 0; # Set to zero for later use
@@ -750,14 +747,17 @@ sub CreateMap {
 # 34 : 6 Docs. : 0.020000(cluster:5.1121, min:3.0151, map:3.0151, text:2.0833)
 # -0.31321413
 # -0.05544575
-		} elsif (/^(\d+) : (\d+) Docs./) { # the node title : "53 : 4µ§,0.13(sens:0.43, sensor:0.32, structure:0.15)"
+		} elsif (/^(\d+) : (\d+) Docs./) { # the node title : "53 : 4 Docs. : 0.13(sens:0.43, sensor:0.32, structure:0.15)"
 			$title = $_; $label = "$1:$2";
-			$nodei++; $tn++; $dn = 0; # reset dn to x axis
-#	} elsif (/^(\d+) : \d+/) {
-#		$label = "$1:10"; 
-#		$nodei++; 
+			$tn++; # must be here before the next line
+			$label = "$tn:$2" if $me->{'Cid2Cno'};
+			$dn = 0; # reset dn to x axis
 		} elsif (/([^ ]+)\s+:\s+(.+)/) { # /6969912 : Embedded.../ or /ISI:000167255500002 : 2001:Automatic cataloguing/
-			$title = $_; $label = $2; $tn++;
+			$title = $_; $label = $2;
+			$tn++; # must be here before the next line
+			$label = "$tn:$2" if $me->{'Cid2Cno'};
+#		} elsif (/^(\d+) : \d+/) {
+#			$label = "$1:10"; 
 #		} elsif (/^([\- ][01]\.\d+)$/) { # read in X or Y, depending on $dn
 		} elsif (/^([\- ]\d+\.\d+e?-?\d*)$/) { # read in X or Y, depending on $dn
 			if ($dn == 0) { 
@@ -766,11 +766,12 @@ sub CreateMap {
 				$ry = $1; $dn = 0; $yn++;
 	# Assume we have only 2-dimensions: X- and Y-axis, now call:
 				$color = $rDid2Color->{$did};
-#warn("Did2Cid->{$did}=$rDid2Cid->{$did}, Did2Color{$did}=$rDid2Color->{$did}, label=$label, gray55=$gray55");
-#warn("title=$title\n");
+#warn("Did2Cid->{$did}=$rDid2Cid->{$did}, Did2Color{$did}=$rDid2Color->{$did}, label=$label, gray55=$gray55\n"
+#	. "  title=$title\n");
 				if ($color eq '') { $color = $gray55; }
 				$rPajekNodes = $me->PlotOne($img, $rx, $ry, 10, $color, $label, $title, $red, 
-					$rCid2Cno, $rPajekNodes); # @PajekNodes contain each row for a Pajek file
+					$rCid2Cno, $rDid2Cid, $rPajekNodes); 
+				# @$rPajekNodes contain each row for a Pajek file
 				$did++; # Remark on 2019/08/30
 			}
 		} else {
@@ -792,7 +793,8 @@ sub CreateMap {
 	$MaxSize = 0;	@Rows = split /\n/, $rPajekNodes;
 	foreach $r (@Rows) {
 		($nid, $nlabel, $x, $y, $size, $ic, $color) = split /\t/, $r;
-		$MaxSize = $size if $MaxSize < $size; $Rows{$nid} = $r;
+		$MaxSize = $size if $MaxSize < $size; 
+		$Rows{$nid} = $r;
 	} 
 	$rPajekNodes =''; # reset $rPajekNodes
 	foreach $r (sort {$a <=> $b} keys %Rows) { # Vertex ID should start from 1 for Pajek
@@ -816,28 +818,14 @@ sub CreateMap {
 	close(P);
 }
 
-sub AllocateColor_org {
-	my($me, $img, $rDid2Cid) = @_; 
-	my(%Cid2Color, %Did2Color, $i, $did, $cid);
-	%Cid2Color = reverse %$rDid2Cid; # get unique cids as keys to %Cid2Colr
-	$i = 0; # map each cid to a unique color
-	foreach $cid (sort {$a <=> $b} keys %Cid2Color) {
-		$Cid2Color{$cid} = $me->{rColor}[($i % scalar @{$me->{rColor}})];
-		$i++;
-	} # now map each did to a color
-	foreach $did (keys %$rDid2Cid) {
-		$cid = $rDid2Cid->{$did};
-		$Did2Color{$did} = $Cid2Color{$cid}
-	}
-	return \%Did2Color;
-}
-
 sub AllocateColor {
-	my($me, $img, $rDid2Cid) = @_; 
-	my(%Cid2Color, %Did2Color, $did, $cid);
+	my($me, $img, $rDid2Cid, $rCid2Cno) = @_; 
+	my(%Cid2Color, %Did2Color, $did, $cid, $cno);
 	while (($did, $cid) = each %$rDid2Cid) {
+		$cid = $cno = $rCid2Cno->{$cid} if $me->{'Cid2Cno'};
 		$Cid2Color{$cid} = $me->{rColor}[($cid % scalar @{$me->{rColor}})];
-		$Did2Color{$did} = $Cid2Color{$cid}
+		$Did2Color{$did} = $Cid2Color{$cid};
+#warn("did=$did, cid=$cid, cno=$cno, color=$Cid2Color{$cid}\n");
 	}
 	return \%Did2Color;
 }
@@ -845,7 +833,7 @@ sub AllocateColor {
 
 sub PlotOne {
 	my($me, $img, $rx, $ry, $size, $color, $label, $title, $LabelColor, 
-		$rCid2Cno, $rPajekNodes) = @_;
+		$rCid2Cno, $rDid2Cid, $rPajekNodes) = @_;
 	my($Height, $Width) = ($me->{'Height'}, $me->{'Width'});
 	my($cx, $cy, $scale, $BaseSize, $TotalDoc);
 	$scale = $me->{'scale'};
@@ -859,9 +847,7 @@ sub PlotOne {
 	$cy = int(($ry+1)/2 * $Height); # convert to position y in Height(=450) pixels
 	# Draw a blue oval
 	if ($label =~ /:(\d+)/) { # format 
-		$label = $`; # cluster id number
-		$label = $rCid2Cno->{$label} if $me->{'Cid2Cno'}; # 2011/04/25
-		# $me->{'Cid2Cno'} == 1 indicates there is a mapping to be used
+		$label = $`; # cluster id number, match the precedent of pattern
 		$size = $1;
 		if ($size > 0) {
 			if ($TotalDoc > 0 and not $me->{'AbsSize'}) { # relative size
@@ -903,10 +889,9 @@ sub PlotOne {
 
 # Now we have rx, ry, size, color, and title, we can output a Pajek format file
 	my($nid, $nsize, $nsim, $ti);
-	($nid, $nsize, $nsim, $label) = $me->GetNodeLabel($title);
-	$label = $rCid2Cno->{$label} if $me->{'Cid2Cno'};
-	$rPajekNodes .= "$nid\t$label\t$rx\t$ry\t$size\tic\t$color\n";
-
+	($nid, $nsize, $nsim, $ti) = $me->GetNodeLabel($title);
+	$rPajekNodes .= "$nid\t$ti\t$rx\t$ry\t$size\tic\t$color\n";
+	return $rPajekNodes;
 =comment
 	# draw a circle
 #	$img->moveTo(110,100);
