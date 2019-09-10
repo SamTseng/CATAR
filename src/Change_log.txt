@@ -1,3 +1,12 @@
+On 2019/09/10
+1. Change ISI.pl to add next line on 2019/09/10
+	$rD->[$UsefulFields{SO}] = &Normalize_Terms($rD->[$UsefulFields{SO}], 'SO');
+   Also change [IU] into IU in two places in ISI.pl.
+2. Get all the journals from IS&LS subject category in JCR
+   and all the Web of Science (WoS) records from 2009 to 2018
+   from ·¨¼w­Û
+C:\CATAR\src> perl -s automc.pl -OOA ISLS09_18 ..\Source_Data\ISLS09_18\data
+
 On 2019/08/25-2019/09/01
 1. Change automc.pl, ISI.pl to prevent from reporting too many statitics,
    such as fractional count for fields other than AF, AU, C1, and IU.

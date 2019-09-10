@@ -221,10 +221,12 @@ sub SetFieldIndex { # given the line of fields
 # Convert the data in some fields of @D to standard form 
 #   and grow @D with IU, DP.
 # Change @D, %Country
-# Use global $AU_idx, $C1_idx, $AB_idx, $AF_idx
+# Use global: $AU_idx, $C1_idx, $AB_idx, $AF_idx, %UsefulFields
 sub StandardizeFields {
 	my($rD, $rCountry) = @_;  
 	my(@Addresses, %Cntry, $iw, @A, $addr, @IU, %IU, %DP, $d, @Au, $au);
+# Add next line on 2019/09/10
+	$rD->[$UsefulFields{SO}] = &Normalize_Terms($rD->[$UsefulFields{SO}], 'SO');
 	$rD->[$UsefulFields{SC}] = &Normalize_Terms($rD->[$UsefulFields{SC}], 'SC');
 	$rD->[$UsefulFields{DE}] = &Normalize_Terms($rD->[$UsefulFields{DE}], 'DE');
 	$rD->[$UsefulFields{ID}] = &Normalize_Terms($rD->[$UsefulFields{ID}], 'ID');
@@ -597,7 +599,9 @@ sub Insert2DB_work_for_sqlite_and_MSAccess {
 	for ($i=0; $i<@$rF; $i++) {
 		next if $rField->[$i] eq 'UT';
 		next if $rF->[$i] eq '';
-		$f = ($rField->[$i]=~/ID|IU/)?"[$rField->[$i]]":$rField->[$i];
+#		$f = ($rField->[$i]=~/ID|IU/)?"[$rField->[$i]]":$rField->[$i];
+# Use next line instead of the above line on 2019/09/10
+		$f = ($rField->[$i]=~/ID/)?"[$rField->[$i]]":$rField->[$i];
 		$sql = "UPDATE $Table Set $f = ? WHERE UT = ?";
 #print STDERR "sql=$sql\n";
 		$sth = $DBH->prepare($sql);
@@ -637,7 +641,9 @@ sub Insert2DB { # work for SQLite
 	# compose as many '?,' as the No. of element of @Field 
 	chop $str; # chop off last ','
 	$sql = "INSERT INTO $Table (" . join(', ', 
-		map{$_=~/ID|IU/?"[$_]":$_}@$rField) 
+#		map{$_=~/ID|IU/?"[$_]":$_}@$rField) 
+# use next line instead of the above line on 2019/09/10
+		map{$_=~/ID/?"[$_]":$_}@$rField) 
 		. ") VALUES ($str)";
 #print STDERR "sql=$sql\n";
 	$sth = $DBH->prepare($sql);
