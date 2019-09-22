@@ -300,15 +300,16 @@ sub Compute_Silhouette_Index {
     $root = $rDC->ReadSimilarity(); # no longer needed for re-cluster
     $prev_si = -2;
 #    for ($cut=0.0; $cut<=0.1; $cut+=0.01) { # remark on 2012/06/24
-    for ($cut=0.0; $cut<=0.1; $cut+=0.005) { # 2013/07/28
-	($si, $rsi_k, $rsi_k_i, $rDid2Cids, $rCid2Dids, $NumClu, $NumDoc) 
+    for ($cut=0.0; $cut<=0.101; $cut+=0.005) { # 2013/07/28, 2019/09/22
+        ($si, $rsi_k, $rsi_k_i, $rDid2Cids, $rCid2Dids, $NumClu, $NumDoc) 
     	    = $rDC->Silhouette($cut);
 #    	if ($prev_si != $si) {
 	    print "cut=", sprintf("%0.3f", $cut), "\tsi=",sprintf("%+0.4f",$si), 
 	    "\tCluster=$NumClu\tDoc=$NumDoc\n";
-#	}
-	$prev_si = $si;
-	if ($cut>=0.4) { $cut+=0.005; } # 2013/07/28
+#	    }
+	    $prev_si = $si;
+	    if ($cut>=0.04) { $cut+=0.005; } # 2013/07/28 (0.4), 2019/09/22
+        last if ($si < -0.01) or ($NumClu > 1000 and $NumClu > $NumDoc/2);
     }
 }
 

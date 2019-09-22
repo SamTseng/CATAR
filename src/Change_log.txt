@@ -1,3 +1,6 @@
+On 2019/09/22
+1. Change &Compute_Silhouette_Index() of Cluster.pl.
+
 On 2019/09/10
 1. Change ISI.pl to add next line on 2019/09/10
 	$rD->[$UsefulFields{SO}] = &Normalize_Terms($rD->[$UsefulFields{SO}], 'SO');
