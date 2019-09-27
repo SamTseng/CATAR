@@ -1567,7 +1567,8 @@ HERE:
 
 sub Compute_Slope {
 	my($rA) = @_; my($i, @X, @Y, $avg, $sq, $sx, $slope, @A);
-	@A = @$rA;
+	#@A = @$rA; # replaced with next line on 2019/09/27
+	for($i=0; $i<@$rA; $i++) { $A[$i] = ($rA->[$i]eq'')?0:$rA->[$i];}
 	while (@A>=1 and $A[0] <= 0) { shift @A; } # 2011/05/24
 	return 0.0 if @A <= 1; # skip if less than 2 numbers
 	for($i=1, $avg = 0; $i<=@A; $i++) { $avg += $i; }

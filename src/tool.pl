@@ -2,36 +2,36 @@
 # https://stackoverflow.com/questions/728597/how-can-my-perl-script-find-its-module-in-the-same-directory
 use File::Basename;
 use lib dirname (__FILE__);
-	use SamOpt qw(SamOpt);  &SamOpt();
-	use Spreadsheet::WriteExcel; 
-	# see http://lena.franken.de/perl_hier/excel.html for more examples
-	use Encode::TW; # this line must exist, despite we have the next line
-	use Encode qw/encode decode from_to/;
-	use Encode::Detect::Detector;
-	use DBI ':sql_types';
-	use InitDBH qw(InitDBH);
-
+use SamOpt qw(SamOpt);  &SamOpt();
+use Spreadsheet::WriteExcel; 
+# see http://lena.franken.de/perl_hier/excel.html for more examples
+use Encode::TW; # this line must exist, despite we have the next line
+use Encode qw/encode decode from_to/;
+use Encode::Detect::Detector;
+use DBI ':sql_types';
+use InitDBH qw(InitDBH);
+my $stime = time();
 # 讀取歸類結果的HTML檔，插入文件的標題，以方便解讀此HTML檔
 # perl -s tool.pl -Otitle ..\Result\NanoPaperTW_S3\2_1_1_0.0.html > ..\Result\NanoPaperTW_S3\2_1_1_0.0_titles.html
 # perl -s tool.pl -Otitle -Odsn=SciC ..\Result\SciC_S3\2_1_1_0.0.html > ..\Result\SciC_S3\2_1_1_0.0_titles.html
-	if ($main::Otitle) { &InsertTitle_to_Cluster_Results(@ARGV); exit; }
+	if ($main::Otitle) { &InsertTitle_to_Cluster_Results(@ARGV); &myexit(); }
 
 # 讀取歸類結果的HTML檔，插入文件的SC標題詞，以方便解讀此HTML檔
 # perl -s tool.pl -OSC="SC" File_NanoPaperTW NanoPaperTW ..\Result\NanoPaperTW_BibCpl\0_0.0.html > ..\Result\NanoPaperTW_BibCpl\0_0.0_SC.html
 # perl -s tool.pl -OSC="PY" File_NanoPaperTW NanoPaperTW ..\Result\NanoPaperTW_BibCpl\0_0.0.html > ..\Result\NanoPaperTW_BibCpl\0_0.0_SC.html
 # perl -s tool.pl -OSC=all -Omin=2 -ODB=..\Source_Data\envi01\envi01.mdb 
 #   envi01 TPaper ../Result/envi01_dc_S2/2_2_2_0.1.html > ../Result/envi01_dc_S2/2_2_2_0.1_all_2.html
-	if ($main::OSC) { &InsertSC_to_Cluster_Results(@ARGV); exit; }
+	if ($main::OSC) { &InsertSC_to_Cluster_Results(@ARGV); &myexit(); }
 
 # 讀取歸類結果的HTML檔，插入文件的標題title與SC標題詞，以方便解讀此HTML檔 
 #有上面的函數後，可以不再使用此函數
 # perl -s tool.pl -OSC2 CorePaper TOTAL ..\Result\CorePaper_S3\2_1_1_0.05.html > ..\Result\CorePaper_S3\2_1_1_0.05_SC2.html
-	if ($main::OSC2) { &Insert_SC_to_Another_Cluster_Results(@ARGV); exit; }
+	if ($main::OSC2) { &Insert_SC_to_Another_Cluster_Results(@ARGV); &myexit(); }
 
 # 讀取歸類結果的HTML檔，以及不需要的類別編號，從HTML檔中刪除不需要的類別再輸出
 # perl -s tool.pl -OrmC=..\Result\IEK_A\rmC.txt -Oid=..\Result\IEK_A\list.txt ..\Result\IEK_A\0.0.html > ..\Result\IEK_A\0.0_rmC.html
 # perl -s tool.pl -OrmC=..\Result\IEK_A_S2\rmC.txt -Oid=..\Result\IEK_A_S2\list.txt ..\Result\IEK_A_S2\2_2_2_0.0.html > ..\Result\IEK_A_S2\2_2_2_0.0_rmC.html
-	if ($main::OrmC) { &Remove_Designated_Clusters(@ARGV); exit; }
+	if ($main::OrmC) { &Remove_Designated_Clusters(@ARGV); &myexit(); }
 # 從歸類的結果檔案中，發現有些類別不需要進一步分析，可手動列舉刪除，然後再從頭進行上述各項步驟。刪除某些指定類別的範例命令如下：
 # perl -s tool.pl -OrmC=..\Result\IEK_A\rmC.txt -Oid=..\Result\IEK_A\list.txt  ..\Result\IEK_A\0.0.html > ..\Result\IEK_A\0.0_rmC.html
 # 其中選項-Oid=..\Result\IEK_A\list.txt，表示刪除後所剩的類別，其所包含的文件編號，表列在list.txt檔案裡，這個檔案可以方便從頭進行各項分析。而選項-OrmC=..\Result\IEK_A\rmC.txt，表示「待刪除的類別編號」所在的檔案，其內容為純文字，格式範例如下：
@@ -43,12 +43,12 @@ use lib dirname (__FILE__);
 # 上一步做完，可做下一步：
 # 讀取歸類結果的HTML檔，按照其類別內容，將類別的文件存到 doc 目錄下（每個類別一個檔），以便進行歸類
 # perl -s tool.pl -Ohtml -Odir=..\doc\IEK1 IEK1 Patent ..\Result\IEK1\kr_t_0.01_doc.html
-	if ($main::Ohtml) { &ExtractDoc2Dir(@ARGV); exit; }
+	if ($main::Ohtml) { &ExtractDoc2Dir(@ARGV); &myexit(); }
 
 # 將分散在各個資料表的專利資訊，插入到一個資料表中，使論文與專利的欄位交叉分析，可以用相同的程式
 # 已過時，可不用，因為有新版的 &InsertSC_to_Cluster_Results();
 # perl -s tool.pl -Ojoin -Odsn=IEK_A Tinfo
-	if ($main::Ojoin) { &JoinInsert_to_PatentTable(@ARGV); exit; }
+	if ($main::Ojoin) { &JoinInsert_to_PatentTable(@ARGV); &myexit(); }
 
 # 插入文件到資料表中，準備歸類
 # D:\demo\File>perl -s tool.pl -Oroc d:\data\rocling\org
@@ -59,53 +59,56 @@ use lib dirname (__FILE__);
 # perl -s tool.pl -Oroc -Ocnt D:\Sam\papers\2005\IACIS\data\nano_seg_abs6
 # delete * from CNT_Seg_Abs6;
 # perl -s tool.pl -Oroc -Onsc -Otable=NSC_Seg_Abs6 d:\demo\lwp\NSC\NSC_Seg_Abs6
-	if ($main::Oroc) { &InsertRocLingDoc(@ARGV); exit; }
+	if ($main::Oroc) { &InsertRocLingDoc(@ARGV); &myexit(); }
 # perl -s tool.pl -Ocib InfoBank D:\STPI\2008_Project\GCINFOBANK.txt
 # This function does not work. I don't know why. #2008/06/18
-	if ($main::Ocib) { &InsertInfoBankDoc(@ARGV); exit; }
+	if ($main::Ocib) { &InsertInfoBankDoc(@ARGV); &myexit(); }
 
 # 從專利資料庫（從USPTO下載回來）中，每段取6句摘要放入File_org.mdb中，準備進行歸類
 # perl -s tool.pl -OP2F NanoPatent File_NanoPatent
-	if ($main::OP2F) { &Insert_into_File_from_Patent(@ARGV); exit; }
+	if ($main::OP2F) { &Insert_into_File_from_Patent(@ARGV); &myexit(); }
 # perl -s tool.pl -OgetID ..\doc\NanoPat_S2
-	if ($main::OgetID) { &GetClusterPatentID(@ARGV); exit; } # 雜項功能，特定情況需要
+	if ($main::OgetID) { &GetClusterPatentID(@ARGV); &myexit(); } # 雜項功能，特定情況需要
 
 # Given the clustered documents, represented in the DBMS, fetch them out
 # and save them in files under directory $Odir. ，準備進行檔案文件的歸類
 # tool.pl -Odir=NSC_TermCluster -Ouid=174 -Odsn=File_NSC -Otable=NSC_Term
 # Use global : $Odsn, $Ouid, $Odir, $Odoc, $Otable
-	if ($main::Ouid and $main::Odir){ &GetClusteredDoc(@ARGV); exit; }
+	if ($main::Ouid and $main::Odir){ &GetClusteredDoc(@ARGV); &myexit(); }
 
 
 # 從已取得的關鍵詞和其關聯詞插入到資料表中，準備進行歸類
 # perl -s tool.pl -OInRK [-Odsn=File] -Otable=NSC_Term NSC_WG_RK.txt
-	if ($main::OInRK) { &InsertRKterms(@ARGV); exit; }  
+	if ($main::OInRK) { &InsertRKterms(@ARGV); &myexit(); }  
 # perl -s tool.pl -Orw -OmaxDF=200 -OminDF=2 NSC_WG_RKterms.txt > NSC_WG_RK.txt
-	if ($main::Orw) { &FilterRKterms(@ARGV); exit; }
+	if ($main::Orw) { &FilterRKterms(@ARGV); &myexit(); }
 # perl -s tool.pl -Odic WG_RKterms.txt > DicTerm.txt
-	if ($main::Odic) { &GetDicTerm(@ARGV); exit; } # 雜項功能，特定情況需要
+	if ($main::Odic) { &GetDicTerm(@ARGV); &myexit(); } # 雜項功能，特定情況需要
 # 從歸類的反向索引檔中，取出索引詞，依照篇數排序，選項-Ophrase表示只輸出多字詞片語
 # perl -s tool.pl -Oinv ..\Result\NanoPaperTW\Inv.txt > ..\Result\NanoPaperTW\df.txt
 # perl -s tool.pl -Oinv -Ophrase ..\Result\NanoPaperTW\Inv.txt > ..\Result\NanoPaperTW\df_phrase.txt
-	if ($main::Oinv) { &SortInvertedFile(@ARGV); exit; } # 雜項功能，特定情況需要
+	if ($main::Oinv) { &SortInvertedFile(@ARGV); &myexit(); } # 雜項功能，特定情況需要
 # perl -s tool.pl -Ophrase D:\demo\File\Result\CNT_Seg_Abs6\Inv.txt > Result\CNT_Seg_Abs6_phrase.txt
-	if ($main::Ophrase) { &GetPhrasefromIndex(@ARGV); exit; } # 雜項功能，特定情況需要
+	if ($main::Ophrase) { &GetPhrasefromIndex(@ARGV); &myexit(); } # 雜項功能，特定情況需要
+# 計算每個重要詞彙在每年的出現篇數序列，並以其 slope 排序
+# perl -s tool.pl -Oslp HiEdu90_18 ..\Result\HiEdu90_18_BC_S5\inv.txt ..\Source_Data\HiEdu90_18\HiEdu90_18.db > ..\Result\MedEdu09_18_BC_S5\Term_Slope.txt
+	if ($main::Oslp) { &ComputeTermSlope(@ARGV); &myexit(); }
 
 
 # Compute the distribution of selected IPC codes in some major clusters
 # 612篇NSC專利歸成6大類後，每一大類的IPC分佈
 # perl -s tool.pl -Oipc NSC_PatentDB doc\NSC_DocBigCluster Result\NSC_DocBigCluster\0.05_91_2_1_1_0.1_21_2_3_3_0.2.html > Result\NSC_6clusters_IPC_dist.txt
-	if ($main::Oipc) { &IPC_DIST(@ARGV); exit; } 
+	if ($main::Oipc) { &IPC_DIST(@ARGV); &myexit(); } 
 	
 # 612篇NSC專利歸成6大類後，每一大類的field分佈
 # perl -s tool.pl -Ofield Result\NSC_Fields.txt doc\NSC_DocBigCluster Result\NSC_DocBigCluster\0.05_91_2_1_1_0.1_21_2_3_3_0.2.html > Result\NSC_6cluster_Field_dist.txt
-	if ($main::Ofield) { &Field_DIST(@ARGV); exit; }
+	if ($main::Ofield) { &Field_DIST(@ARGV); &myexit(); }
 	
 # 刪除612篇NSC專利某年代之外的論文，以便製作 topic map
 # perl -s tool.pl -OrmPat NSC_PatentDB 1970 1999 doc\NSC_DocBigCluster doc\NSC_DBC2000
-	if ($main::OrmPat) { &RemovePatents(@ARGV); exit; }
+	if ($main::OrmPat) { &RemovePatents(@ARGV); &myexit(); }
 
-	exit;
+sub myexit { print STDERR "# It takes ", time()-$stime, " seconds\n\n"; exit(); }
 
 sub ts { 
 	my($x, $n) = @_;
@@ -342,15 +345,15 @@ print STDERR "dsn=$main::Odsn, sql=$sql\n";
 		($title, $body) = &InsertROC($t, $sno, $STH, $sql);
 print STDERR "$sno: Sizes of title and body=", length($title), ", ", length($body), "\n" 
 if $sno%10==1 or (length($title)<5 or length($body)<10);
-	$STH->bind_param(1, $title);
-	$STH->bind_param(2, $body, DBI::SQL_LONGVARCHAR);
-	$STH->bind_param(3, $sno);
-	$STH->execute($title, $body, $sno)
+		$STH->bind_param(1, $title);
+		$STH->bind_param(2, $body, DBI::SQL_LONGVARCHAR);
+		$STH->bind_param(3, $sno);
+		$STH->execute($title, $body, $sno)
 #	and print "sno=$sno, title=$title\n";
 		   or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
 #$STH->finish; $DBH->disconnect; exit;
-	$body =~ s/\n/ /g;
-	print "$sno\t$sno\t\t$title\t$body\n";
+		$body =~ s/\n/ /g;
+		print "$sno\t$sno\t\t$title\t$body\n";
 	}
 	$STH->finish;
 	$DBH->disconnect;
@@ -403,22 +406,22 @@ sub Insert_into_File_from_Patent {
 	while (($pid, $TypeNo, $Title, $Abs) = $STH1->fetchrow_array) {
 		next if $TypeNo > 5; # 5: Features : DETAILED DESCRIPTION OF THE INVENTION
 #print  "$pid, $TypeNo, ",substr($Title, 0, 20), ", ", length($Abs), ", ", substr($Abs, 0, 20),"\n";
-	$n += length($Abs)+3;
-	$Abs =~ s/<BR><BR>/\n/g;
-	$Abstract .= $Abs . "\n\n";
+		$n += length($Abs)+3;
+		$Abs =~ s/<BR><BR>/\n/g;
+		$Abstract .= $Abs . "\n\n";
 		if ($TypeNo == 5) { # 5 : Features : DETAILED DESCRIPTION OF THE INVENTION
-		$STH->execute($pid, $Title, $Abstract)
-			or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
+			$STH->execute($pid, $Title, $Abstract)
+				or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
 #print  "$pid, $n, ", length($Abstract),", $Title\n";
 			$prev_pid = $pid; $Abstract = ""; $n = 0;
-	}
+		}
 	}
 	$STH1->finish;
 	$DBH1->disconnect;
 	
 	$STH->finish;
 	$DBH->disconnect;
-	exit;
+	&myexit();
 }
 
 # This function does not work. I don't know why.
@@ -428,7 +431,7 @@ sub InsertInfoBankDoc {
 #	$sql = qq{ INSERT INTO TPaper2 (UT, TI, AB, PY, AU, SO) values (?, ?, ?, ?, ?, ?) };
 	$sql = qq{ INSERT INTO TPaper2 (UT, TI) values (?, ?) };
 	$STH = $DBH->prepare($sql)
-		   or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
+		or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
 #	$STH->bind_param(3, $STH, DBI::SQL_LONGVARCHAR); 
 
 # Now read each row and insert it into the table of a database
@@ -436,20 +439,20 @@ sub InsertInfoBankDoc {
 	$TI = <>; # read off the the first line
 	while (<>) {
 		chomp;
-	($UT, $TI, $AB, $PY, $AU, $SO, $MD) = split /\t/, $_;
-	$PY =~ s/ 00:00$//;
-	if ($UT eq '') {
-		print "$UT, $PY, $TI\n"; next;
-	} else {
-		$STH->execute($UT, $TI)
-			or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
-		print "'$STH::errstr'$UT, $PY, $TI\n"; last if $i++>=5;
-#		print "sql=$sql\n"; last if $i++>=5;
-	}
+		($UT, $TI, $AB, $PY, $AU, $SO, $MD) = split /\t/, $_;
+		$PY =~ s/ 00:00$//;
+		if ($UT eq '') {
+			print "$UT, $PY, $TI\n"; next;
+		} else {
+			$STH->execute($UT, $TI)
+				or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
+			print "'$STH::errstr'$UT, $PY, $TI\n"; last if $i++>=5;
+#			print "sql=$sql\n"; last if $i++>=5;
+		}
 	}	
 	$STH->finish;
 	$DBH->disconnect;
-	exit;
+	&myexit();
 }
 
 
@@ -470,7 +473,7 @@ sub InsertRKterms {
 	}
 	$STH->finish;
 	$DBH->disconnect;
-	exit;
+	&myexit();
 }
 # ----------------- 插入文件到資料庫，準備進行歸類 --------------------
 
@@ -502,7 +505,7 @@ sub FilterRKterms { # 雜項功能，特定情況需要
 		next if @RT == 0;
 		print "$key\t$df\t", join(",", keys %RT), "\n";
 	}
-	exit;
+	&myexit();
 }
 
 # perl -s tool.pl -Odic WG_RKterms.txt > DicTerm.txt
@@ -520,7 +523,7 @@ sub GetDicTerm { # 雜項功能，特定情況需要
 	foreach $key (sort {$RT{$b} <=> $RT{$a}} keys %RT) {
 		print "$key\n";
 	}
-	exit;
+	&myexit();
 }
 
 # Given a directory that contains clustered documents, 
@@ -596,11 +599,11 @@ sub GetPhrasefromIndex { # 雜項功能，特定情況需要
 		chomp; next if /^\s*$|^#/g;
 		($term, $posting) = split /\t/, $_;
 		next if ($term !~ / /); # if not a phrase
-	$df = ($posting =~ tr/,/,/)/2;
-	$DF{$term} = $df;
-	next if $df < 2; 
-	$nt = ($term =~ tr/ / /)+1;
-	$NT2T{$nt} ++;
+		$df = ($posting =~ tr/,/,/)/2;
+		$DF{$term} = $df;
+		next if $df < 2; 
+		$nt = ($term =~ tr/ / /)+1;
+		$NT2T{$nt} ++;
 	}
 	close(F);
 	@DF = sort { $DF{$b} <=> $DF{$a} } keys %DF;
@@ -612,6 +615,75 @@ print "#--------------------------\n";
 		print "$i\t$NT2T{$i}\n";
 	}
 }
+
+sub ComputeTermSlope {
+	my($Odsn, $InvFile, $DB_File) = @_;  
+	my($t, $posting, %Terms, @Terms, $i, @POS, %TF, $j, $tf);
+	my($PY, $Num, @PY, @Num, $slope_series, $slope, $minPY, $maxPY);
+	$minPY = 100000; $maxPY = -1;
+	my $DBH = &InitDBH($Odsn, $DB_File);
+# SELECT PY, count(*) as Num FROM TPaper GROUP by PY ORDER by PY
+	my $sql = "SELECT PY, count(*) as Num FROM TPaper GROUP by PY ORDER by PY";
+	my $STH = $DBH->prepare($sql)
+		or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
+	$STH->execute()
+		or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
+	print("Term\ttf\tSlope\t");
+	while (($PY, $Num) = $STH->fetchrow_array) {
+		print("$PY\t");
+		$minPY = $PY if $minPY > $PY;
+		$maxPY = $PY if $maxPY < $PY;
+		$PY[$PY] = $Num;
+	}
+	$STH->finish;
+	@Num = @PY[$minPY..$maxPY]; @Num = (0) if $minPY > $maxPY;
+	$slope = &Compute_Slope(\@Num);
+	print("\n\t\t$slope\t" . join("\t", @Num). "\n");
+#	exit();
+	@ARGV = ($InvFile);
+	while (<>) {
+		chomp; ($t, $posting) = split /\t/, $_;
+		next if $t =~ /^\s*$/; # skip empty line
+		@POS = split(/,/, $posting); $tf = 0;
+		for ($j=1; $j<@POS; $j+=2) { $tf += $POS[$j]; }
+		$TF{$t} = $tf;
+#		$i++; last if $i>10;
+		# (print STDERR "i=$i, $_\n" and next) if $t eq ' ';
+#		next if ($main::Ophrase and ($t=~tr/ / /)==0); # skip single words if $Ophrase
+		next if (($t=~tr/ / /)==0); # skip single words 
+		$slope_series = &GetSlopeSeries($DBH, $t, $minPY, $maxPY);
+		$Terms{$t} = $slope_series;
+	}
+	@Terms = sort {$Terms{&Get1($b)} <=> $Terms{&Get1($a)}} keys %Terms;
+	foreach $t (@Terms) {
+		print "$t\t$TF{$t}\t$Terms{$t}\n";
+	}
+	$DBH->disconnect;
+}
+sub Get1 {my($termPY) = @_; my @A = split(' ', $termPY); return $A[0]; }
+
+sub GetSlopeSeries {
+	my($DBH, $t, $minPY, $maxPY) = @_; my($PY, $Num, @PY, @Num, $slope);
+# SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%sisyphean%' or lower(AB) like '%sisyphean%' GROUP by PY ORDER by PY
+	#my $sql = "SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%sisyphean%' or lower(AB) like '%sisyphean%' GROUP by PY ORDER by PY";
+	my $sql = "SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%".$t."%' or lower(AB) like '%".$t."%' GROUP by PY ORDER by PY";
+	my $STH = $DBH->prepare($sql)
+		or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
+	$STH->execute()
+		or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
+	while (($PY, $Num) = $STH->fetchrow_array) { 
+		$PY[$PY] = $Num;
+	}
+	$STH->finish;
+#	@Num = @PY[$minPY..$maxPY]; @Num = (0) if $minPY > $maxPY;
+	for(my $i=0; $i<$maxPY-$minPY; $i++) { 
+		$Num[$i] = $PY[$minPY+$i]>0 ? $PY[$minPY+$i] : 0; 
+	}
+	$slope = &Compute_Slope(\@Num);
+	return "$slope\t" . join("\t", @Num);
+
+}
+
 # ----------------- 雜項功能，特定情況需要 ----------------------------
 
 
@@ -1317,8 +1389,10 @@ foreach $seg (@Seg) {
 				my @PYvalue = (); # since some clusters do not have full years
 				# foreach my $f (@PY) { push @PYvalue, $rSC->{$f}; }
 			# The above line is replaced by the next line on 2019/08/26
-				foreach my $f ($PY[0]..$PY[-1]) { push @PYvalue, $rSC->{$f}; }
-#print STDERR "\n", join(', ', @PYvalue),"\n"; # important for debugging
+				foreach my $f ($PY[0]..$PY[-1]) { 
+					push @PYvalue, ($rSC->{$f}eq'') ? 0 : $rSC->{$f}; 
+				}
+#print STDERR "\nYear:", join(', ', @PYvalue),"\n"; # important for debugging
 				$slope = &Compute_Slope(\@PYvalue);
 				$SC .= "<br>Slope:$slope\n";
 				$SCt .= "Slope\t$slope\n"; 				
@@ -1334,13 +1408,14 @@ foreach $seg (@Seg) {
 #				$total += $rSC->{$f}; push @HHI, $rSC->{$f}; # 2011/04/14
 			foreach $f (sort {&f($rSC->{$b}) <=> &f($rSC->{$a})} keys %$rSC) {
 				my $df = &f($rSC->{$f});
+#print("field=$field, df=$df, \$rSC->{$f}=$rSC->{$f}\n");
 				$total += $df; push @HHI, $df; # 2011/04/14
 				$SC .= "<li>$f : $rSC->{$f}\n";
 				$SCt .= "$f\t$rSC->{$f}\n";
 #				$SC .= "<li>$f : ". &ts($rSC->{$f})."\n"; # 2009/02/11
 #				$SCt .= "$f\t".&ts($rSC->{$f})."\n"; # 2009/02/11
-				last if $j++ > $line and not $main::Otxt;
-				last if $j >= $main::Otxt and defined $main::Otxt;
+				last if not defined $main::Otxt and $j > $line;
+				last if defined $main::Otxt and $j >= $main::Otxt;
 				$max = $df if $max < $df;
 				last if (($max > $main::Omin and $df <= $main::Omin) 
 					or ($max <= $main::Omin and $df < $max)); # 2007/08/08
@@ -1356,6 +1431,7 @@ foreach $seg (@Seg) {
 				$SC =~ s/\$HHIi/$hhii/;		$SCt =~ s/\$HHIi/$hhii/;
 			}
 		} # end of if ($field
+#print("field=$field, seg=$seg\n");
 		my $ff = $field; $ff =~ s/[\[\]]//g;
 		$str .= "<td valign=top>$ff<ol>\n$SC</ol></td>\n";
 		$FD->{$field}[$cid] = $SCt;
@@ -1461,7 +1537,8 @@ sub Normalize_PY {
 
 sub Compute_Slope {
 	my($rA) = @_; my($i, @X, @Y, $avg, $sq, $sx, $slope, @A);
-	@A = @$rA;
+	#@A = @$rA; # replaced with next line on 2019/09/27
+	for($i=0; $i<@$rA; $i++) { $A[$i] = ($rA->[$i]eq'')?0:$rA->[$i];}
 	while (@A>=1 and $A[0] <= 0) { shift @A; } # 2011/05/24
 	return 0.0 if @A <= 1; # skip if less than 2 numbers
 	for($i=1, $avg = 0; $i<=@A; $i++) { $avg += $i; }

@@ -1,3 +1,14 @@
+On 2019/09/26-27
+Add &ComputeTermSlope() to tool.pl to extract 
+  the time series of number of papers per year for each important term.
+perl -s tool.pl -Oslp sam ..\Result\sam_BC\inv.txt ..\Source_Data\sam\sam.db > ..\Result\sam_BC\TermSlope.txt
+# Did not work for the terms like this:
+  text min technique for patent analysi   2       0       0       0       0       0       0       0        0       0       0       0       0       0       0       0       0       0       0       0
+perl -s tool.pl -Oslp HiEdu90_18 ..\Result\HiEdu90_18_BC_S5\inv.txt ..\Source_Data\HiEdu90_18\HiEdu90_18.db > ..\Result\HiEdu90_18_BC_S5\TermSlope.txt
+# Did not succeed for the above command:
+  DBD::SQLite::db prepare failed: near "assessment": syntax error at tool.pl line 670, <> line 486.
+
+
 On 2019/09/22
 1. Change &Compute_Silhouette_Index() of Cluster.pl.
 
