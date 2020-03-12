@@ -429,7 +429,14 @@ sub ParseMultiLineRecord {
 #			if ($field =~ /TI|AB|DE|ID|SO|SC|NR|TC|PY|UT|J9|VL|BP|MC|CC|MI/) {
 			if ($field =~ /TI|AB|DE|ID|SO|SC|NR|TC|PY|UT|J9|VL|BP|MC|CC|MI|LA/) { # add LA on 2012/10/02, 2019/09/01
 				$d = join(' ', @Lines[$i..($j-1)]);
-			} elsif ($field =~ /AU|AF|CR|C1/) {
+#			} elsif ($field =~ /AU|AF|CR|C1/) { 
+			} elsif ($field =~ /AU|AF|C1/) { # replace above line on 2020/02/18
+				$d = join('; ', @Lines[$i..($j-1)]);
+				$d = join(' ', @Lines[$i..($j-1)]) if $main::OBioAbs and $field=~/C1/;
+			} elsif ($field =~ /CR/) { # add this block on 2020/02/18
+				foreach my $cr (@Lines[$i..($j-1)]) {
+					$cr =~ s/;.{1,5}$//; # delete trailing string of length <= 5
+				}
 				$d = join('; ', @Lines[$i..($j-1)]);
 				$d = join(' ', @Lines[$i..($j-1)]) if $main::OBioAbs and $field=~/C1/;
 #print STDERR "d=$d\n" if $d=~/DOI; /;
@@ -2188,8 +2195,7 @@ sub AvgWordCount {
 	my $DBH = &InitDBH($DSN, $DB_Path);
 	my($N) = &TotalRecord($DBH, $Table);
 print STDERR "Total records: $N\n";
-	if ($main::OBioAbs) 
-	{&AvgWordCount_BioAbs($seg, $pro, $DBH, $Table, $N); exit; }
+	if ($main::OBioAbs) {&AvgWordCount_BioAbs($seg, $pro, $DBH, $Table, $N); exit; }
 	my($n, $t, @Terms, $rAB, $text, $percent);
 	my($ut, $py, $af, $au, $ti, $ab, $de, $id, $sc, $nr, $tc, $cr, $c1, $in, $dp, $la);
 	my $sql = "SELECT UT, AF, AU, TI, AB, DE, ID, SC, NR, TC, CR, C1, IU, DP, LA FROM $Table";
@@ -2201,6 +2207,7 @@ print STDERR "Total records: $N\n";
 	$STH->execute()
 		   or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
 	$n = 0;
+	my(@AFF, @AUU, @DEE, @IDD, @SCC, @C11, @IUU, @DPP, @LAA, @NRR);
 	my($c, @AF, @AU, @TI, @AB, @DE, @ID, @SC, @NR, @TC, @CR, @C1, @IU, @DP, @LA, @C);
 	foreach $c (@AF[0..3], @AU[0..3], @TI[0..3], @AB[0..3], @DE[0..3], @ID[0..3], 
 	@SC[0..3], @NR[0..3], @TC[0..3], @C1[0..3], @IU[0..3], @DP[0..3], @LA[0..3]) { $c=0; }
@@ -2218,34 +2225,35 @@ print STDERR "Total records: $N\n";
 		$AB[0] += $c; $AB[1] = $c if $c < $AB[1] and $c>0;
 		$AB[2]  = $c if $AB[2] < $c; $AB[3]++ if $c == 0;
 		
-		$c = @C = split /;\s*/, $af;
+		$c = @C = split /;\s*/, $af; push @AFF, @C;
 		$AF[0] += $c;   $AF[1] = $c  if $c < $AF[1] and $c>0;
 		$AF[2]  = $c if $AF[2] < $c; $AF[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $au;
+		$c = @C = split /;\s*/, $au; push @AUU, @C;
 		$AU[0] += $c;   $AU[1] = $c  if $c < $AU[1] and $c>0;
 		$AU[2]  = $c if $AU[2] < $c; $AU[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $de;
+		$c = @C = split /;\s*/, $de; push @DEE, @C;
 		$DE[0] += $c;   $DE[1] = $c  if $c < $DE[1] and $c>0;
 		$DE[2]  = $c if $DE[2] < $c; $DE[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $id;
+		$c = @C = split /;\s*/, $id; push @IDD, @C;
 		$ID[0] += $c;   $ID[1] = $c  if $c < $ID[1] and $c>0;
 		$ID[2]  = $c if $ID[2] < $c; $ID[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $sc;
+		$c = @C = split /;\s*/, $sc; push @SCC, @C;
 		$SC[0] += $c;   $SC[1] = $c  if $c < $SC[1] and $c>0;
 		$SC[2]  = $c if $SC[2] < $c; $SC[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $c1;
+		$c = @C = split /;\s*/, $c1; push @C11, @C;
 		$C1[0] += $c;   $C1[1] = $c  if $c < $C1[1] and $c>0;
 		$C1[2]  = $c if $C1[2] < $c; $C1[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $in;
+		$c = @C = split /;\s*/, $in; push @IUU, @C;
 		$IU[0] += $c;   $IU[1] = $c  if $c < $IU[1] and $c>0;
 		$IU[2]  = $c if $IU[2] < $c; $IU[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $dp;
+		$c = @C = split /;\s*/, $dp; push @DPP, @C;
 		$DP[0] += $c;   $DP[1] = $c  if $c < $DP[1] and $c>0;
 		$DP[2]  = $c if $DP[2] < $c; $DP[3]++ if $c == 0;
-		$c = @C = split /;\s*/, $la;
+		$c = @C = split /;\s*/, $la; push @LAA, @C;
 		$LA[0] += $c;   $LA[1] = $c  if $c < $LA[1] and $c>0;
 		$LA[2]  = $c if $LA[2] < $c; $LA[3]++ if $c == 0;
-			
+		
+		$c = @C = split /;\s*/, $cr; push @NRR, @C;
 		$NR[0] += $nr; $NR[1] = $nr if $nr < $NR[1] and $cr ne '';
 		$NR[2]  = $nr if $NR[2] < $nr; $NR[3]++ if $nr == 0;
 		$TC[0] += $tc; $TC[1] = $tc if $tc < $TC[1] and $tc ne '';
@@ -2253,23 +2261,33 @@ print STDERR "Total records: $N\n";
 
 		$percent = $pro->ShowProgress($n/$N, $percent);
 	}
+	$AF[4] = &Distinct(\@AFF); $AU[4] = &Distinct(\@AUU); $LA[4] = &Distinct(\@LAA); 
+	$DE[4] = &Distinct(\@DEE); $ID[4] = &Distinct(\@IDD); $SC[4] = &Distinct(\@SCC);
+	$C1[4] = &Distinct(\@C11); $IU[4] = &Distinct(\@IUU); $DP[4] = &Distinct(\@DPP);
+	$NR[4] = &Distinct(\@NRR);
 	$percent = $pro->ShowProgress($n/$N, $percent);
 	$STH->finish;
 	$DBH->disconnect;
-	print "TI: EmptyRec=$TI[3], MaxWordCount=$TI[2], MinWordCount=$TI[1], Avg=", &ts($TI[0]/$N), "\n",
-		  "AB: EmptyRec=$AB[3], MaxWordCount=$AB[2], MinWordCount=$AB[1], Avg=", &ts($AB[0]/$N), "\n",
-		  "DE: EmptyRec=$DE[3], MaxWordCount=$DE[2], MinWordCount=$DE[1], Avg=", &ts($DE[0]/$N), "\n",
-		  "ID: EmptyRec=$ID[3], MaxWordCount=$ID[2], MinWordCount=$ID[1], Avg=", &ts($ID[0]/$N), "\n",
-		  "SC: EmptyRec=$SC[3], MaxWordCount=$SC[2], MinWordCount=$SC[1], Avg=", &ts($SC[0]/$N), "\n",
-		  "NR: ZeroRec=$NR[3], Max=$NR[2], Min=$NR[1], Avg=", &ts($NR[0]/$N), "\n",
-		  "TC: ZeroRec=$TC[3], Max=$TC[2], Min=$TC[1], Avg=", &ts($TC[0]/$N), "\n",
-		  "AF: ZeroRec=$AF[3], Max=$AF[2], Min=$AF[1], Avg=", &ts($AF[0]/$N), "\n",
-		  "AU: ZeroRec=$AU[3], Max=$AU[2], Min=$AU[1], Avg=", &ts($AU[0]/$N), "\n",
-		  "C1: ZeroRec=$C1[3], Max=$C1[2], Min=$C1[1], Avg=", &ts($C1[0]/$N), "\n",
-		  "IU: ZeroRec=$IU[3], Max=$IU[2], Min=$IU[1], Avg=", &ts($IU[0]/$N), "\n",
-		  "DP: ZeroRec=$DP[3], Max=$DP[2], Min=$DP[1], Avg=", &ts($DP[0]/$N), "\n",
-		  "LA: ZeroRec=$LA[3], Max=$LA[2], Min=$LA[1], Avg=", &ts($LA[0]/$N), "\n",
+	print "TI:\tEmptyRec=$TI[3]\tMaxWordCount=$TI[2]\tMinWordCount=$TI[1]\tAvg=", &ts($TI[0]/$N), "\n",
+		  "AB:\tEmptyRec=$AB[3]\tMaxWordCount=$AB[2]\tMinWordCount=$AB[1]\tAvg=", &ts($AB[0]/$N), "\n",
+		  "DE:\tEmptyRec=$DE[3]\tMaxWordCount=$DE[2]\tMinWordCount=$DE[1]\tAvg=", &ts($DE[0]/$N), "\tTotal=$DE[0]\tDistinctTotal=$DE[4]\n",
+		  "ID:\tEmptyRec=$ID[3]\tMaxWordCount=$ID[2]\tMinWordCount=$ID[1]\tAvg=", &ts($ID[0]/$N), "\tTotal=$ID[0]\tDistinctTotal=$ID[4]\n",
+		  "SC:\tEmptyRec=$SC[3]\tMaxWordCount=$SC[2]\tMinWordCount=$SC[1]\tAvg=", &ts($SC[0]/$N), "\tTotal=$SC[0]\tDistinctTotal=$SC[4]\n",
+		  "NR:\tZeroRec=$NR[3]\tMax=$NR[2], Min=$NR[1]\tAvg=", &ts($NR[0]/$N), "\tTotal=$NR[0]\tDistinctTotal=$NR[4]\n",
+		  "TC:\tZeroRec=$TC[3]\tMax=$TC[2], Min=$TC[1]\tAvg=", &ts($TC[0]/$N), "\tTotal=$TC[0]\n",
+		  "AF:\tZeroRec=$AF[3]\tMax=$AF[2], Min=$AF[1]\tAvg=", &ts($AF[0]/$N), "\tTotal=$AF[0]\tDistinctTotal=$AF[4]\n",
+		  "AU:\tZeroRec=$AU[3]\tMax=$AU[2], Min=$AU[1]\tAvg=", &ts($AU[0]/$N), "\tTotal=$AU[0]\tDistinctTotal=$AU[4]\n",
+		  "C1:\tZeroRec=$C1[3]\tMax=$C1[2], Min=$C1[1]\tAvg=", &ts($C1[0]/$N), "\tTotal=$C1[0]\tDistinctTotal=$C1[4]\n",
+		  "IU:\tZeroRec=$IU[3]\tMax=$IU[2], Min=$IU[1]\tAvg=", &ts($IU[0]/$N), "\tTotal=$IU[0]\tDistinctTotal=$IU[4]\n",
+		  "DP:\tZeroRec=$DP[3]\tMax=$DP[2], Min=$DP[1]\tAvg=", &ts($DP[0]/$N), "\tTotal=$DP[0]\tDistinctTotal=$DP[4]\n",
+		  "LA:\tZeroRec=$LA[3]\tMax=$LA[2], Min=$LA[1]\tAvg=", &ts($LA[0]/$N), "\tTotal=$LA[0]\tDistinctTotal=$LA[4]\n",
 		  "Total Records=$N\n"; # 2011/04/13
+}
+
+sub Distinct { 
+	my($rC) = @_; my($c, %C); 
+	foreach $c (@$rC) { $C{$c}++; } 
+	return scalar keys %C;
 }
 
 sub AvgWordCount_BioAbs{
@@ -2799,6 +2817,7 @@ sub MultiText2XLS {
 	foreach $f (@Files) {
 #		next if $f !~ m{C1_PY_5.txt|SC_PY_5.txt|SC2C_PY_5.txt};
 #		next if $f !~ m{SC2C_PY_5.txt};
+		next if $f =~ /AF_PY|AU_PY|AU.txt|TC_PY/; # 2020/02/14
 		if ($f=~m{([^/\\]+)\.txt$}) { $sh = $1; } else { $sh = $f; }
 		$Sheet = $Book->add_worksheet($sh);
 		$rRows = &Read2Rows($f, ($f=~/CPP|stat|Cite|UT|CJ_J9|J9_C1|J9_SC/));

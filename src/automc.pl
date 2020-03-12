@@ -104,6 +104,7 @@ sub FieldAggregation {
 	$option = '-OBioAbs' if $main::OBioAbs;
 
 # 從 SciLit.mdb中，統計各欄位內容（詞彙）的出現次數（篇數）：
+#	@Fields = split ' ', "PY AU CR DE ID"; # SC SO J9 在與年代做交叉分析時會做統計
 	@Fields = split ' ', "PY AU CR DE ID LA"; # SC SO J9 在與年代做交叉分析時會做統計
 	# AU 會在 filterRT.pl 中會用到，不要在此省略掉
 	@Fields = split ' ', "PY MC CC MI" if $main::OBioAbs;
@@ -162,7 +163,7 @@ sub FieldAggregation {
 	&myexec($cmd) if not $main::OBioAbs;
 # 統計標題、摘要等欄位之字數與統計值：
 	$cmd="$prog ISI.pl -OavgCnt $option $DSN $Table $DB_Path "
-		.">> ../Result/$DSN/_${DSN}_stat.txt"; # use >> because DE, ID, SC 
+		."> ../Result/$DSN/_${DSN}_stat.txt";
 	&myexec($cmd);
 
 # 最後，將結果目錄下的所有文字檔案，轉入到 Excel 中

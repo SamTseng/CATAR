@@ -4,7 +4,7 @@
 	@ARGV = glob($files);
 	print "pat=$pat, ARGV=@ARGV\n\n";
 	print "file:line Num: matched line\n";
-	while (<>) { print "$ARGV:$.: $_\n" if /$pat/; }
+	while (<>) { print "$ARGV:$.: $_" if /$pat/; }
 	
 # To convert an English string into capitalized string, try this command:
 # perl -e "print join ' ', map{ucfirst lc} split ' ','JOURNAL OF THE AMERICAN SOCIETY FOR INFORMATION SCIENCE AND TECHNOLOGY'"

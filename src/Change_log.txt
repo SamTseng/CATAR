@@ -1,3 +1,84 @@
+On 2020/02/18
+1. Remove the trailing "\n" in the 3rd print() in grep.pl.
+1. In ISI.pl, for the CR field, change &ParseMultiLineRecord() to 
+   delete trailing string of length <= 5 for single CR item.
+   Ex: Irwin AR, 2000, SCI EDUC, V84, P5, DOI 10.1002/(SICI)1098-237X(200001)84:1<5::AID-SCE2>3.0.CO;2-0
+   where the trailing ";2-0" is removed.
+
+On 2020/02/14
+1. Change automc.pl to output less worksheet in the xls file.
+2. In ISI.pl, change &AvgWordCount() to report tab summary and 
+   &MultiText2XLS() to output less worksheet in the xls file.
+
+On 2019/09/10
+C:\CATAR\src> perl -s automc.pl -OOA ISLS09_18 ..\Source_Data\ISLS09_18\data
+On 2019/11/21
+1. perl -s automc.pl -OBC=JBC ISLS09_18 ..\Source_Data\ISLS09_18\ISLS09_18.db
+2. 將 林愉真 整理的國內2017-2018資料進行分析，擬更改 Table 名稱成 TPaper 時，
+    發生錯誤
+2.1：將 View: Insert_into_TSeg 先刪除後，即可更名成功，再重新建立 View:
+  CREATE VIEW Insert_into_TSeg as
+			SELECT UT AS SNO, PY & ':' & TI AS Dname, AB AS Dscpt FROM TPaper
+2.2：TPaper 沒有 LA 欄位，執行第3步驟有誤。增加 LA 欄位，參考：
+https://stackoverflow.com/questions/4253804/insert-new-column-into-table-in-sqlite
+  ALTER TABLE TPaper ADD COLUMN LA varchar(20);
+  Result: database is locked
+  So change ISI.pl to remove LA at line: 122-123,429-430,2195-2196
+     and automc.pl 107-108
+3. perl -s automc.pl -OOA -Odb TLIS
+4. perl -s automc.pl -OCW TLIS ..\Source_Data\TLIS\TLIS.db
+   結果有誤，特別是AF欄位跟類別的篇名，對應不起來。檢查db檔案：
+SELECT * from TPaper where TI like '%公共圖書館資源整合%'，資料無誤。
+可能是程式有問題，請林愉真重新匯入資料到 Paper_org.db，再將第2點的改變，再改回來。
+然後重新執行第3、4步驟。
+
+On 2019/11/06-07
+1. # 去掉某些類別，然後畫出主題圖：
+perl -s Term_Trend.pl -Ocolor -Omap -Ocut=0.0 -Oscale=1.6 -Owant="3 14 15 35" ../Result/Sam_BC_S2
+  This seems OK. But the map is very different from those of 
+perl -s Term_Trend.pl -Ocolor -Omap -Ocut=0.0 -Oscale=1.6  ../Result/Sam_BC_S2
+  The above line will restore the original files in Result folder
+# 去掉某些類別，然後畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
+perl -s Term_Trend.pl -Ocolor -Omap -Ocut=0.0 -Oscale=1.6 -Owant="1 2 3 4" ../Result/Sam_BC_S2
+  mds.exe 2 ../Result/Sam_BC_S2/SimPairs.txt > ../Result/Sam_BC_S2/Coordinate.txt
+  Error mds.exe: invalid number of dimensions
+  'mds.exe 2 ../Result/Sam_BC_S2/SimPairs.txt > ../Result/Sam_BC_S2/Coordinate.txt' failed: 256
+There are bugs to be fix for option -Owant...
+2. 既然 選項 -Owant 有bug，那就不用。直接修改檔案 VOS_1.6__0.0.txt 的內容
+  呈獻我們要的類別
+  Under /Users/sam/GoogleDrive/2019_Edu/HigherEdu90_18/,
+  in ../Result/HiEdu90_18_BC_S4/0_0.01.html, the clusters that are wanted:
+    "1 2 3 4 5 7 8  16 26" which correspond to the cluster ID:
+    "1294 829 1390 500 1281 503 1554 577 1196" 
+    of ../Result/HiEdu90_18_BC_S5/VOS_1.5_Cno_0.01.txt
+  So copy VOS_1.5_Cno_0.01.txt to VOS_1.5_Cno_0.01_reduced.txt
+  and edit that file. Then open it with VOSviewer to export into:
+  ../Result/HiEdu90_18_BC_S5/VOS_1.5_Cno_0.01_reduced_9.png
+
+
+On 2019/10/24
+In response to the email inquiry of Tzung-Jin Lin (林宗進),
+  cluster with threshold 0.05:
+1. &Cluster_Map_Cut($DSN, $DB_Path, $n, $cut, 3, $BC);
+  # 用不同相似度門檻切割歸類結果：
+  perl -s Cluster.pl -Ocut=0.05 -Oct_low_tf=0 SciEdu09_13_BC_S3 ..\Result\SciEdu09_13_BC_S3 > ..\Result\SciEdu09_13_BC_S3\0_0.05.html
+  # 畫出主題圖：
+  perl -s Term_Trend.pl -Ocolor -Omap -Ocut=0.05 ../Result/SciEdu09_13_BC_S3
+    用 VOSviewer 開啟 VOS_1.5_0.045.txt，類別顏色不正確
+  # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
+  perl -s Term_Trend.pl -Ocolor -Ocut=0.05 -Omap -Oscale=1.5 -OCNo -OhtmlTree=../Result/SciEdu09_13_BC_S3/0_0.05.html ../Result/SciEdu09_13_BC_S3
+    用 VOSviewer 開啟 VOS_1.5_Cno_0.045.txt，類別顏色才會正確
+2. &CrossTab_by_Cluster_and_Field($DSN, $DB_Path, $OutDir, $cut, $nn, $BC);
+  # 5.6針對上述（5.5）得出的類別，印出每個類別的各種資料的分佈狀況，執行：
+  perl -s tool.pl -OSC=all -Omin=2 -ODB=..\Source_Data\SciEdu09_13\SciEdu09_13.db SciEdu09_13_BC_S3 TPaper ..\Result\SciEdu09_13_BC_S3\0_0.05.html > ..\Result\SciEdu09_13_BC_S3\0_0.05_all_2.html
+  # Generate Text file
+	perl -s tool.pl -OSC=all -Omin=2 -ODB=..\Source_Data\SciEdu09_13\SciEdu09_13.db -Otxt=100 SciEdu09_13_BC_S3 TPaper  ..\Result\SciEdu09_13_BC_S3\0_0.05.html > ..\Result\SciEdu09_13_BC_S3\0_0.05_all_2.txt
+  # Generate Excel file
+  perl -s ISI.pl -O2xls=2 -Of=..\Result\SciEdu09_13_BC_S3\0_0.05_all_2.txt SciEdu09_13_BC_S3 ..\Result\SciEdu09_13_BC_S3 ..\Result\SciEdu09_13_BC_S3\SciEdu09_13_BC_S3_by_field.xls
+  # 5.7針對上述得出的類別，印出每個類別的文件標題以及關鍵詞，執行：
+  perl -s tool.pl -Otitle=..\Result\SciEdu09_13_BC_S3\0_0.05_titles.xls -Odsn=SciEdu09_13_BC_S3 -ODB=..\Source_Data\SciEdu09_13\SciEdu09_13.db ..\Result\SciEdu09_13_BC_S3\0_0.05.html > ..\Result\SciEdu09_13_BC_S3\0_0.05_titles.html
+
+
 On 2019/09/26-27
 Add &ComputeTermSlope() to tool.pl to extract 
   the time series of number of papers per year for each important term.
@@ -20,6 +101,8 @@ On 2019/09/10
    and all the Web of Science (WoS) records from 2009 to 2018
    from 楊德倫
 C:\CATAR\src> perl -s automc.pl -OOA ISLS09_18 ..\Source_Data\ISLS09_18\data
+On 2019/11/21
+perl -s automc.pl -OBC=JBC ISLS09_18 ..\Source_Data\ISLS09_18\ISLS09_18.db
 
 On 2019/08/25-2019/09/01
 1. Change automc.pl, ISI.pl to prevent from reporting too many statitics,

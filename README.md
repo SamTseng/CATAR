@@ -1,5 +1,6 @@
 # Content Analysis Toolkit for Academic Research (CATAR)
 To analyze patents from USPTO, please look at the details below.
+
 To analyze other types of text data, please refer to: 
 http://web.ntnu.edu.tw/~samtseng/CATAR/.
 
