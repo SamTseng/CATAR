@@ -5,9 +5,8 @@ To analyze other types of text data, please refer to:
 http://web.ntnu.edu.tw/~samtseng/CATAR/.
 
 Notes:
-1. The code here would be updated more earlier than those at: http://web.ntnu.edu.tw/~samtseng/CATAR/ (should be a few days earlier).
-2. If you are clustering very short texts, co-word clustering would be very sensitive to the choice of the parameters (such as minimum thresholds of term occurrence) and the stop words.
-3. The examples in the tutorials (CATAR_Tutorial.ppt or CATAR_Tutorial_en.ppt) use very low threshold values (e.g., 0.0) to get the results. After installation of CATAR on your computer, you should run sam.bat (under src sub-folder) to see if your results are almost the same as those in the tutorials.
+1. If you are clustering 1) very short texts or 2) only a few documents (for verification), co-word clustering would be very sensitive to the choice of the parameters (such as minimum thresholds of term occurrence) and the stop words.
+2. The examples in the tutorials (CATAR_Tutorial.ppt or CATAR_Tutorial_en.ppt) use very low threshold values (e.g., 0.0) to get the results. After installation of CATAR on your computer, you should run sam.bat (under src sub-folder) to see if your results are almost the same as those in the tutorials.
 
 ## Introduction
 The steps described below are for analyzing patent documents (in HTML file format) from the United States Patent and Trademark Office (USPTO). For a set of USPTO patents, CATAR can help you to:
