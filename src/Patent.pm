@@ -376,6 +376,8 @@ sub ua_get {
 #    $ua->proxy(['http', 'ftp'], 'http://proxy.edu.tw:3128/');
     if( $me->{'ProxyServerURL'} )
     { $ua->proxy(['http'], $me->{'ProxyServerURL'}); }
+# On 2020/08/27
+    $ua->agent('Mozilla/5.0');
 
 =Another way of creating a UserAgent
     my $ua = new LWP::UserAgent(
@@ -497,7 +499,7 @@ sub GetPatentPage {
 sub Get_Patent_By_Number {
     my($me, $patnum, $pat_url) = @_; my($rPatent, $orgPatent);
     if ($me->Has_Patent_Existed($patnum)) {
-	$rPatent = $me->Get_Patent_Existed($patnum);
+        $rPatent = $me->Get_Patent_Existed($patnum);
 print STDERR "Patent: $patnum already in DB\n" if $me->{debug}==1;
     } else {
 print STDERR "$pat_url\n" if $me->{debug}==1;
@@ -514,7 +516,8 @@ print STDERR "$pat_url\n" if $me->{debug}==1;
         $rPatent = $me->Parse_Patent( $orgPatent );
         if (keys%$rPatent<5) {# parsed patent does not yield correct structure
             $me->ReportError("Fail to get patent (number:'$patnum')," .
-            "may be due to parse error (patent page may have changed)");
+            "may be due to parse error (patent page may have changed)".
+            join(", ",keys%$rPatent) . $orgPatent . "\n"); # 2020/08/27
             return {}; # return a ref to an empty hash
         }
     }
