@@ -1,0 +1,73 @@
+On 2021/11/02 written by Yuen-Hsien Tseng
+
+Apply CATAR to downloadn and analyze USPTO patent documents (in HTML).
+A step by step commands under DOS terminal in Windows.
+
+Note:
+1. Install 32 bits Perl interpreter, not 64 bits! 
+    Strawberry Perl is recommended, at: https://strawberryperl.com/ .
+2. Install CATAR, see: https://web.ntnu.edu.tw/~samtseng/CATAR/ .
+
+
+To download USPTO patent documents, follow these steps:
+
+1. Search USPTO at: 
+    https://patft.uspto.gov/netahtml/PTO/search-adv.htm for PatFT, or
+    https://appft.uspto.gov/netahtml/PTO/search-adv.html for AppFT
+   to define a set of patent documents for analysis. 
+   Collect the patent numbers in this set.
+   You may use USPTO_scraper.py for ease of collecting the patent numbers.
+
+2. List the patent number in a file, like this:
+    C:\CATAR\src>type ..\Source_Data\DL_DNN\DL_DNN_20.txt
+    6097927
+    6128609
+    6259889
+    7206938
+    7476103
+3. Prepare a MS Access file by copying an existing one:
+    D:\MyDrive> C:               # change to drive C:
+    C:\Users\> cd \CATAR\src     # change directory to C:\CATAR\src
+    C:\CATAR\src> mkdir ..\Source_Data\DL_DNN           # make a new directory
+    C:\CATAR\src> mkdir ..\Source_Data\DL_DNN\patents   # make a new directory
+    C:\CATAR\src> copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
+
+4. Edit C:\CATAR\src\patent.ini by adding a new group:
+[DL_DNN]
+PatentDir=..\Source_Data\DL_DNN\patents
+DSN=DL_DNN
+SaveDescription=1
+
+5. Set up Data Source Name (DSN) to let Windows know the DSN of your data.
+    Set the DSN of DL_DNN to link to C:\CATAR\Source_Data\DL_DNN\DL_DNN.mdb 
+    in 「資料來源（ODBC）」in 「系統管理工具」in 「控制台」(Windows 95);
+    or 「ODBC資料來源管理員（32位元）」(Windows 7 or higher),
+    or by running C:/Windows/SysWOW64/odbcad32.exe (32 bit ODBC).
+
+6. Download the USPTO patent documents (in HTML) using CATAR:
+  For PatFT:
+    C:\CATAR\src> perl -s patent.pl -Odb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN.txt 
+  For AppFT:
+    C:\CATAR\src> perl -s patent.pl -Odb -Ogroup=DL_DNN -OPatApp -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_AppFT.txt 
+
+7. Overview analysis:
+  Please see the queries in ..\Source_Data\DL_DNN\DL_DNN.mdb
+
+
+
+Topic Analysis of the patent set:
+
+1. Extract patent information to a file in WoS (Web of Science) format:
+C:\CATAR\src> mkdir ..\Source_Data\DL_DNN\data
+C:\CATAR\src> Patent.pl -ODir2WoS ..\Source_Data\DL_DNN\patents > ..\Source_Data\DL_DNN\data\WoS.txt
+
+2. Now run patent clustering and mapping:
+Step 1: For overview analysis, run:
+C:\CATAR\src> copy paper_org.db ..\Source_Data\DL_DNN\
+C:\CATAR\src> perl -s automc.pl -OOA DL_DNN ..\Source_Data\DL_DNN\data
+
+Step 2: For break down analysis based on bibliographic coupling, run:
+C:\CATAR\src> perl -s automc.pl -OBC DL_DNN ..\Source_Data\DL_DNN\DL_DNN.db
+
+Step 3: For break down analysis based on co-word (word co-occurrence), run:
+C:\CATAR\src> perl -s automc.pl -OCW DL_DNN ..\Source_Data\DL_DNN\DL_DNN.db
