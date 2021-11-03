@@ -40,9 +40,7 @@ SaveDescription=1
 
 5. Set up Data Source Name (DSN) to let Windows know the DSN of your data.
     Set the DSN of DL_DNN to link to C:\CATAR\Source_Data\DL_DNN\DL_DNN.mdb 
-    in 「資料來源（ODBC）」in 「系統管理工具」in 「控制台」(Windows 95);
-    or 「ODBC資料來源管理員（32位元）」(Windows 7 or higher),
-    or by running C:/Windows/SysWOW64/odbcad32.exe (32 bit ODBC).
+    by running C:/Windows/SysWOW64/odbcad32.exe (32 bit ODBC).
 
 6. Download the USPTO patent documents (in HTML) using CATAR:
   For PatFT:
@@ -59,7 +57,7 @@ Topic Analysis of the patent set:
 
 1. Extract patent information to a file in WoS (Web of Science) format:
 C:\CATAR\src> mkdir ..\Source_Data\DL_DNN\data
-C:\CATAR\src> Patent.pl -ODir2WoS ..\Source_Data\DL_DNN\patents > ..\Source_Data\DL_DNN\data\WoS.txt
+C:\CATAR\src> perl Patent.pl -ODir2WoS ..\Source_Data\DL_DNN\patents > ..\Source_Data\DL_DNN\data\WoS.txt
 
 2. Now run patent clustering and mapping:
 Step 1: For overview analysis, run:
