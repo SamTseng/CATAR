@@ -69,3 +69,8 @@ C:\CATAR\src> perl -s automc.pl -OBC DL_DNN ..\Source_Data\DL_DNN\DL_DNN.db
 
 Step 3: For break down analysis based on co-word (word co-occurrence), run:
 C:\CATAR\src> perl -s automc.pl -OCW DL_DNN ..\Source_Data\DL_DNN\DL_DNN.db
+
+You can add stop words to C:\strawberry\perl\site\lib\SAMTool\Stopword.pm
+for better co-word analysis.
+TO-DO: users can specify a set of task-specific stopwords by 
+providing a stopword file in the command line or in a ini file.
