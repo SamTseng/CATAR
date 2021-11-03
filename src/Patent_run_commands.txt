@@ -57,7 +57,7 @@ Topic Analysis of the patent set:
 
 1. Extract patent information to a file in WoS (Web of Science) format:
 C:\CATAR\src> mkdir ..\Source_Data\DL_DNN\data
-C:\CATAR\src> perl Patent.pl -ODir2WoS ..\Source_Data\DL_DNN\patents > ..\Source_Data\DL_DNN\data\WoS.txt
+C:\CATAR\src> perl -s Patent.pl -ODir2WoS ..\Source_Data\DL_DNN\patents > ..\Source_Data\DL_DNN\data\WoS.txt
 
 2. Now run patent clustering and mapping:
 Step 1: For overview analysis, run:
