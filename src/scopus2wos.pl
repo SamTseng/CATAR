@@ -1,9 +1,12 @@
 #!/usr/bin/perl -s
+# perl scopus2wos.pl Scopus_CSV_file.csv > Scopus_WoS.txt
+# Example:
+# CATAR/src $ perl -s scopus2wos.pl tmp/scopus_eng_20211102.csv > tmp/scopus_eng_20211102.txt
 
 # Object interface
 use Text::CSV;
-$file = 'tmp/scopus_eng_20211102.csv'; # $ARGV[1];
-#print("file to read: $file\n");
+$file = $ARGV[0]; # 'tmp/scopus_eng_20211102.csv'
+print(STDERR "file to read: $file\n");
 
 @Scopus_Fields = split(",", "Authors,Author(s) ID,Title,Year,Source title,Volume,Issue,Art. No.,Page start,Page end,Page count,Cited by,DOI,Link,Affiliations,Authors with affiliations,Abstract,Author Keywords,Index Keywords,Molecular Sequence Numbers,Chemicals/CAS,Tradenames,Manufacturers,Funding Details,Funding Text 1,Funding Text 2,Funding Text 3,Funding Text 4,Funding Text 5,Funding Text 6,References,Correspondence Address,Editors,Sponsors,Publisher,Conference name,Conference date,Conference location,Conference code,ISSN,ISBN,CODEN,PubMed ID,Language of Original Document,Abbreviated Source Title,Document Type,Publication Stage,Open Access,Source,EID");
 
@@ -47,7 +50,7 @@ sub convertC1 {
         my @s = split(", ", $sc1);
         push @C1, "[$s[0], $s[1]] $s[3], $s[2], $s[4], $s[$#s].";
     }
-    print(STDERR $SC1, "\n");
-    print(STDERR join("\n   ", @C1), "\n");
+#    print(STDERR $SC1, "\n");
+#    print(STDERR join("\n   ", @C1), "\n");
     return join("\n   ", @C1);
 }
