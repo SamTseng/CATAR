@@ -40,3 +40,4 @@ sync.ffs_db
 *.sql
 *.sqlite
 
+src/tmp
