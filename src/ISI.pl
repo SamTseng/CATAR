@@ -2882,7 +2882,7 @@ sub SingleText2XLS {
 	$flag = '';
 	while (<F>) { 
 		chomp; 	next if /^\s*$/; # skip if empty line
-		if (/Field: \[?(\w+)\]?/) { 
+		if (/^Field: \[?(\w+)\]?/) { 
 			$flag = $1; # indicate current field
 			$TC = 1 if $1 eq 'TC'; # indicate there is a TC field
 			$i = 0; # reset Row ID
