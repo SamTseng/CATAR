@@ -57,27 +57,27 @@ CREATE TABLE CTree
 
 DROP TABLE IF EXISTS TPaper;
 CREATE TABLE TPaper
-(
-	AU			varchar (510), 
-	AF			varchar (510), 
-	TI			varchar (510), 
-	SO			varchar (510), 
-	DE			varchar (510), 
-	ID			varchar (510), 
-	AB			text, 
-	C1			varchar (510), 
-	CR			text, 
-	NR			int, 
-	TC			int, 
-	J9			varchar (254), 
-	PY			int, 
-	VL			int, 
-	BP			int, 
-	SC			varchar (510),
-	LA			varchar (32),
-	UT			varchar (100) PRIMARY KEY,
-	IU			varchar (510),
-	DP			varchar (510)
+(                              -- multi-values in a field are seperated by '; '
+	AU			varchar (510), -- Simplified Author Names
+	AF			varchar (510), -- Full Author Names
+	TI			varchar (510), -- Paper Title
+	SO			varchar (510), -- Source (of paper publication)
+	DE			varchar (510), -- Keywords given by authors
+	ID			varchar (510), -- Descriptors given by WoS
+	AB			text,          -- Abstract
+	C1			varchar (510), -- Author Countries, parsed from original C2
+	CR			text,          -- Cited References
+	NR			int,           -- Number of References
+	TC			int,           -- Times Cited
+	J9			varchar (254), -- Same as SO, but like AU vs AF
+	PY			int,           -- Publication Year
+	VL			int,           -- Publication Volume
+	BP			int,           -- Beginning Page
+	SC			varchar (510), -- Source Category
+	LA			varchar (32),  -- Language, like EN, ZH
+	UT			varchar (100) PRIMARY KEY, -- primary key given by WoS
+	IU			varchar (510), -- Author Institute/University, parsed from original C1
+	DP			varchar (510)  -- Author Department, parsed from original C1
 );
 -- Cannot use IN as a column name in SQLite
 
