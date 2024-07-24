@@ -314,6 +314,7 @@ sub Clustering_S1 {
 # ..\Result\$DSN_BibCpl : index path name (real file folder name, created by CiteAna.pl. Note: index path should under STPIWG\Result\ )
 	$OutDir = "../Result/${DSN}_$BC";
 	$option = "-OmaxDF=$main::OmaxDF" if $main::OmaxDF > 0;
+	$option .= " -Ocpl_cut=$main::Ocpl_cut" if $main::Ocpl_cut > 0;
 # 1. 文件以及引用資料都在DBMS中，產生歸類所需之索引檔案：
 #	 Titles.txt, Inv.txt, DocPath.txt, SortedPairs.txt
 	$cmd = "$prog CiteAna.pl -Oclu $option -ODB=$DB_Path $DSN TPaper "
@@ -347,6 +348,7 @@ sub Clustering_BibCpl {
 	$nn = ($n<2)?'':'_S'.$n;
 	$OutDir = "../Result/${DSN}_$BC$nn";
 	$option = "-OmaxDF=$main::OmaxDF" if $main::OmaxDF > 0;
+	$option .= " -Ocpl_cut=".($n*2) if $main::Ocpl_cut > 0;
 # 5.2 文件在 doc/ 目錄下，但引用資料在DBMS中，產生歸類所需之索引檔案：
 #	 Titles.txt, Inv.txt, DocPath.txt, SortedPairs.txt
 # perl -s CiteAna.pl -OMulClu $DSN TPaper $DSN_BibCpl_S2 ..\Result\$DSN_BibCpl_S2 ..\doc\$DSN_BibCpl_S2
