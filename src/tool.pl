@@ -1211,6 +1211,7 @@ sub PrintOutCid2Row {
 				} else { $v = $Col[$j]; }
 				#$v = decode("big5", $Col[$j]); # This work! on 2010/12/03
 				# When the texts are read from an html file, decode them to big5
+                $v =~ s/^=//; # remove leading '=' to savely save a value in a cell  
 				$Sheet->write($i, $j+1, $v);
 			}
 			$i++;
