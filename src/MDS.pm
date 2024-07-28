@@ -458,6 +458,7 @@ sub mdsmap {
 		$rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted) = @_;
 	my($cmd, $rTitle, $rOld2NewID);
 # 1. Read $SortedFile, $TitleFile, write $SimFile
+# 2024/07/28 不要再使用 -Owant 與 -Ounwant 這兩個選項了，程式可能會有錯誤
 	($rTitle, $rOld2NewID) = $me->ConvertSimFile($SortedFile, $TitleFile, 
 		$me->{'SimFile'}, $rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted);
 
@@ -497,6 +498,7 @@ sub mdsmap {
 =head2 $mds->ConvertSimFile()
 
 Read $SortedFile, $TitleFile, write $SimFile.
+# 2024/07/28 不要再使用 -Owant 與 -Ounwant 這兩個選項了，程式可能會有錯誤
 Return @Title from Title.txt. @Title is a reduced version of Title.txt
 	if $main:Owant (%$rWanted) or $main::Ounwant (%$rWanted) are used.
 Return %Old2NewID: Old line number id (from 0) in Title.txt 
@@ -507,6 +509,7 @@ Return %Old2NewID: Old line number id (from 0) in Title.txt
 sub ConvertSimFile {
 	my($me, $SortedFile, $TitleFile, $SimFile,  
 		$rDid2Cid, $rCid2Dids, $rCid2Cno, $rWanted, $rUnWanted) = @_;
+# 2024/07/28 不要再使用 -Owant 與 -Ounwant 這兩個選項了，程式可能會有錯誤
 	my($n, $i, $j, $x, $y, $sim, @Title, @M, $t, $TotalDoc);
 	my($unwanted, $wanted, $ti, $cid, %Old2NewID, %NewID2Cid);
 
@@ -751,11 +754,14 @@ sub CreateMap {
 			$title = $_; $label = "$1:$2";
 			$tn++; # must be here before the next line
 			$label = "$tn:$2" if $me->{'Cid2Cno'};
+# on 2024/07/28, overwrite the above line:
+            $label = $rCid2Cno->{$1} . ":$2" if $me->{'Cid2Cno'};
 			$dn = 0; # reset dn to x axis
 		} elsif (/([^ ]+)\s+:\s+(.+)/) { # /6969912 : Embedded.../ or /ISI:000167255500002 : 2001:Automatic cataloguing/
 			$title = $_; $label = $2;
 			$tn++; # must be here before the next line
 			$label = "$tn:$2" if $me->{'Cid2Cno'};
+# on 2024/07/28, 上面一行可能會有錯誤
 #		} elsif (/^(\d+) : \d+/) {
 #			$label = "$1:10"; 
 #		} elsif (/^([\- ][01]\.\d+)$/) { # read in X or Y, depending on $dn
@@ -822,7 +828,8 @@ sub AllocateColor {
 	my($me, $img, $rDid2Cid, $rCid2Cno) = @_; 
 	my(%Cid2Color, %Did2Color, $did, $cid, $cno);
 	while (($did, $cid) = each %$rDid2Cid) {
-		$cid = $cno = $rCid2Cno->{$cid} if $me->{'Cid2Cno'};
+		# on 2024/07/28 將下一行註解起來，因為$rCid2Cno內容有變 
+#		$cid = $cno = $rCid2Cno->{$cid} if $me->{'Cid2Cno'};
 		$Cid2Color{$cid} = $me->{rColor}[($cid % scalar @{$me->{rColor}})];
 		$Did2Color{$did} = $Cid2Color{$cid};
 #warn("did=$did, cid=$cid, cno=$cno, color=$Cid2Color{$cid}\n");
