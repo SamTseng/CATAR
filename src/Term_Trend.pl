@@ -438,6 +438,7 @@ sub ConstructMaps {
     $mds->SetValue('CNo', $main::OCNo) if $main::OCNo; # lable with Cluster No, not ID 2011/04/19
     $NoOL = 'NoOL_' if $main::ONoOL;
     $mds->SetValue('InitialMap', $InitialMap); # to draw the map based on a previous one
+# 2024/07/28 不要再使用 -Owant 與 -Ounwant 這兩個選項了，程式可能會有錯誤
     if ($main::Owant) { # 2009/03/07 # or reserve those wanted clusters
     	foreach my $cid (split ' ', $main::Owant) { $rWanted->{$cid} = 1; }
     }
@@ -492,6 +493,15 @@ sub ConstructMaps {
 # CNo in $rCid2Cno is the Cluster sequence number
 # Dids are the second-level ids, they are the index (line number from 0)
 #  in Title.txt. So by reading Title.txt we can use Did to locate its title.
+# 2024/07/28上面2行的註解，本來是正確的。但是，不知從哪一個 Perl 版本起，
+#   Title.txt 的 排序跟前一階的HTML檔案不同，如下：
+#  34 : 6 Docs. : 0.020000(cluster:5.1121, map:3.0151, min:3.0151, text:2.0833)
+#  15 : 3 Docs. : 0.095238(neural network:3.1269, quadratic:2.3452, sort:2.3452, perceptron:1.7273)
+#  3 : 2 Docs. : 0.285714(code:4.0000, cyclic:1.3587, decoder:1.3587, fast neural decoder …)
+#  14 : 2 Docs. : 0.113208(automatic:3.1269, text:1.4142, thesauru:1.3587, chinese:1.3587, …)
+#  36 : 1 Docs. : 0(comparison:2.0000, detect:2.0000, hot:2.0000, topic:1.0622, scientometric:0.6794)
+# 其中Cid=3與14的順序跟HTML檔案不同，因此不能用 Title.txt 的內容，
+#   需用前一階 HTML 檔案的內容。
     }
     my($DocNum, $CatNum) = (scalar keys %$rDid2Cid, scalar keys %$rCid2Dids);
     print STDERR "  It takes ", time()-$stime, " seconds to cut tree having "
