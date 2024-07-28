@@ -470,8 +470,10 @@ sub Cluster_Map_Cut {
 # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=1.5 -OCNo -OhtmlTree=../Result/ATR3_BC_S4/0_0.01.html ../Result/ATR3_BC_S5
 	$cmd = "$prog Term_Trend.pl -Ocolor -Omap -Ocut=$cut -OCNo -OhtmlTree="
+		.	"${OutDir_1}/0_${cut}.html $OutDir"; # use this line on 2024/07/28
+		# 注意：前一階段的門檻與 $cut 必須一致 2024/0728
 #		.	"${OutDir_1}/0_${cut}.html $OutDir"; # use next line on 2019/08/29
-		.	"${OutDir}/0_${cut}.html $OutDir";
+#		.	"${OutDir}/0_${cut}.html $OutDir";
 	if (int($option / 2) == 1) { # if 2 or 3
 		 # if small number of items, create maps unconditionally
 		myexec($cmd) if (($NumItems < 1000)); # and ($OutDir !~ /JBC_S2/));
@@ -719,6 +721,7 @@ sub Cluster_Map_Cut_dc {
 	#&myexec($cmd) if int($option / 2) == 1; # if 2 or 3 # comment on 2019/08/27
 # 畫出MDS圖，但是圓圈中的編號是類別順序號，不是內部歸類的編號:
 # perl -s Term_Trend.pl -Ocolor -Ocut=0.0 -Omap -Oscale=1.5 -OCNo -OhtmlTree=../Result/ATR3_BC_S4/0_0.01.html ../Result/ATR3_BC_S5
+# 2024/07/28, -OhmltTree 的值要像 Cluster_Map_Cut() 那樣修改，目前這樣可能會出錯
 	$cmd = "$prog Term_Trend.pl -Ocolor -Ocut=$cut -Omap -OCNo -OhtmlTree="
 		.	"$OutDir/${low_df}_${low_tf}_${ct_low_tf}_${cut}.html $OutDir";
 	&myexec($cmd) if int($option / 2) == 1; # if 2 or 3
