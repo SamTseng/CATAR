@@ -623,10 +623,10 @@ sub ComputeTermSlope {
 	$minPY = 100000; $maxPY = -1;
 	my $DBH = &InitDBH($Odsn, $DB_File);
 # Prepare list @PY whose values may range from 1990 to 2030
+	print("Term\ttf\tSlope\t");
     ($minPY, $maxPY, @PY) = &Prepare_PY_list($DBH, $minPY, $maxPY);
 	@Num = @PY[$minPY..$maxPY]; @Num = (0) if $minPY > $maxPY;
 	$slope = &Compute_Slope(\@Num);
-	print("Term\ttf\tSlope\t");
 	print("\n\t\t$slope\t" . join("\t", @Num). "\n");
 #	exit();
 	@ARGV = ($InvFile);
