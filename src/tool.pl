@@ -622,13 +622,42 @@ sub ComputeTermSlope {
 	my($PY, $Num, @PY, @Num, $slope_series, $slope, $minPY, $maxPY);
 	$minPY = 100000; $maxPY = -1;
 	my $DBH = &InitDBH($Odsn, $DB_File);
-# SELECT PY, count(*) as Num FROM TPaper GROUP by PY ORDER by PY
+# Prepare list @PY whose values may range from 1990 to 2030
+    ($minPY, $maxPY, @PY) = &Prepare_PY_list($DBH, $minPY, $maxPY);
+	@Num = @PY[$minPY..$maxPY]; @Num = (0) if $minPY > $maxPY;
+	$slope = &Compute_Slope(\@Num);
+	print("Term\ttf\tSlope\t");
+	print("\n\t\t$slope\t" . join("\t", @Num). "\n");
+#	exit();
+	@ARGV = ($InvFile);
+	while (<>) {
+		chomp; ($t, $posting) = split /\t/, $_;
+		next if $t =~ /^\s*$/; # skip empty line
+#		next if ($main::Ophrase and ($t=~tr/ / /)==0); # skip single words if $Ophrase
+		next if (($t=~tr/ / /)==0); # skip single words 
+		@POS = split(/,/, $posting); $tf = 0;
+		for ($j=1; $j<@POS; $j+=2) { $tf += $POS[$j]; }
+		$TF{$t} = $tf;
+#		$i++; last if $i>10;
+		# (print STDERR "i=$i, $_\n" and next) if $t eq ' ';
+		$slope_series = &GetSlopeSeries($DBH, $t, $minPY, $maxPY);
+		$Terms{$t} = $slope_series;
+	}
+#	@Terms = sort {$Terms{&Get1($b)} <=> $Terms{&Get1($a)}} keys %Terms;
+	@Terms = sort {$TF{$b} <=> $TF{$a}} keys %TF;
+	foreach $t (@Terms) {
+		print "$t\t$TF{$t}\t$Terms{$t}\n";
+	}
+	$DBH->disconnect;
+}
+
+sub Prepare_PY_list {
+	my($DBH, $minPY, $maxPY) = @_; my(@PY, $PY, $Num);
 	my $sql = "SELECT PY, count(*) as Num FROM TPaper GROUP by PY ORDER by PY";
 	my $STH = $DBH->prepare($sql)
 		or die "Can't prepare SQL statement: SQL=$sql, $DBI::errstr\n";
 	$STH->execute()
 		or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
-	print("Term\ttf\tSlope\t");
 	while (($PY, $Num) = $STH->fetchrow_array) {
 		print("$PY\t");
 		$minPY = $PY if $minPY > $PY;
@@ -636,34 +665,14 @@ sub ComputeTermSlope {
 		$PY[$PY] = $Num;
 	}
 	$STH->finish;
-	@Num = @PY[$minPY..$maxPY]; @Num = (0) if $minPY > $maxPY;
-	$slope = &Compute_Slope(\@Num);
-	print("\n\t\t$slope\t" . join("\t", @Num). "\n");
-#	exit();
-	@ARGV = ($InvFile);
-	while (<>) {
-		chomp; ($t, $posting) = split /\t/, $_;
-		next if $t =~ /^\s*$/; # skip empty line
-		@POS = split(/,/, $posting); $tf = 0;
-		for ($j=1; $j<@POS; $j+=2) { $tf += $POS[$j]; }
-		$TF{$t} = $tf;
-#		$i++; last if $i>10;
-		# (print STDERR "i=$i, $_\n" and next) if $t eq ' ';
-#		next if ($main::Ophrase and ($t=~tr/ / /)==0); # skip single words if $Ophrase
-		next if (($t=~tr/ / /)==0); # skip single words 
-		$slope_series = &GetSlopeSeries($DBH, $t, $minPY, $maxPY);
-		$Terms{$t} = $slope_series;
-	}
-	@Terms = sort {$Terms{&Get1($b)} <=> $Terms{&Get1($a)}} keys %Terms;
-	foreach $t (@Terms) {
-		print "$t\t$TF{$t}\t$Terms{$t}\n";
-	}
-	$DBH->disconnect;
+	return ($minPY, $maxPY, @PY);
 }
+
 sub Get1 {my($termPY) = @_; my @A = split(' ', $termPY); return $A[0]; }
 
 sub GetSlopeSeries {
 	my($DBH, $t, $minPY, $maxPY) = @_; my($PY, $Num, @PY, @Num, $slope);
+	$t =~ s/\'//; # remove single quote for SQL command
 # SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%sisyphean%' or lower(AB) like '%sisyphean%' GROUP by PY ORDER by PY
 	#my $sql = "SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%sisyphean%' or lower(AB) like '%sisyphean%' GROUP by PY ORDER by PY";
 	my $sql = "SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%".$t."%' or lower(AB) like '%".$t."%' GROUP by PY ORDER by PY";
@@ -676,7 +685,7 @@ sub GetSlopeSeries {
 	}
 	$STH->finish;
 #	@Num = @PY[$minPY..$maxPY]; @Num = (0) if $minPY > $maxPY;
-	for(my $i=0; $i<$maxPY-$minPY; $i++) { 
+	for(my $i=0; $i<=$maxPY-$minPY; $i++) { 
 		$Num[$i] = $PY[$minPY+$i]>0 ? $PY[$minPY+$i] : 0; 
 	}
 	$slope = &Compute_Slope(\@Num);
