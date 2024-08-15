@@ -672,7 +672,8 @@ sub Get1 {my($termPY) = @_; my @A = split(' ', $termPY); return $A[0]; }
 
 sub GetSlopeSeries {
 	my($DBH, $t, $minPY, $maxPY) = @_; my($PY, $Num, @PY, @Num, $slope);
-	$t =~ s/\'//; # remove single quote for SQL command
+	$t =~ s/\'/''/g; # globally replace single quote for SQL command
+#	$t =~ s/[\[\.\]\%\_\/]//g; # remove escape characters for SQL command
 # SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%sisyphean%' or lower(AB) like '%sisyphean%' GROUP by PY ORDER by PY
 	#my $sql = "SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%sisyphean%' or lower(AB) like '%sisyphean%' GROUP by PY ORDER by PY";
 	my $sql = "SELECT PY, count(*) as Num FROM TPaper WHERE lower(TI) like '%".$t."%' or lower(AB) like '%".$t."%' GROUP by PY ORDER by PY";
