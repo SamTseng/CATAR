@@ -640,7 +640,9 @@ sub ComputeTermSlope {
 		$TF{$t} = $tf;
 #		$i++; last if $i>10;
 		# (print STDERR "i=$i, $_\n" and next) if $t eq ' ';
-		$slope_series = &GetSlopeSeries($DBH, $t, $minPY, $maxPY);
+		my $t_utf8 = encode("UTF-8", decode("Big5", $t)); # convert Big5 to UTF-8
+		$t_utf8 =~ s/ ([^A-Za-z\d])/$1/g; # remove space if Chinese (non-English)
+		$slope_series = &GetSlopeSeries($DBH, $t_utf8, $minPY, $maxPY);
 		$Terms{$t} = $slope_series;
 	}
 #	@Terms = sort {$Terms{&Get1($b)} <=> $Terms{&Get1($a)}} keys %Terms;
@@ -660,7 +662,7 @@ sub Prepare_PY_list {
 		or die "Can't run SQL statement: SQL=$sql, $STH::errstr\n";
 	while (($PY, $Num) = $STH->fetchrow_array) {
 		print("$PY\t");
-		$minPY = $PY if $minPY > $PY;
+		$minPY = $PY if $PY > 1900 and $minPY > $PY;
 		$maxPY = $PY if $maxPY < $PY;
 		$PY[$PY] = $Num;
 	}
