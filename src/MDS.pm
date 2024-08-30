@@ -577,6 +577,28 @@ sub ConvertSimFile {
 		}
 	}
 	close(FF);
+
+# on 2024/08/30 needed by Lai Kui-Kui 
+	my $IndexPath = '';
+	if ($SortedFile =~ /^(.+)\/[^\/\\]+/) { $IndexPath = $1 }
+    my $SquareMatrix = $IndexPath . '/Square_Maxtrix.txt';
+print(STDERR "  SquareMatrix=$SquareMatrix\n");
+	open SF, ">$SquareMatrix" or die "Cannot write to file:'$SquareMatrix', $!";	
+	$n = (scalar @Title);
+	print FF "$n\n", @Title;
+	for ($i=0; $i<$n; $i++) {
+		for ($j=0; $j<$n; $j++) {
+			if ($i == $j) { print("1.0\t"); next; }
+			if ($M[$i][$j] eq '') {
+				print SF "0.0\t"; # mds require difference, instead of similarity
+			} else {
+				print SF "$M[$i][$j]\t";
+			}
+		}
+		print SF "\n";
+	}
+	close(SF);
+
 # This function may have bugs if $main::Owant or $main::Ounwant are used,
 	$me->CreateDendrogram(\@Title, \@M, $rDid2Cid, $rCid2Dids);
 	return (\@Title, \%Old2NewID);
