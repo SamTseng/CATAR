@@ -368,7 +368,7 @@ our @EXPORT_OK = ('get_uspto');
 # perl -I. -MPatent=get_uspto -e 'get_uspto(0, 10165259)'
 # The above command line works on 2024/11/25
 use JSON;
-sub get_uspto {
+sub get_uspto { # to replace ua_get() and Parse_Patent()
     my($me, $patent_id) = @_;
     my($ua, $req, $res, $url, $api_key, $query, $json_query, $patent, %Patent);
     # Create a UserAgent object
@@ -471,9 +471,39 @@ exit();
     return \%Patent;
 }
 
-sub Inventors2str { my(@inventors) = @_; return 1; }
-sub Assignees2str { my(@assignees) = @_; return 1; }
-sub cpc2str { my(@cpc) = @_;  return 1; }
+sub Inventors2str { 
+    my($Inventors) = @_; # $Inventors is an array reference
+# First sort the list elements by "inventor_sequence"
+    my @sorted_inventors = sort { $a->{inventor_sequence} <=> $b->{inventor_sequence} } @$Inventors;
+# Concatenate information into the desired format
+    my $result = join(", ", map {
+        sprintf("%s; %s (%s, %s)", $_->{inventor_name_last}, $_->{inventor_name_first}, 
+                                    $_->{inventor_city}, $_->{inventor_state})
+    } @sorted_inventors);
+print("inventors: $result\n"); #exit();
+    return $result; 
+}
+
+sub Assignees2str { 
+    my($Assignees) = @_; # $Assignees is an array reference
+# First sort the list elements by "inventor_sequence"
+    my @sorted_assignees = sort { $a->{assignee_sequence} <=> $b->{assignee_sequence} } @$Assignees;
+# Concatenate information into the desired format
+    my $result = join(", ", map {
+        sprintf("%s (%s, %s)", $_->{assignee_organization},
+                                    $_->{assignee_city}, $_->{assignee_state})
+    } @sorted_assignees);
+print("assignees: $result\n"); #exit();
+    return $result; 
+}
+
+sub cpc2str { 
+    my($cpc) = @_; # $cpc is an array reference
+    my @sorted_cpc = sort { $a->{cpc_sequence} <=> $b->{cpc_sequence} } @$cpc;
+    my $result = join("; ", map {sprintf("%s", $_->{cpc_group_id})} @sorted_cpc);
+print("cpc: $result\n");
+    return $result; 
+}
 
 sub ua_get {
     my($me, $url) = @_;
@@ -597,7 +627,29 @@ sub GetPatentPage {
 }
 
 
-=head2 $rPatent = $pat->Get_Patent_By_Number($patnum, $pat_url);
+=head2 $rPatent = $pat->Get_Patent_By_Number($patnum);
+
+  Given a patent number, get the patent by looking at %Patent_Existed first. 
+  If exists, then fetch the patent from the existing file, otherwise fetch 
+    the patent from the USPTO and save the new patent document in the Patent_Existed_DB
+
+  Return a reference to a hash with parsed patent stored in it.
+
+=cut
+sub Get_Patent_By_Number {
+    my($me, $patnum, $pat_url) = @_; my($rPatent, $orgPatent) = ('', '');
+    if ($me->Has_Patent_Existed($patnum)) {
+        $rPatent = $me->Get_Patent_Existed($patnum);
+print STDERR "Patent: $patnum already in DB\n" if $me->{debug}==1;
+    } else {
+#open FF,">d:/demo/STPIWG/Source_Data/tmp/$patnum.htm"; print FF $orgPatent; close(FF);
+        $rPatent = $me->get_uspto($patnum);
+    }
+    $me->SavePatent($rPatent, $orgPatent);
+    return $rPatent;
+}
+
+=head2 $rPatent = $pat->Get_Patent_By_Number_old($patnum, $pat_url);
 
   Given a patent number and a patent URL, get the patent by looking at
   %Patent_Existed first. If exists, then fetch the patent from the existing
@@ -607,7 +659,7 @@ sub GetPatentPage {
   Return a reference to a hash with parsed patent stored in it.
 
 =cut
-sub Get_Patent_By_Number {
+sub Get_Patent_By_Number_old {
     my($me, $patnum, $pat_url) = @_; my($rPatent, $orgPatent);
     if ($me->Has_Patent_Existed($patnum)) {
         $rPatent = $me->Get_Patent_Existed($patnum);
