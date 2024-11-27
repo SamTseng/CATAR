@@ -404,15 +404,16 @@ sub get_uspto { # to replace ua_get() and Parse_Patent()
 #        print to_json($data, { pretty => 1 });
 #        print("\n----------\n");
         $patent = $data->{patents}->[0];
-print to_json($patent, { pretty => 1 });
+#print to_json($patent, { pretty => 1 });
         $Patent{'PatNum'} = $patent->{'patent_id'};
         $Patent{'GovernCountry'} = 'US';
         $Patent{'IssuedDate'} = $patent->{'patent_date'};  
-            $Patent{'IssuedDate'} =~ s|\-|\/|;
+            $Patent{'IssuedDate'} =~ tr|\-|\/|;
         $Patent{'Appl. No.'} = $patent->{'application'}->[0]->{'application_id'};
         $Patent{'ApplyDate'} = $patent->{'application'}->[0]->{'filing_date'};
-            $Patent{'ApplyDate'} =~ s|\-|\/|; # to replace $Patent{'Filed'}
-        $Patent{'Filed'} = ''; # see $ApplyDate = $rPatent->{'ApplyDate'}; in PatentDB.pm
+            $Patent{'ApplyDate'} =~ tr|\-|\/|; # to replace $Patent{'Filed'}
+        $Patent{'Filed'} = $Patent{'ApplyDate'}; 
+        # add $ApplyDate = $rPatent->{'ApplyDate'}; in PatentDB.pm
         $Patent{'Title'} = $patent->{'patent_title'};
         $Patent{'Abstract'} = $patent->{'patent_abstract'};
         $Patent{'Inventors'} = Inventors2str($patent->{'inventors'});
@@ -480,7 +481,7 @@ sub Inventors2str {
         sprintf("%s; %s (%s, %s)", $_->{inventor_name_last}, $_->{inventor_name_first}, 
                                     $_->{inventor_city}, $_->{inventor_state})
     } @sorted_inventors);
-print("inventors: $result\n"); #exit();
+#print("inventors: $result\n"); #exit();
     return $result; 
 }
 
@@ -493,7 +494,7 @@ sub Assignees2str {
         sprintf("%s (%s, %s)", $_->{assignee_organization},
                                     $_->{assignee_city}, $_->{assignee_state})
     } @sorted_assignees);
-print("assignees: $result\n"); #exit();
+#print("assignees: $result\n"); #exit();
     return $result; 
 }
 
@@ -501,7 +502,7 @@ sub cpc2str {
     my($cpc) = @_; # $cpc is an array reference
     my @sorted_cpc = sort { $a->{cpc_sequence} <=> $b->{cpc_sequence} } @$cpc;
     my $result = join("; ", map {sprintf("%s", $_->{cpc_group_id})} @sorted_cpc);
-print("cpc: $result\n");
+#print("cpc: $result\n");
     return $result; 
 }
 
@@ -630,14 +631,15 @@ sub GetPatentPage {
 =head2 $rPatent = $pat->Get_Patent_By_Number($patnum);
 
   Given a patent number, get the patent by looking at %Patent_Existed first. 
-  If exists, then fetch the patent from the existing file, otherwise fetch 
-    the patent from the USPTO and save the new patent document in the Patent_Existed_DB
+  If exists, then fetch the patent from the existing file in PatentDir, otherwise fetch 
+    the patent from the USPTO and save the new patent document in the PatentDir and in
+    Patent_Existed_DB (or Patent_Existed.txt).
 
   Return a reference to a hash with parsed patent stored in it.
 
 =cut
 sub Get_Patent_By_Number {
-    my($me, $patnum, $pat_url) = @_; my($rPatent, $orgPatent) = ('', '');
+    my($me, $patnum) = @_; my($rPatent, $orgPatent) = ('', '');
     if ($me->Has_Patent_Existed($patnum)) {
         $rPatent = $me->Get_Patent_Existed($patnum);
 print STDERR "Patent: $patnum already in DB\n" if $me->{debug}==1;
@@ -847,7 +849,11 @@ sub Get_Patent_Existed {
     open P, "$file" or die "Cannot get existing Patent: '$file'";
     local $/; undef $/; $orgPatent = <P>;
     close(P);
-    $rPatent = $me->Parse_Patent( $orgPatent );
+    if (length($orgPatent)>100) { # $orgPatent has some text
+        $rPatent = $me->Parse_Patent( $orgPatent );
+    } else {
+        $rPatent = $me->get_uspto($patnum);
+    }
     return $rPatent;
 }
 
@@ -1160,7 +1166,7 @@ NewFormat_USclass: # to deal with new format
 		$k =~ s/:$//; # delete trailing semicolon;
 		next if $k eq '';
 		$Patent{$k.'_org'} = $v if $k =~/Inventors|Assignee/; # 2007/11/10
-		# Ownerªº°ê®a¤£¬O¬ü°ê(¦p DE)®É¡A·|¥]¦b <B>»P</B>¸Ì
+		# Ownerï¿½ï¿½ï¿½ï¿½aï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½(ï¿½p DE)ï¿½É¡Aï¿½|ï¿½]ï¿½b <B>ï¿½P</B>ï¿½ï¿½
 		$v =~ s/<[^>]+>//g; # delete all HTML tags
 		$v =~ s/^\s*|\s*$//g; # delete leading and trailing space
 		$v =~ s/\s+/ /g; # delete line break
@@ -1544,8 +1550,13 @@ print "$fd=>MaxSen=$MaxSen, SenNum=@SenNum, SenRank=@$rSenRank\n" if $me->{debug
     {$Topics{$b}*(@B=split' ',$b)<=>$Topics{$a}*(@A=split' ',$a)}#avoid warning
 #    {$Topics{$b}*(split' ',$b) <=> $Topics{$a}*(split' ',$a)}
      @$rTopics;
-print "Topics=", join(", ",map{"$_:$Topics{$_}"}@Topics[0..24]), "\n" if $me->{debug};
-    $PatentAbs{'Topics'} = join "; ", @Topics[0..($me->{'MaxTopics'}-1)];
+    if (@Topics > 0) {
+        my $max_index = $#Topics<($me->{'MaxTopics'}-1)?($#Topics):($me->{'MaxTopics'}-1);
+print "Topics=", join(", ",map{"$_:$Topics{$_}"}@Topics[0..$max_index]), "\n" if $me->{debug};
+        $PatentAbs{'Topics'} = join "; ", @Topics[0..$max_index];
+    } else {
+        $PatentAbs{'Topics'} = '';
+    }
     $me->{'rPatentAbs'} = \%PatentAbs; # 2003/12/01
     return \%PatentAbs;
 }
