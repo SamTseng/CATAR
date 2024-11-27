@@ -354,7 +354,21 @@ sub GetValue {
     return $me->{$attribute}{$attr2};
 }
 
-
+sub load_env {
+    my(@files) = @_; my(%ENV, $f, $file, $fh);
+    for $f (@files) { if (-e $f) { $file = $f; last; } }
+    open $fh, '<', $file or die "Could not open file: '$file': $!";
+    while (<$fh>) {
+        chomp;
+        next if /^\s*#/;   # Skip comments
+        next if /^\s*$/;   # Skip empty lines
+        if (/^\s*(\w+)\s*=\s*(.*)\s*$/) {
+            $ENV{$1} = $2;
+        }
+    }
+    close $fh;
+    return \%ENV;
+}
 
 =head2 ===Tools to get patents from a Website ===
 
@@ -375,7 +389,8 @@ sub get_uspto { # to replace ua_get() and Parse_Patent()
     $ua = LWP::UserAgent->new;
     $ua->ssl_opts(verify_hostname => 0);  # Disable SSL verification
 
-    $api_key = 'gvtLdGV0.wBQvmAerzgmApv4G3tZc11cy7Djnwy4n';
+    my $ENV = load_env('.env', 'myAPIkey.txt'); # check .env first
+    $api_key =$ENV->{'API_KEY'};
 
 # Step 1: fetch the patent information
     $url = 'https://search.patentsview.org/api/v1/patent/';
