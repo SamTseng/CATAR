@@ -1,0 +1,5 @@
+# Files or file patterns listed here will be ignored by Git. 
+#   That is, these files will not be push to the GitHub repository
+.env
+tmp
+PatentDIr
