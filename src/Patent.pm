@@ -358,12 +358,123 @@ sub GetValue {
 
 =head2 ===Tools to get patents from a Website ===
 
-=head2 $WebPage = $pat->ua_get($url); return the fetched HTML page at $url
+=head2 $rPatent = $pat->get_uspto($patent_id); return the patent hash 
 
-  Since we need to adjust the timeout, we use LWP::UserAgent instead of
-  LWP::Simple for more parameter adjusting.
+  Use PatentView API to fetch USPTO patent information
 
 =cut
+use Exporter 'import';
+our @EXPORT_OK = ('get_uspto');
+# perl -I. -MPatent=get_uspto -e 'get_uspto(0, 10165259)'
+# The above command line works on 2024/11/25
+use JSON;
+sub get_uspto {
+    my($me, $patent_id) = @_;
+    my($ua, $req, $res, $url, $api_key, $query, $json_query, $patent, %Patent);
+    # Create a UserAgent object
+    $ua = LWP::UserAgent->new;
+    $ua->ssl_opts(verify_hostname => 0);  # Disable SSL verification
+
+    $api_key = 'gvtLdGV0.wBQvmAerzgmApv4G3tZc11cy7Djnwy4n';
+
+# Step 1: fetch the patent information
+    $url = 'https://search.patentsview.org/api/v1/patent/';
+    $query = {
+        q => { patent_id => $patent_id },
+        f => [
+            'patent_id', 'patent_date', 'patent_title', 'application', 'assignees',
+            'inventors', 'cpc_at_issue', 'cpc_current', 'ipcr', 'patent_abstract'
+        ]
+    };
+    $json_query = encode_json($query); # Convert the query from Hash to JSON string
+    # Set up the request
+    $req = HTTP::Request->new('POST', $url);
+    $req->header('X-Api-Key' => $api_key);
+    $req->header('Content-Type' => 'application/json');
+    $req->content($json_query);
+    # Execute the request
+    $res = $ua->request($req);
+
+    # Check the response
+    if ($res->is_success) {
+        my $data = decode_json($res->decoded_content);
+# print("data=$data\n", $res->decoded_content, "\n"); exit();
+#   data=HASH(0x1362ac0c8)
+#   {"error":false,"count":1,"total_hits":1,"patents":[{"patent_id":"10165259", ...
+#        print to_json($data, { pretty => 1 });
+#        print("\n----------\n");
+        $patent = $data->{patents}->[0];
+print to_json($patent, { pretty => 1 });
+        $Patent{'PatNum'} = $patent->{'patent_id'};
+        $Patent{'GovernCountry'} = 'US';
+        $Patent{'IssuedDate'} = $patent->{'patent_date'};  
+            $Patent{'IssuedDate'} =~ s|\-|\/|;
+        $Patent{'Appl. No.'} = $patent->{'application'}->[0]->{'application_id'};
+        $Patent{'ApplyDate'} = $patent->{'application'}->[0]->{'filing_date'};
+            $Patent{'ApplyDate'} =~ s|\-|\/|; # to replace $Patent{'Filed'}
+        $Patent{'Filed'} = ''; # see $ApplyDate = $rPatent->{'ApplyDate'}; in PatentDB.pm
+        $Patent{'Title'} = $patent->{'patent_title'};
+        $Patent{'Abstract'} = $patent->{'patent_abstract'};
+        $Patent{'Inventors'} = Inventors2str($patent->{'inventors'});
+        $Patent{'Assignee'} = Assignees2str($patent->{'assignees'});
+        $Patent{'Family ID'} = ''; # not important, no value so far
+        $Patent{'Current CPC Class'} = cpc2str($patent->{'cpc_at_issue'});
+        $Patent{'Current U.S. Class'} = '';
+        $Patent{'Intern Class'} = cpc2str($patent->{'cpc_current'});
+        $Patent{'Field of Search'} = ''; # not important, no value so far
+        $Patent{'Cites'} = ''; # not important, no value so far
+        $Patent{'Parent Case'} = ''; # not important, no value so far
+    } else {
+        print "Error: " . $res->status_line . "\n";
+        exit();
+    }
+
+=comment until next =cut
+# So far all these fields: Application,Task,Summary,Drawings,Features,Claims 
+#   are not available except from 2023. To know the update, see:
+#     https://search.patentsview.org/docs/docs/Search%20API/TextEndpointStatus
+# Step 2: fetch the patent claims
+    $url = 'https://search.patentsview.org/api/v1/g_claim/';
+    $query = {
+        q => { patent_id => $patent_id },
+        f => [ "patent_id", "claim_sequence", "claim_text" ]
+    };
+    $json_query = encode_json($query); # Convert the query from Hash to JSON string
+    # Set up the request
+    $req = HTTP::Request->new('POST', $url);
+    $req->header('X-Api-Key' => $api_key);
+    $req->header('Content-Type' => 'application/json');
+    $req->content($json_query);
+    # Execute the request
+    $res = $ua->request($req);
+
+    # Check the response
+    if ($res->is_success) {
+        my $data = decode_json($res->decoded_content);
+# print("data=$data\n", $res->decoded_content, "\n"); exit();
+#   data=HASH(0x1362ac0c8)
+#   {"error":false,"count":1,"total_hits":1,"patents":[{"patent_id":"10165259", ...
+print to_json($data, { pretty => 1 });
+exit();
+#        print("\n----------\n");
+        $patent = $data->{patents}->[0];
+        print to_json($patent, { pretty => 1 });
+exit();
+        $Patent{'Claims'} = $patent->{'patent_id'};
+
+    } else {
+        print "Error: " . $res->status_line . "\n";
+        exit();
+    }
+=cut
+    $me->{'rPatent'} = \%Patent; # 2003/12/01
+    return \%Patent;
+}
+
+sub Inventors2str { my(@inventors) = @_; return 1; }
+sub Assignees2str { my(@assignees) = @_; return 1; }
+sub cpc2str { my(@cpc) = @_;  return 1; }
+
 sub ua_get {
     my($me, $url) = @_;
     my $TimeOut = $me->{TimeOut} || 5*60;
@@ -744,7 +855,181 @@ sub CreatePath {
 
 =head2 ==== Parsing patent, Website dependent ====
 
-=head2 $rPatent = $pat->Parse_Patent($patent_in_html);
+=head2 ==== Parsing patent, written by ChatGPT 4o with Canvas ====
+
+To test this fucntion, run:
+C:\CATAR\src>perl -s patent.pl -Ofile tmp tmp\12136416.html
+C:\CATAR\src>perl -s patent.pl -Ofile tmp tmp\12141757.html
+The above html files are downloaded from USPTO basic search on 2024/11/13
+
+This results are in C:\CATAR\src\tmp\pat and C:\CATAR\src\tmp\abs
+
+=cut
+
+use Data::Dumper;
+
+use strict;
+use warnings;
+use HTML::TreeBuilder;
+
+sub Parse_Patent {
+    my ($me, $patent_in_html) = @_;
+    my %patent;
+
+    # Create a tree from the HTML content
+    my $tree = HTML::TreeBuilder->new_from_content($patent_in_html);
+#print($tree->dump); exit();
+
+    # Extract data based on the HTML file structure
+    $patent{'PatNum'}            = get_element_text($tree, 'span', 'MatchFromOtherFieldStyle');
+    $patent{'IssuedDate'}        = parse_date(get_element_after_label($tree, 'span', 'Date of Patent'));
+    $patent{'Title'}             = get_title($tree);
+    $patent{'Inventors'}         = get_element_after_label($tree, 'p', 'Inventors:');
+    $patent{'Assignee'}          = get_element_after_label($tree, 'p', 'Assignee:');
+    $patent{'Family ID'}         = get_element_after_label($tree, 'p', 'Family ID:');
+    $patent{'Appl. No.'}         = get_element_after_label($tree, 'p', 'Appl. No.:');
+    $patent{'Filed'}             = parse_date(get_element_after_label($tree, 'p', 'Filed:'));
+    $patent{'Current U.S. Class'} = get_element_after_label($tree, 'p', 'U.S. Cl.:');
+    $patent{'Current CPC Class'} = get_element_after_label($tree, 'p', 'CPC');
+    $patent{'Intern Class'}      = get_element_after_label($tree, 'p', 'Int. Cl.:');
+    $patent{'Abstract'}          = get_Abstract_Claims_text($tree, 'Abstract');
+    $patent{'Claims'}            = get_Abstract_Claims_text($tree, 'Claims');
+
+    $patent{'Cites'}             = ''; # get_Cites_text($tree, 'div', 'References Cited', ['Primary Examiner:']); # to-do
+    $patent{'Application'}       = get_section_text($tree, 'h3', 'Background/Summary', 'FIELD[\W ]*', ['BACKGROUND[\W ]*']);
+    $patent{'Task'}              = get_section_text($tree, 'h3', 'Background/Summary', 'BACKGROUND[\W ]*', ['SUMMARY[\W ]']);
+    $patent{'Summary'}           = get_section_text($tree, 'h3', 'Background/Summary', 'SUMMARY[\W ]', ['ABITRARY']);
+    $patent{'Features'}          = get_section_text($tree, 'h3', 'Description', 'DESCRIPTION OF EXAMPLE EMBODIMENTS|DESCRIPTION OF THE PREFERRED EMBODIMENTS', ['BRIEF DESCRIPTION OF THE DRAWINGS']);
+    $patent{'Drawings'}          = get_section_text($tree, 'h3', 'Description', 'BRIEF DESCRIPTION OF THE DRAWINGS', ['DETAILED DESCRIPTION', 'DESCRIPTION OF EXAMPLE EMBODIMENTS']);
+
+    # Set the hash to the object
+    $me->{'rPatent'} = \%patent;
+
+    # Clean up the tree to free memory
+    $tree->delete;
+
+    return \%patent;
+}
+
+# Helper function to get text of a specific element by tag and class
+sub get_element_text {
+    my ($tree, $tag, $class) = @_;
+    my $element = $tree->look_down(_tag => $tag, class => $class);
+    return $element ? $element->as_text : '';
+}
+
+# Helper function to get text following a specific label
+sub get_element_after_label {
+    my ($tree, $tag, $label) = @_;
+    my $element = $tree->look_down(_tag => $tag, sub { $_[0]->as_text =~ /^\s*\Q$label\E\s*$/ });
+
+    if ($element) {
+        my $parent = $element->parent();
+        if ($parent) {
+            my @children = $parent->content_list();
+            for (my $i = 0; $i < @children; $i++) {
+                if (ref($children[$i]) && $children[$i] eq $element) {
+                    # Find the next element that contains text
+                    for (my $j = $i + 1; $j < @children; $j++) {
+                        if (ref($children[$j]) && $children[$j]->can('as_text')) {
+                            my $text = $children[$j]->as_text;
+                            if ($text =~ /\S/) {
+                                return $text;  # Return the text if it's not empty or whitespace
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return '';
+}
+
+# Helper function to get the title of the patent
+sub get_title {
+    my ($tree) = @_;
+    my $title_element = $tree->look_down(_tag => 'h2');
+    return $title_element ? $title_element->as_text : '';
+}
+
+# Helper function to get text from the Abstract section
+sub get_Abstract_Claims_text {
+    my ($tree, $h3_value) = @_; my($start_element, $current);
+    # Next line can not locate any valid text, which is wiered (it should be)
+#    $start_element = $tree->look_down(_tag => 'article', class => 'bottom-border padding');
+#    print("article:", $start_element, "\n"); print($start_element->as_text, "\n");
+    $start_element = $tree->look_down(_tag => 'h3', sub { $_[0]->as_text =~ /^\s*$h3_value\s*$/i });
+#print($start_element->as_text, "\n");
+    if ($start_element) {
+        # Look for the <p> tag right after the <h3> Abstract
+        $current = $start_element->right();
+#print($current->as_text, "\n");
+        return ($current)? $current->as_text : '';
+    } else { return ''; }
+}
+
+
+# Generalized helper function to get text from a section with a specific start label and stop labels
+sub get_section_text {
+    my ($tree, $tag, $label, $start_label, $stop_labels) = @_;
+    my($start_element, $text, $current, $start, $br, $acc_text);
+#print("\ntag: $tag, label=$label, start: $start_label, stop:@$stop_labels=>");
+
+# First, search the section under the $tag and $label:
+    $current = $tree->look_down(_tag => $tag, sub { $_[0]->as_text =~ /\b$label\b/i });
+#if ($current) { print("\n    text(30)=", substr($current->as_text, 0, 30), "\n"); }
+
+# Second, loop over next segment until we find the $start_label in the segment
+    do { 
+        $current = $current->right(); # next right sibling
+#if ($current) { print("        length=", length($current->as_text), ", text(40)=", substr($current->as_text, 0, 40), "\n"); }
+        $start = $current->look_down(_tag => 'p', sub { $_[0]->as_text =~ /\b$start_label\b/i });
+    } until ($start);
+#if ($start) { print("            length=", length($start->as_text), ", text(50)=", substr($start->as_text, 0, 50), "\n"); }
+#if ($start) { print("            length=", length($start->as_text), ", dump=", $start->dump, "\n"); }
+
+
+# The $start point to the $start_label, extract the text until $stop_label
+        $text = ''; $acc_text = 0; # status of starting to accumulate text is false
+        foreach $br ($current->content_list) {
+#print("    br length:", length($br), ", text(60):", substr($br, 0, 60), "\n");
+            if (! ref($br)) {
+                if ($br =~ /\b$start_label\b/) { $acc_text = 1; }
+                next if ($acc_text == 0); # if not yet encounter the $start_label
+                my $section_text = $br;
+#print("section=$section_text\n  br dump:", $br->dump, "\n");
+                # Stop if we encounter any of the stop labels
+                foreach my $stop_label (@$stop_labels) {
+                    if ($section_text =~ /\b$stop_label\b/i) {
+                        return $text;
+                    }
+                }
+                $text .= $section_text . " " if $section_text =~ /\S/;
+            }
+        }
+        return $text;
+    }
+#    return '';
+#}
+
+
+# Helper function to parse date format from "Month DD, YYYY" to "YYYY/MM/DD"
+sub parse_date {
+    my ($date_str) = @_;
+    if ($date_str =~ /(\w+)\s+(\d{1,2}),\s+(\d{4})/) {
+        my %months = (
+            'January'   => '01', 'February' => '02', 'March'    => '03',
+            'April'     => '04', 'May'      => '05', 'June'     => '06',
+            'July'      => '07', 'August'   => '08', 'September'=> '09',
+            'October'   => '10', 'November' => '11', 'December' => '12'
+        );
+        return "$3/$months{$1}/$2";
+    }
+    return $date_str;
+}
+
+=head2 $rPatent = $pat->Parse_Patent_old($patent_in_html);
 
   Given a downloaded patent page from USPTO, parse the html page and return
     a reference to a hash %Patent with all the fields filled
@@ -767,7 +1052,7 @@ sub CreatePath {
    
 
 =cut
-sub Parse_Patent {
+sub Parse_Patent_old {
     my($me, $r) = @_;
     my(%Patent, @R, $e, $i, $j, @D, @P, @Cites, @T, $table);
     my($patnum, $date, $title, $abs, $k, $v, $shift_i);
@@ -1227,7 +1512,7 @@ sub GetSenList {
     $seg_obj = $me->{'seg_obj'};
     @$rSenList = (); # an empty list
 
-    @P = split /<BR><BR>/, $rPatent->{$fd};
+    if (defined($rPatent->{$fd})) { @P = split /<BR><BR>/, $rPatent->{$fd}; } else { @P = (); }
     @Para = ();
     foreach $p (@P) {
 	next if $p =~ /FIG|Figure/; # skip paragraphs with FIGures
@@ -1339,14 +1624,16 @@ sub SetSN {
 sub RankSenList { # private and public
   my($rWL, $rFL, $rSN, $rST, $rSenWgt) = @_;
   my($w, $s, $i, %RankSen, $max, $SenLen, @W);
-    foreach $w (@$rWL) { $max = $rFL->{$w} if $max < $rFL->{$w}; }
-  foreach $w (@$rWL) { # for each sentence that contains the word
-    foreach $s (split ' ', $rSN->{$w}) { # see &SetSN() to know the format
+    $max = 0;
+    foreach $w (@$rWL) { $max = $rFL->{$w} if defined($rFL->{$w}) and $max < $rFL->{$w}; }
+    foreach $w (@$rWL) { # for each sentence that contains the word
+        next if not defined($rSN->{$w});
+        foreach $s (split ' ', $rSN->{$w}) { # see &SetSN() to know the format
 #      $RankSen{$s} += 1;
 #      $RankSen{$s} += $rFL->{$w}; # accumulate the sentece's score
-      $RankSen{$s} += 0.5 + $rSenWgt->[$s] * $rFL->{$w}/$max;
+            $RankSen{$s} += 0.5 + $rSenWgt->[$s] * $rFL->{$w}/$max;
+        }
     }
-  }
 #print "<p>Modified SenWgt=@$rSenWgt\n";
 #print "<br>Sentence Rank value:", join (", ", map"$_:$RankSen{$_}", sort {$a<=>$b}keys %RankSen) , "\n";
 #print "<br>Sentence Term number:", join (", ", map"$_:$rST->{$_}", sort {$a<=>$b}keys %$rST) , "\n";
