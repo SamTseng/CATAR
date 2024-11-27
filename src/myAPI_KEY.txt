@@ -1,0 +1,10 @@
+# This file is created on 2024/11/28 by Yuen-Hsien Tseng
+# You can obtain an API key by submitting a request via PatentsView Help Center at:
+#   https://patentsview-support.atlassian.net/servicedesk/customer/portals   or at:
+#   https://patentsview-support.atlassian.net/servicedesk/customer/portal/1/group/1/create/18
+# Each user is allowed only one API Key. 
+# If you lose your API key, please request a new one with same email address and name.
+API_KEY=example0.APIkey_xxxxxxxxxxxxxxxxxxxxxxxx
+# In the above line, you should replace the example API key with yours.
+# For details, see: 
+#   https://search.patentsview.org/docs/docs/Search%20API/SearchAPIReference/#request-an-api-key
