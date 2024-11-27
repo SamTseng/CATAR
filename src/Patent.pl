@@ -190,16 +190,23 @@ sub DownloadPatentByPatNumber {
 }
 
 # perl -s Patent.pl -OPatNumList -ODir=MXIC_Pat d:\data\MXIC\train-patlist.txt
+# perl -s Patent.pl -OPatNumList -ODir=tmp tmp/patent_list_3.txt
+#   Begin to fetch patents ...
+#   1:9906718, 2:9906551, 3:9905220,
+#   3 patents have been fetched. It takes 7 seconds.
 sub GetByPatNumber_in_File {
     my($me, $outdir, $file) = @_;  my($i);
     @ARGV = ($file);
-    print "Begin to fetch patents ...";
+    print("Begin to fetch patents ...\n");
+    print("Note: Fetching every 45 patents needs at least one minite. see the Usage Limits at:\n");
+    print("      https://search.patentsview.org/docs/docs/Search%20API/SearchAPIReference/#usage-limits\n");
     while (<>) { 
     	chomp; next if /^\s*$/; 
-    	$i++; print "$i,$_  ";
-    	&GetByPatNumber($uspto, $outdir, $_); 
+    	$i++; print("$i:$_, "); STDOUT->flush();
+    	&GetByPatNumber($uspto, $outdir, $_);
+        sleep(1.4); # wait 1.4 seconds before next web API fetch
     }
-    print " ... End.\n";
+    print "\n$i patents have been fetched. ";
 }
 
 # Given a patent number and an output directory, download the patent full text in html 
