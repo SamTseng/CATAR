@@ -364,6 +364,7 @@ sub SavePatentInfo {
     $IssuedDate = $rPatent->{'IssuedDate'};
     $Title = $rPatent->{'Title'};
     $ApplyNo = $rPatent->{'Appl. No.'}; # need quotes if there are spaces
+    $ApplyDate = $rPatent->{'ApplyDate'};
     if ($rPatent->{Filed} =~ m#(\w+) (\d+), (\d+)#) { 
    	    $ApplyDate = $me->FormatDate($3, $me->Month($1), $2);
     }
