@@ -389,7 +389,7 @@ sub get_uspto { # to replace ua_get() and Parse_Patent()
     $ua = LWP::UserAgent->new;
     $ua->ssl_opts(verify_hostname => 0);  # Disable SSL verification
 
-    my $ENV = load_env('.env', 'myAPIkey.txt'); # check .env first
+    my $ENV = load_env('.env', 'myAPI_KEY.txt'); # check .env first
     $api_key =$ENV->{'API_KEY'};
 
 # Step 1: fetch the patent information
