@@ -202,8 +202,9 @@ sub GetByPatNumber_in_File {
     print " ... End.\n";
 }
 
-# Given a patent number and an output directory,
-#   download the patent into the output directory
+# Given a patent number and an output directory, download the patent full text in html 
+#   into PatentDir and parse the patent into into the subfolders: 
+#      pat and abs of the output directory.
 # Use option $OPatApp
 # perl -s Patent.pl -Opatnum OutDir 6,778,995  6532469 ...
 # or use the option -OPatApp
