@@ -9,10 +9,10 @@ Notes:
 2. The examples in the tutorials ([CATAR_Tutorial.ppt](http://web.ntnu.edu.tw/~samtseng/CATAR/CATAR_Tutorial.ppt) or [CATAR_Tutorial_en.ppt](http://web.ntnu.edu.tw/~samtseng/CATAR/CATAR_Tutorial_en.ppt)) use very low threshold values (e.g., 0.0) to get the results. After installation of CATAR on your computer, you should run sam.bat (under src sub-folder) to see if your results are almost the same as those in the tutorials.
 
 ## Introduction
-The steps described below are for analyzing patent documents (in HTML file format) from the United States Patent and Trademark Office (USPTO). For a set of USPTO patents, CATAR can help you to:
+The steps described below are for analyzing U.S.A. patent documents from the PatentsView's PatentSearch API (https://search.patentsview.org/docs/docs/Search%20API/SearchAPIReference/#query-string-q). For a set of US patents, CATAR can help you to:
 
-1. Automatically download each patent document (in HTML), given a set of patent numbers in a text file.
-2. Parse the HTML file to get various information and save them into a Database Management System (DBMS). Currently, the used DBMS is Microsoft Access.
+1. Automatically download each patent document information, if you provided a set of patent numbers in a text file.
+2. Save various patent information of the downloaded patents into a Database Management System (DBMS). Currently, the used DBMS is Microsoft Access (.mdb).
 3. Do some analyses in the MS Access file using the queries already prepared in the Access file.
 4. Do more patent analyses using the CATAR functions like those (overview or break-down analyses) described at: http://web.ntnu.edu.tw/~samtseng/CATAR/.
 
@@ -22,13 +22,13 @@ The steps described below are for analyzing patent documents (in HTML file forma
 ## Steps to analyze the USPTO patents
 1. **Prepare the patent set**:
 
-    Prepare a pure text file having a set of patent numbers, with each line containing a single patent number. 
+    Prepare a pure text file having a set of patent numbers, with each line containing a single US patent number (patent id). 
 
-    Normally you would query USPTO with its advanced search: http://patft.uspto.gov/netahtml/PTO/search-adv.htm to collect a set of patents for analysis. 
+    Normally you would query US patents at: https://www.uspto.gov/patents/search/patent-public-search to collect a set of patents for analysis. After searching the required patents, you should collect the patent number (patent id) from the search results page into a text file with each patent number in a line.
 
     **Note: This is a crucial step**, because it affects any statistics you get in later steps. 
 
-    You should place this file under a certain folder, like the one already in the CATAR folder: CATAR\Source_Data\DL_DNN\DL_DNN_1636.txt.
+    You should place this text file under CATAR\Source_Data\ sub-folder, like the one already in the CATAR folder: CATAR\Source_Data\DL_DNN\DL_DNN_1636.txt.
 
 2. **Edit Patent.ini**:
 
@@ -40,25 +40,31 @@ The steps described below are for analyzing patent documents (in HTML file forma
     SaveDescription=1
     ```
 
-3. **Duplicate an empty MS Access file**
+3. **Copy an empty MS Access file to the specified folder**
 
-    Under the CATAR\src folder in the DOS command line, run the copy file command, e.g.:
+    Under the CATAR\src folder in the DOS command terminal, run the copy file command, e.g.:
     ```
     C:\CATAR\src> copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
     ```
 
 
-4. **Set the DSN (Data Source Name)**
+4. **Download and Install Microsoft Access Database Engine 2016**
 
-    Double click the file: C:/Windows/SysWOW64/odbcad32.exe to open the 32 bits "ODBC Data Source Administrator" (ODSA).
+    Browse to https://www.microsoft.com/zh-tw/download/details.aspx?id=54920&irgwc=1 and 
 
-    Click on the "System DSN" Tab on the top of the ODSA window and then click "Add" on the right. 
+    Click on the "Download" button to save `accessdatabaseengine_X64.exe` or `accessdatabaseengine.exe` to your local disk, depending on the Perl version you are using.
 
-    Then choose "Microsoft Access Driver (*.mdb)" and click on "Finish".
+    To know which Perl version you are using, under the DOS command terminal, run:
+    ```
+    C:\CATAR\src>perl -v
 
-    Assign a DSN name and select the appropriate source. Select the Access database file you want to associate with the DSN you just created. For example, you may set a DSN named: DL_DNN and associate it with the file: "C:\CATAR\Source_Data\DL_DNN\DL_DNN.mdb". Click "OK" to finish this step.
+    This is perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x86-multi-thread-64int
 
-    If you still have difficulty in this step, google the usage of "ODBC Data Source Administrator". You should use the 32 bits version, not the 64 bits version.
+    Copyright 1987-2021, Larry Wall
+    ```
+    In the above example output, the Perl version is 64 bits, so you should download `accessdatabaseengine_X64.exe`. Otherwise, the Perl is 32 bits and you should download `accessdatabaseengine.exe`.
+
+    Double click on the downloaded `.exe` file to install the required MS Access driver program for later use.
 
 5. **Start to run CATAR**:
 
@@ -67,9 +73,9 @@ The steps described below are for analyzing patent documents (in HTML file forma
     C:\CATAR\src>perl -s patent.pl -Odb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_1636.txt
     ```
 
-    When this command is running, it will tell you the progress and something that may be abnormal, such as truncated information when saving information into the Access file. 
+    When this command is running, it will tell you the progress. 
 
-    Ignore the abnormal messages and **watch out for the failure messages which tell that some patents can not be downloaded**, due to network traffic or the USPTO server's latency. 
+    Ignore any abnormal messages during the above patent fetching process and **watch out for the failure messages which tell that some patents can not be downloaded**. The failure may be due to network traffic or network latency.
 
     Do not worry about these failures. 
 
