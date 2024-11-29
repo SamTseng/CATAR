@@ -1,4 +1,5 @@
 #!/usr/bin/perl -s
+# can be Big5 or UTF-8, currently saved as UTF-8
 package Patent;
 
     use strict;    use vars;
@@ -379,7 +380,7 @@ sub load_env {
 =cut
 use Exporter 'import';
 our @EXPORT_OK = ('get_uspto');
-# perl -I. -MPatent=get_uspto -e 'get_uspto(0, 10165259)'
+# C:\CATAR\src> perl -I. -MPatent=get_uspto -e 'get_uspto(0, 10165259)'
 # The above command line works on 2024/11/25
 use JSON;
 sub get_uspto { # to replace ua_get() and Parse_Patent()
@@ -438,7 +439,7 @@ sub get_uspto { # to replace ua_get() and Parse_Patent()
         $Patent{'Current U.S. Class'} = '';
         $Patent{'Intern Class'} = cpc2str($patent->{'cpc_current'});
         $Patent{'Field of Search'} = ''; # not important, no value so far
-        $Patent{'Cites'} = ''; # not important, no value so far
+        $Patent{'Cites'} = []; # not important, no value so far
         $Patent{'Parent Case'} = ''; # not important, no value so far
     } else {
         print "Error: " . $res->status_line . "\n";
@@ -494,7 +495,7 @@ sub Inventors2str {
 # Concatenate information into the desired format
     my $result = join(", ", map {
         sprintf("%s; %s (%s, %s)", $_->{inventor_name_last}, $_->{inventor_name_first}, 
-                                    $_->{inventor_city}, $_->{inventor_state})
+                                    $_->{inventor_city}, $_->{inventor_country})
     } @sorted_inventors);
 #print("inventors: $result\n"); #exit();
     return $result; 
@@ -507,7 +508,7 @@ sub Assignees2str {
 # Concatenate information into the desired format
     my $result = join(", ", map {
         sprintf("%s (%s, %s)", $_->{assignee_organization},
-                                    $_->{assignee_city}, $_->{assignee_state})
+                                    $_->{assignee_city}, $_->{assignee_country})
     } @sorted_assignees);
 #print("assignees: $result\n"); #exit();
     return $result; 
@@ -968,7 +969,7 @@ sub Parse_Patent {
     $patent{'Abstract'}          = get_Abstract_Claims_text($tree, 'Abstract');
     $patent{'Claims'}            = get_Abstract_Claims_text($tree, 'Claims');
 
-    $patent{'Cites'}             = ''; # get_Cites_text($tree, 'div', 'References Cited', ['Primary Examiner:']); # to-do
+    $patent{'Cites'}             = []; # get_Cites_text($tree, 'div', 'References Cited', ['Primary Examiner:']); # to-do
     $patent{'Application'}       = get_section_text($tree, 'h3', 'Background/Summary', 'FIELD[\W ]*', ['BACKGROUND[\W ]*']);
     $patent{'Task'}              = get_section_text($tree, 'h3', 'Background/Summary', 'BACKGROUND[\W ]*', ['SUMMARY[\W ]']);
     $patent{'Summary'}           = get_section_text($tree, 'h3', 'Background/Summary', 'SUMMARY[\W ]', ['ABITRARY']);
@@ -1181,7 +1182,6 @@ NewFormat_USclass: # to deal with new format
 		$k =~ s/:$//; # delete trailing semicolon;
 		next if $k eq '';
 		$Patent{$k.'_org'} = $v if $k =~/Inventors|Assignee/; # 2007/11/10
-		# Owner����a���O����(�p DE)�ɡA�|�]�b <B>�P</B>��
 		$v =~ s/<[^>]+>//g; # delete all HTML tags
 		$v =~ s/^\s*|\s*$//g; # delete leading and trailing space
 		$v =~ s/\s+/ /g; # delete line break
