@@ -1,10 +1,12 @@
 #!/usr/bin/perl -s
+# can be Big5 or UTF-8, currently saved as UTF-8
 package PatentDB;
 #    use DBI;
     use Win32::ODBC;
     use Patent;
     @ISA = qw(Patent); # inherit from class Patent
     use strict;    use vars;
+    use Cwd 'abs_path';
     my $debug = $main::Odebug || 0;
 
 # Next is a comment segment in POD format. Comment ends until '=cut'
@@ -160,11 +162,20 @@ sub InitializeSavePatent {
 #	|| die "Couldn't connect to database: " . DBI->errstr;
 
 # Next segment is for Win32::ODBC
-    my $DSN = "DSN=$me->{'DSN'};UID=$me->{'user'};PWD=$me->{'password'}";
+    #my $DSN = "DSN=$me->{'DSN'};UID=$me->{'user'};PWD=$me->{'password'}";
+    my $mdb_path = abs_path($main::Odb);
+    if (not defined($mdb_path)) { die("Cannot find the file: '$mdb_path'!\n");}
+    if (not -e $mdb_path) { die("'$mdb_path' does not exisited!\n")}
+    # Make sure this contains the absolute path to the .mdb file
+    #my $DSN = "Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=$mdb_path";
+    my $DSN = "Driver={Microsoft Access Driver (*.mdb)};DBQ=$mdb_path";
+    # Optional user and password if needed
+    if ($me->{'user'}) {     $DSN .= ";UID=$me->{'user'}"; }
+    if ($me->{'password'}) { $DSN .= ";PWD=$me->{'password'}"; }
     my $dbh = new Win32::ODBC($DSN)
-	|| die("Can't open new ODBC Connect: DSN='$DSN'");
+	    || die("Can't open new ODBC Connect: DSN='$DSN'");
     if($dbh->GetMaxBufSize < $me->{'MEMO_FIELD_SIZE'}) {
-	$dbh->SetMaxBufSize($me->{'MEMO_FIELD_SIZE'});
+	    $dbh->SetMaxBufSize($me->{'MEMO_FIELD_SIZE'});
     }
     my($ErrNum, $ErrText, $ErrConn) = $dbh->Error();
     if($ErrNum)	{ die("Database Error: $ErrText <br>\n$ErrConn\n"); }
@@ -297,9 +308,7 @@ sub SavePatent {
 sub SaveFullText {
     my($me, $rPatent, $orgPatent, $update) = @_;
     my($r, $sql, $URL, $date, $existed);
-#    return 2 if not $me->{SaveFullText}; # 2007/11/10, will lead to the error:
-# SQL Error: [Microsoft][ODBC Microsoft Access Driver] 由於參考完整性的設定，
-# 若TFullText沒有相關資料存在，就不能像這樣新增：INSERT INTO TPatentInfo...
+#    return 2 if not $me->{SaveFullText}; # 2007/11/10
     $existed = $me->Has_Patent_Existed($rPatent->{PatNum});
     if (not $update and $existed) { return 0 ; }
     if ($update and not $existed) { 
@@ -603,13 +612,13 @@ sub SaveOwner_Inv_Ass {
 #print STDERR "$rPatent->{PatentNum}, p=$p\n";
     	if ($p =~ /;?\s?(.+) \((.+), (.+)$/) { 
 	    	$Owner = $1; $City = $2; $country = $3;
-    	} elsif ($p =~ /;?\s?(.+) \((.+)$/) { # 不是美國
+    	} elsif ($p =~ /;?\s?(.+) \((.+)$/) { 
 	    	$Owner = $1; $country = $2; $City = 'Null';
     	} else { next; } # do nothing if no match
     	$Owner =~ s/;/,/; # convert ';' into ',' between surname and name
-    	if ($rPatent->{$OwnerName.'_org'} =~ /<B>$country/i) { # 不是美國的州名
+    	if ($rPatent->{$OwnerName.'_org'} =~ /<B>$country/i) { 
     	    # do nothing
-    	} else { # 可能是美國的州名, 
+    	} else { # 嚙箠嚙踝蕭O嚙踝蕭嚙赭的嚙緹嚙磕, 
     	    if ($me->{'US_StateName'}{$country}){$State=$country;$country='US';}
     	}
 
