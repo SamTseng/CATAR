@@ -98,7 +98,7 @@ print STDERR "uspto->{DSN}=$uspto->{DSN}\n" if $Odebug;
 # Patent.pl -Oref_pats NSC\NSC_PatentNo.txt > NSC\NSC_SciRefs.txt
     &GetRef_from_Patents($uspto, @ARGV) if $Oref_pats;
 # Patent.pl -Ogroup=Nano -Odb -OPat2DB D:\Sam\papers\2005\IACIS\data\doccatlist1.txt
-# Patent.pl -Ogroup=NSC -Odb -OPat2DB NSC\NSC_PatentNo.txt
+# perl -s patent.pl -Odb=..\Source_Data\DL_DNN\DL_DNN.mdb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_1636.txt
     &GetPatent2DB($uspto, @ARGV) if $OPat2DB;
 # Patent.pl -Ogroup=Gov -Odb -ODir2DB Gov\PatentDir
     &InsertPatentFromDir2DB($uspto, @ARGV) if $ODir2DB;
