@@ -70,8 +70,9 @@ The steps described below are for analyzing U.S.A. patent documents from the Pat
 
     Now you can run CATAR to download and parse the patent set, by running a command like this:
     ```
-    C:\CATAR\src>perl -s patent.pl -Odb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_1636.txt
+    C:\CATAR\src>perl -s patent.pl -Odb=..\Source_Data\DL_DNN\DL_DNN.mdb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_1636.txt
     ```
+    The MS Access file (DL_DNN.mdb) in -Odb will store all the patent information fetching using PatentsView's API based on the patent number (patent id) in the DL_DNN_1636.txt.
 
     When this command is running, it will tell you the progress. 
 
