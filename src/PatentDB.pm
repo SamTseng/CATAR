@@ -333,11 +333,12 @@ sub SaveFullText {
     		$me->{Source}, $URL, $date, $orgPatent, $rPatent->{PatNum});   	
     } else { # 2007/11/10
     	if ($me->{Save2File}) {
-	        my $file = $me->SavePatentPath($rPatent->{PatNum});
-print STDERR "Save patent to : '$file'\n" if $me->{debug}==1;
-    		open P, ">$file" or die "Cannot write to file:'$file'";
-    		print P $orgPatent;
-    		close(P);
+# 2024/12/01, no more HTML files to save due to the changes of USPTO website.
+# 	        my $file = $me->SavePatentPath($rPatent->{PatNum});
+# print STDERR "Save patent to : '$file'\n" if $me->{debug}==1;
+#     		open P, ">$file" or die "Cannot write to file:'$file'";
+#     		print P $orgPatent;
+#     		close(P);
     	}
     	($r) = $me->SimpleSQL($sql, '', '', '', '', $rPatent->{PatNum});
     }

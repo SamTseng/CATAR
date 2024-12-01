@@ -897,11 +897,12 @@ print STDERR "Save patent to : '$me->{Patent_Existed_DB}'\n" if $me->{debug}==1;
         or die "Cannot append to file:'$me->{Patent_Existed_DB}'";
     print PE join (",", map("\"$rPatent->{$_}\"", @{$me->{Patent_Fields}})), "\n";
     close(PE);
-    my $file = $me->SavePatentPath($rPatent->{PatNum});
-print STDERR "Save patent to : '$file'\n" if $me->{debug}==1;
-    open P, ">$file" or die "Cannot write to file:'$file'";
-    print P $orgPatent;
-    close(P);
+# 2024/12/01, no more HTML files to save due to the changes of USPTO website.
+#     my $file = $me->SavePatentPath($rPatent->{PatNum});
+# print STDERR "Save patent to : '$file'\n" if $me->{debug}==1;
+#     open P, ">$file" or die "Cannot write to file:'$file'";
+#     print P $orgPatent;
+#     close(P);
 }
 
 # Given a patent number, return the path that it should be saved
@@ -909,7 +910,7 @@ sub SavePatentPath {
     my($me, $patnum) = @_; my($file);
 #   $file = $me->{PatentDir}; # if possible patents are in large number, use next
     $file = $me->{PatentDir} . '/' . substr($patnum, length($patnum)-2, 2); 
-    $me->CreatePath($file);
+#    $me->CreatePath($file); # 2024/12/01, no more HTML files to save due to USPTO changes.
     return "$file/$patnum.htm";
 }
 
