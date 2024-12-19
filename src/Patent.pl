@@ -347,6 +347,7 @@ print STDERR scalar @PatNum, " patents in total\n";
     	$pat_url = $me->{PatentAppNo_URL} if $OPatApp;
     	$pat_url =~ s/\$patnum/$pn/g;
     	$rPatent = $me->Get_Patent_By_Number($pn, $pat_url);
+        sleep(1.4);
     	$i++; $percent = $pro->ShowProgress($i/@PatNum, $percent);
 #    	last if $i > 2;
     }
@@ -497,14 +498,14 @@ sub ParseOwner {
 #print STDERR "$rPatent->{PatentNum}, p=$p\n";
     	if ($p =~ /;?\s?(.+) \((.+), (.+)$/) { 
 	    	$Owner = $1; $City = $2; $country = $3;
-    	} elsif ($p =~ /;?\s?(.+) \((.+)$/) { # ¤£¬O¬ü°ê
+    	} elsif ($p =~ /;?\s?(.+) \((.+)$/) { # ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
 	    	$Owner = $1; $country = $2; $City = 'Null';
     	} else { next; } # do nothing if no match
     	$Owner =~ s/;/,/; # convert ';' into ',' between surname and name
     	$Owner =~ s/, / /; # 2019/01/13 # remove the ,
-    	if ($rPatent->{$OwnerName.'_org'} =~ /<B>$country/i) { # ¤£¬O¬ü°êªº¦{¦W
+    	if ($rPatent->{$OwnerName.'_org'} =~ /<B>$country/i) { # ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½êªºï¿½{ï¿½W
     	    # do nothing
-    	} else { # ¥i¯à¬O¬ü°êªº¦{¦W, 
+    	} else { # ï¿½iï¿½ï¿½Oï¿½ï¿½ï¿½êªºï¿½{ï¿½W, 
     	    if ($me->{'US_StateName'}{$country}){$State=$country;$country='US';}
     	}
     	push @CSC, join(", ", $Owner, $State, $City, $country)
