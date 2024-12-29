@@ -20,39 +20,23 @@ The steps described below are for analyzing U.S.A. patent documents from the Pat
 
 
 ## Steps to analyze the USPTO patents
-1. **Prepare the patent set**:
 
-    Prepare a pure text file having a set of patent numbers, with each line containing a single US patent number (patent id). 
+1. **Apply a PatentSearch API Key**
 
-    Normally you would query US patents at: https://www.uspto.gov/patents/search/patent-public-search to collect a set of patents for analysis. After searching the required patents, you should collect the patent number (patent id) from the search results page into a text file with each patent number in a line.
+   CATAR uses PatentSearch's APIs (https://patentsview.org/) to fetch USA patent information. To do that, you need to have an API key. Please go to https://patentsview-support.atlassian.net/servicedesk/customer/portal/1/group/1/create/18 to request a PatentSearch API Key.
+   Getting approved and having a key may take one or two days.
 
-    **Note: This is a crucial step**, because it affects any statistics you get in later steps. 
+   Once you have an API key (it looks like: gvtLdGV0.wFGvmAerzgmApv9G5tZc23cy8Djnwy6n),
+   edit a text file with filename: .env under CATAR\src directory. That is, this file is: "C:\CATAR\src\.env" and should have the content as follows:
+   ```
+   API_KEY=gvtLdGV0.wFGvmAerzgmApv9G5tZc23cy8Djnwy6n
+   ```
 
-    You should place this text file under CATAR\Source_Data\ sub-folder, like the one already in the CATAR folder: CATAR\Source_Data\DL_DNN\DL_DNN_1636.txt.
+   Note: You only have to apply the API Key and edit the .env file for the first time when using CATAR for patent analysis.
+   
+2. **Download and Install Microsoft Access Database Engine 2016**
 
-2. **Edit Patent.ini**:
-
-    Edit CATAR\src\Patent.ini to add a new group. As an example:
-    ```
-    [DL_DNN]
-    PatentDir=..\Source_Data\DL_DNN\patents
-    DSN=DL_DNN
-    SaveDescription=1
-    ```
-
-3. **Copy an empty MS Access file to the specified folder**
-
-    Under the CATAR\src folder in the DOS command terminal, run the copy file command, e.g.:
-    ```
-    C:\CATAR\src> copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
-    ```
-
-
-4. **Download and Install Microsoft Access Database Engine 2016**
-
-    Browse to https://www.microsoft.com/zh-tw/download/details.aspx?id=54920&irgwc=1 and 
-
-    Click on the "Download" button to save `accessdatabaseengine_X64.exe` or `accessdatabaseengine.exe` to your local disk, depending on the Perl version you are using.
+    Browse to https://www.microsoft.com/zh-tw/download/details.aspx?id=54920&irgwc=1 and click on the "Download" button to save `accessdatabaseengine_X64.exe` or `accessdatabaseengine.exe` to your local disk, depending on the Perl version you are using.
 
     To know which Perl version you are using, under the DOS command terminal, run:
     ```
@@ -66,7 +50,36 @@ The steps described below are for analyzing U.S.A. patent documents from the Pat
 
     Double click on the downloaded `.exe` file to install the required MS Access driver program for later use.
 
-5. **Start to run CATAR**:
+   Note: you only have to do this for the first time for patent analysis.
+   
+3. **Prepare the patent set**:
+
+    Prepare a pure text file having a set of patent numbers, with each line containing a single US patent number (patent id). 
+
+    Normally you would query US patents at: https://www.uspto.gov/patents/search/patent-public-search to collect a set of patents for analysis. After searching the required patents, you should collect the patent number (patent id) from the search results page into a text file with each patent number in a line.
+
+    **Note: This is a crucial step**, because it affects any statistics you get in later steps. 
+
+    You should place this text file under CATAR\Source_Data\ sub-folder, like the one already in the CATAR folder: CATAR\Source_Data\DL_DNN\DL_DNN_1636.txt.
+
+4. **Edit Patent.ini**:
+
+    Edit CATAR\src\Patent.ini to add a new group. As an example:
+    ```
+    [DL_DNN]
+    PatentDir=..\Source_Data\DL_DNN\patents
+    DSN=DL_DNN
+    SaveDescription=1
+    ```
+
+5. **Copy an empty MS Access file to the specified folder**
+
+    Under the CATAR\src folder in the DOS command terminal, run the copy file command, e.g.:
+    ```
+    C:\CATAR\src> copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
+    ```
+
+6. **Start to run CATAR**:
 
     Now you can run CATAR to download and parse the patent set, by running a command like this:
     ```
@@ -82,9 +95,9 @@ The steps described below are for analyzing U.S.A. patent documents from the Pat
 
     **Just re-run the above command**. Those that have been downloaded will not be fetched again. Only those failed will be downloaded. You could run the same command as many times as you want, until no failure is reported.
 
-6. **Open the MS Access file**:
+7. **Open the MS Access file**:
 
-    You can check the tables to know what information have been downloaded and parsed. Also check the queries to have some statistics about your patent set.
+    Open the MS Access file from Step 5. You can check the tables to know what information has been downloaded and parsed. Also, check the queries to have some statistics about your patent set.
 
 
 For further analysis, please check: http://web.ntnu.edu.tw/~samtseng/CATAR or send me an email: samtseng@ntnu.edu.tw for clarity.
