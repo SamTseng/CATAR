@@ -27,12 +27,12 @@ The steps described below are for analyzing U.S.A. patent documents from the Pat
    Getting approved and having a key may take one or two days.
 
    Once you have an API key (it looks like: gvtLdGV0.wFGvmAerzgmApv9G5tZc23cy8Djnwy6n),
-   edit a text file with filename: .env under CATAR\src directory. That is, this file is: "C:\CATAR\src\.env" and should have the content as follows:
+   edit the text file with filename: `myAPI_KEY.txt` under CATAR\src directory. That is, this file is: `C:\CATAR\src\myAPI_KEY.txt` and should have the content as follows:
    ```
    API_KEY=gvtLdGV0.wFGvmAerzgmApv9G5tZc23cy8Djnwy6n
    ```
 
-   Note: You only have to apply the API Key and edit the .env file for the first time when using CATAR for patent analysis.
+   Note: You only have to apply the API Key and edit the `myAPI_KEY.txt` file for the first time when using CATAR for patent analysis.
    
 2. **Download and Install Microsoft Access Database Engine 2016**
 
@@ -76,14 +76,14 @@ The steps described below are for analyzing U.S.A. patent documents from the Pat
 
     Under the CATAR\src folder in the DOS command terminal, run the copy file command, e.g.:
     ```
-    C:\CATAR\src> copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
+    copy Patent_org.mdb ..\Source_Data\DL_DNN\DL_DNN.mdb
     ```
 
 6. **Start to run CATAR**:
 
-    Now you can run CATAR to download and parse the patent set, by running a command like this:
+    Now you can run CATAR to download and parse the patent set under the CATAR\src folder, by running a command like this:
     ```
-    C:\CATAR\src>perl -s patent.pl -Odb=..\Source_Data\DL_DNN\DL_DNN.mdb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_1636.txt
+    perl -s patent.pl -Odb=..\Source_Data\DL_DNN\DL_DNN.mdb -Ogroup=DL_DNN -OPat2DB ..\Source_Data\DL_DNN\DL_DNN_1636.txt
     ```
     The MS Access file (DL_DNN.mdb) in -Odb will store all the patent information fetching using PatentsView's API based on the patent number (patent id) in the DL_DNN_1636.txt.
 
